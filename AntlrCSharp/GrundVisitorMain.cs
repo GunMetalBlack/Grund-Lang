@@ -151,7 +151,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         {
             return lfFloat/rInt;
         }
-        throw new Exception("GRUND STUPID CANNOT Multiply}." + left.GetType() +" " + right.GetType());
+        throw new Exception("GRUND STUPID CANNOT Divide}." + left.GetType() +" " + right.GetType());
     }
     private object? Mod(object? left, object? right)
     {
