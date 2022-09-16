@@ -12,14 +12,14 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var ID_PI = "G_PI";
         var ID_E = "G_E";
         //FUNK NAMES BUILT IN
-        var FUNC_ID_WRITE = "GFUNC_WRITE";
+        var FUNC_ID_WRITE = "GF_WRITE";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
         Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
-        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(GFUNC_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE); 
+        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(GF_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE); 
     }
 
-    private object?[] GFUNC_WRITE(object?[] args)
+    private object?[] GF_WRITE(object?[] args)
     {
         foreach (var arg in args)
         {
