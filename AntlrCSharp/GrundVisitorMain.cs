@@ -7,11 +7,14 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     private List<string> ImmutableVariables {get;} = new();
 
     public GrundVisitorMain()
-    {
+    {   
+        var ID_PI = "G.PI";
+        var ID_E = "G.E";
+        var ID_WRITE = "G.WRITE";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
-        Variables["PI"] = Math.PI; ImmutableVariables.Add("PI");
-        Variables["E"] = Math.E; ImmutableVariables.Add("E");
-        Variables["WRITE"] = new Func<object?[], object?>(WRITE); ImmutableVariables.Add("WRITE"); 
+        Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
+        Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
+        Variables[ID_WRITE] = new Func<object?[], object?>(WRITE); ImmutableVariables.Add(ID_WRITE); 
     }
 
     private object?[] WRITE(object?[] args)
