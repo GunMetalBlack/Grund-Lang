@@ -24,8 +24,8 @@ expression
     | functionCall          #functionCallExpression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression
-    | expression multOP expression  #additiveExpression
-    | expression addOP expression   #addExpression
+    | expression multOP expression  #multiplicativeExpression
+    | expression addOP expression   #additiveExpression
     | expression compareOP expression #comparisonExpression
     | expression boolOP expression #booleanExpression
     ;

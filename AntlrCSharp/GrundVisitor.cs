@@ -94,13 +94,6 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitConstantExpression([NotNull] GrundParser.ConstantExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>addExpression</c>
-	/// labeled alternative in <see cref="GrundParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAddExpression([NotNull] GrundParser.AddExpressionContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>additiveExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
@@ -135,6 +128,13 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitComparisonExpression([NotNull] GrundParser.ComparisonExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>multiplicativeExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMultiplicativeExpression([NotNull] GrundParser.MultiplicativeExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>booleanExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
