@@ -13,22 +13,12 @@ i = jack + float;
 Name = "JACK MY MIND IS WORKING";
 
 isworking = true;
-G.WRITE(6 < 7);
+
+GFUNC_WRITE(6 < 7);
+GFUNC_WRITE(G_PI,"SHOW PI");
 WHILE jack < 7:
     jack = jack + 1;
-    WRITE(jack);
+    GFUNC_WRITE(jack);
 END
+
 i = jack;
-
-
-
-file = @(asdasd):
-asdajsd
-asdkahsdkajhsd
-kasdkahsdkj
-END
-
-
-FUNC file():
-
-END
