@@ -13,7 +13,7 @@ i = jack + float;
 Name = "JACK MY MIND IS WORKING";
 
 isworking = true;
-WRITE(6 < 7);
+G.WRITE(6 < 7);
 WHILE jack < 7:
     jack = jack + 1;
     WRITE(jack);
