@@ -1,5 +1,5 @@
 ﻿using Antlr4.Runtime;
-var fileName = "test.G";
+var fileName = "test.GRD";
 
 var fileContent = File.ReadAllText(fileName);
     var inputStream = new AntlrInputStream(fileContent);
