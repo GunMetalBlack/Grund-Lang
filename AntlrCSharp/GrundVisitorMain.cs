@@ -8,16 +8,18 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
 
     public GrundVisitorMain()
     {   
-        var ID_PI = "G.PI";
-        var ID_E = "G.E";
-        var ID_WRITE = "G.WRITE";
+        //Math
+        var ID_PI = "G_PI";
+        var ID_E = "G_E";
+        //FUNK NAMES BUILT IN
+        var FUNC_ID_WRITE = "GFUNC_WRITE";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
         Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
-        Variables[ID_WRITE] = new Func<object?[], object?>(WRITE); ImmutableVariables.Add(ID_WRITE); 
+        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(GFUNC_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE); 
     }
 
-    private object?[] WRITE(object?[] args)
+    private object?[] GFUNC_WRITE(object?[] args)
     {
         foreach (var arg in args)
         {
@@ -49,13 +51,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         
         var varName = context.IDENTIFIER().GetText();
         var value = Visit(context.expression());
-        if(!ImmutableVariables.Contains(varName))
-        {
         Variables[varName] = value;
-        }else
-        {
-            throw new Exception("GRUND SAYS THE VARIABLE IS ALREADY A FUNCTION CHANGE NAME"+ " " + varName);
-        }
         return null;
     }
 
