@@ -10,7 +10,7 @@ ifBlock: 'IF'  expression  block ('ELSE' elseIfBlock);
 
 elseIfBlock: block | ifBlock;
  
-whileBlock: WHILE expression block ('ELSE' elseIfBlock);
+whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock);
 
 WHILE: 'WHILE' | 'UNLESS';
 

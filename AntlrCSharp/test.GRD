@@ -2,14 +2,20 @@ jack = 3;
 
 float = 1.4;
 
-x = jack * float;
+multip = jack * float;
 
-j = 3 / 5;
+divide = 1 / 2.0;
 
-w = 45 % 4;
+mod = 3 % 2;
 
 i = jack + float;
 
 Name = "JACK MY MIND IS WORKING";
 
 isworking = true;
+WRITE(6 < 7);
+WHILE jack < 7:
+    jack = jack + 1;
+    WRITE(jack);
+END
+i = jack;

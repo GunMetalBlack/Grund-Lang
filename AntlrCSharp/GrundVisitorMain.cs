@@ -4,15 +4,55 @@ using Antlr4.Runtime.Misc;
 public class GrundVisitorMain:GrundBaseVisitor<object?>
 {
     private Dictionary<string, object?> Variables {get;} = new();
+    private List<string> ImmutableVariables {get;} = new();
 
+    public GrundVisitorMain()
+    {
+        //** Important Create Variables for FunctionCallContext and Built in Math Standards
+        Variables["PI"] = Math.PI; ImmutableVariables.Add("PI");
+        Variables["E"] = Math.E; ImmutableVariables.Add("E");
+        Variables["WRITE"] = new Func<object?[], object?>(WRITE); ImmutableVariables.Add("WRITE"); 
+    }
+
+    private object?[] WRITE(object?[] args)
+    {
+        foreach (var arg in args)
+        {
+            Console.WriteLine(arg);
+        }
+        return null;
+    }
+
+    public override object? VisitFunctionCall(GrundParser.FunctionCallContext context)
+    {
+        var name = context.IDENTIFIER().GetText();
+        var args = context.expression().Select(Visit).ToArray();
+
+        if (!Variables.ContainsKey(name))
+        {
+            throw new Exception("GRUND SAYS THE FUNCTION IS NOT DEFINED TAKE THE L"+ "The Function name is " + name);
+        }
+
+        if(Variables[name] is not Func<object?[], object?> func)
+            throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION" + "THIS IS NOT A FUNCTION " + name);
+            
+        
+         return func(args);
+    }
+
+    //** Below is the implementation if Parsing Variables
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {
+        
         var varName = context.IDENTIFIER().GetText();
-
         var value = Visit(context.expression());
-
+        if(!ImmutableVariables.Contains(varName))
+        {
         Variables[varName] = value;
-
+        }else
+        {
+            throw new Exception("GRUND SAYS THE VARIABLE IS ALREADY A FUNCTION CHANGE NAME"+ " " + varName);
+        }
         return null;
     }
 
@@ -26,7 +66,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         return Variables[varName]; 
     }
-
+    //**Converts variable string to variable type 
     public override object? VisitConstant([NotNull] GrundParser.ConstantContext context)
     {
          if(context.INTEGER() is { } i)
@@ -151,7 +191,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             throw new NotImplementedException();
         }
     }
-    // Adding for variables 
+    //* Adding for variables 
     private object? Add(object? left, object? right)
     {
         if(left is int l && right is int r)
@@ -179,8 +219,9 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         throw new Exception("GRUND STUPID CANNOT ADD}." + left.GetType() +" " + right.GetType());
     }
         
-        //Subtracting from the left and right arguments
+        //*Subtracting from the left and right arguments
     private object? Sub(object? left, object? right)
+    
     {
         if(left is int l && right is int r)
         {
@@ -200,4 +241,187 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         throw new Exception("GRUND STUPID CANNOT Subtract}." + left.GetType() +" " + right.GetType());
     }
+    //* Function Logic calls Like If Statements and WHile loops
+    public override object? VisitWhileBlock([NotNull] GrundParser.WhileBlockContext context)
+    {
+        Func<object?, bool> condition = context.WHILE().GetText() == "WHILE" 
+        ? IsTrue 
+        : IsFalse
+        ;
+
+        if(condition(Visit(context.expression())))
+        {
+            do
+            {
+                Visit(context.block());
+            }while(condition(Visit(context.expression())));
+        }
+        else
+        {
+            Visit(context.elseIfBlock());
+        }
+        return null;
+    }
+
+    public override object? VisitComparisonExpression([NotNull] GrundParser.ComparisonExpressionContext context)
+    {
+        var left = Visit(context.expression(0));
+        var right = Visit(context.expression(1));
+
+        var op = context.compareOP().GetText();
+
+        if(op == "==")
+        {
+            return IsEqual(left, right);
+        }
+        if(op == "!=")
+        {
+            return IsNotEqual(left, right);
+        }
+        if(op == ">")
+        {
+            return GreaterThan(left, right);
+        }
+        if(op == ">=")
+        {
+            return GreaterThanOrEqual(left, right);
+        }
+        if(op == "<")
+        {
+            return LessThan(left, right);
+        }
+        if(op == "<=")
+        {
+            return LessThanOrEqual(left, right);
+        }
+        throw new NotImplementedException();
+    }
+    private bool GreaterThanOrEqual(object? left, object? right)
+    {
+        if(left is int l && right is int r)
+        {
+            return l > r;
+        }
+        if(left is float lf && right is float rf)
+        {
+            return lf > rf;
+        }
+        if(left is int lInt && right is float rFloat)
+        {
+            return lInt > rFloat;
+        }
+        if(left is float lfFloat && right is int rInt)
+        {
+            return lfFloat > rInt;
+        }
+        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+    }
+    private bool GreaterThan(object? left, object? right)
+    {
+        if(left is int l && right is int r)
+        {
+            return l >= r;
+        }
+        if(left is float lf && right is float rf)
+        {
+            return lf >= rf;
+        }
+        if(left is int lInt && right is float rFloat)
+        {
+            return lInt >= rFloat;
+        }
+        if(left is float lfFloat && right is int rInt)
+        {
+            return lfFloat >= rInt;
+        }
+        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+    }
+    private bool LessThan(object? left, object? right)
+    {
+        if(left is int l && right is int r)
+        {
+            return l < r;
+        }
+        if(left is float lf && right is float rf)
+        {
+            return lf < rf;
+        }
+        if(left is int lInt && right is float rFloat)
+        {
+            return lInt < rFloat;
+        }
+        if(left is float lfFloat && right is int rInt)
+        {
+            return lfFloat < rInt;
+        }
+        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+    }
+    private bool LessThanOrEqual(object? left, object? right)
+    {
+        if(left is int l && right is int r)
+        {
+            return l <= r;
+        }
+        if(left is float lf && right is float rf)
+        {
+            return lf <= rf;
+        }
+        if(left is int lInt && right is float rFloat)
+        {
+            return lInt <= rFloat;
+        }
+        if(left is float lfFloat && right is int rInt)
+        {
+            return lfFloat <= rInt;
+        }
+        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+    }
+    private bool IsEqual(object? left, object? right)
+    {
+        if(left is int l && right is int r)
+        {
+            return l == r;
+        }
+        if(left is float lf && right is float rf)
+        {
+            return lf == rf;
+        }
+        if(left is int lInt && right is float rFloat)
+        {
+            return lInt == rFloat;
+        }
+        if(left is float lfFloat && right is int rInt)
+        {
+            return lfFloat == rInt;
+        }
+        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+    }
+    private bool IsNotEqual(object? left, object? right)
+    {
+        if(left is int l && right is int r)
+        {
+            return l != r;
+        }
+        if(left is float lf && right is float rf)
+        {
+            return lf != rf;
+        }
+        if(left is int lInt && right is float rFloat)
+        {
+            return lInt != rFloat;
+        }
+        if(left is float lfFloat && right is int rInt)
+        {
+            return lfFloat != rInt;
+        }
+        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+    }
+    private bool IsTrue(object? value)
+    {
+        if(value is bool b){
+            return b;
+        }
+        throw new Exception("GRUND STUPID THINKS THIS IS BOOL BUT IS NOT");
+    }
+    public bool IsFalse(object? value) => !IsTrue(value);
 }
