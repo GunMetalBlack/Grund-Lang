@@ -19,3 +19,16 @@ WHILE jack < 7:
     WRITE(jack);
 END
 i = jack;
+
+
+
+file = @(asdasd):
+asdajsd
+asdkahsdkajhsd
+kasdkahsdkj
+END
+
+
+FUNC file():
+
+END

@@ -18,9 +18,13 @@ assignment: IDENTIFIER '='  expression;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
+functionDefinition: FUNC IDENTIFIER '(' (expression (',' expression)*)? ')' block;
+FUNC: 'FUNC';
+
 expression
     : constant              #constantExpression
     | IDENTIFIER            #identifierExpression
+    | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression

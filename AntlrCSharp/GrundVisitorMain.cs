@@ -241,6 +241,21 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         throw new Exception("GRUND STUPID CANNOT Subtract}." + left.GetType() +" " + right.GetType());
     }
+    
+    //* Creating FUNCTION Definitions
+    public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
+    {
+        Func<object?, bool> condition = context.FUNC().GetText() == "FUNC" 
+        ? IsTrue 
+        : IsFalse
+        ;
+        if(condition(Visit(context.IDENTIFIER())))
+        {
+            Visit(context.block());
+        }
+        return null;
+    }
+    
     //* Function Logic calls Like If Statements and WHile loops
     public override object? VisitWhileBlock([NotNull] GrundParser.WhileBlockContext context)
     {

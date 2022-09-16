@@ -80,6 +80,12 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunctionCall([NotNull] GrundParser.FunctionCallContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.functionDefinition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>parenthesizedExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
@@ -107,6 +113,13 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIdentifierExpression([NotNull] GrundParser.IdentifierExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>functionDefinitionExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunctionDefinitionExpression([NotNull] GrundParser.FunctionDefinitionExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>functionCallExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
