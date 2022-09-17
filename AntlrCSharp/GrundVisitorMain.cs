@@ -1,9 +1,23 @@
 
 using Antlr4.Runtime.Misc;
 
+public struct GrundStackFrame {
+    string name;
+    Dictionary<string, object?> variables {get;}
+    bool inherit = false;
+
+    public GrundStackFrame(string name, bool inherit = false) {
+        this.name = name;
+        variables = new();
+        this.inherit = inherit;
+    }
+
+}
+
 public class GrundVisitorMain:GrundBaseVisitor<object?>
 {
-    private Dictionary<string, object?> Variables {get;} = new();
+
+    private Stack<GrundStackFrame> StackFrames {get;} = new();
     private List<string> ImmutableVariables {get;} = new();
 
     public GrundVisitorMain()
@@ -14,6 +28,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         //FUNK NAMES BUILT IN
         var FUNC_ID_WRITE = "GF_WRITE";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
+        StackFrames.Push(new GrundStackFrame("global"));
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
         Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
         //** FunctionCall
