@@ -16,6 +16,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
         Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
+        //** FunctionCall
         Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(GF_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE); 
     }
 
@@ -244,14 +245,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //* Creating FUNCTION Definitions
     public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
-        Func<object?, bool> condition = context.FUNC().GetText() == "FUNC" 
-        ? IsTrue 
-        : IsFalse
-        ;
-        if(condition(Visit(context.IDENTIFIER())))
-        {
-            Visit(context.block());
-        }
+        Visit(context.block());
         return null;
     }
     

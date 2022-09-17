@@ -20,5 +20,7 @@ WHILE jack < 7:
     jack = jack + 1;
     GF_WRITE(jack);
 END
-
+FUNK add():
+    GF_WRITE("ADD");
+END
 i = jack;

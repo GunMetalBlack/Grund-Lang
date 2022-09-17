@@ -2,7 +2,7 @@ grammar Grund;
 
 program: line* EOF;
 
-line: statement | ifBlock | whileBlock; 
+line: statement | ifBlock | whileBlock | functionDefinition; 
 
 statement: (assignment | functionCall)';';
 
@@ -19,7 +19,7 @@ assignment: IDENTIFIER '='  expression;
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
 functionDefinition: FUNC IDENTIFIER '(' (expression (',' expression)*)? ')' block;
-FUNC: 'FUNC';
+FUNC: 'FUNK';
 
 expression
     : constant              #constantExpression
@@ -52,6 +52,7 @@ NULL: 'NULL';
 
 block: ':' line* 'END';
 
-WS : [ \t\r\n]+ -> skip ;
+WS : [ \t\r\n]+ -> skip;
+LINE_COMMENT:'//' ~[\r\n]* -> skip;
 
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]*;
