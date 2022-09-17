@@ -19,7 +19,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
 
     private Stack<GrundStackFrame> StackFrames {get;} = new();
     private List<string> ImmutableVariables {get;} = new();
-
+    private Dictionary<string, object?> Variables {get;} = new();
     public GrundVisitorMain()
     {   
         //Math
@@ -114,81 +114,19 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var op = context.multOP().GetText();
         if(op == "*")
         {
-           return Mul(left, right);
+           return SlanderLibrary.Mul(left, right);
         }else if(op == "/")
         {
-            return Div(left, right);
+            return SlanderLibrary.Div(left, right);
         }else if(op == "%")
         {
-            return Mod(left, right);
+            return SlanderLibrary.Mod(left, right);
         }
         else
         {
             throw new NotImplementedException();
         }        
     }
-
-    private object? Mul(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l*r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf*rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-           return lInt*rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat*rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT Multiply}." + left.GetType() +" " + right.GetType());
-    }
-    private object? Div(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l/r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf/rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-           return lInt/rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat/rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT Divide}." + left.GetType() +" " + right.GetType());
-    }
-    private object? Mod(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l%r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf%rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-           return lInt%rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat%rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT Find Mod}." + left.GetType() +" " + right.GetType());
-    }
-
     public override object? VisitAdditiveExpression(GrundParser.AdditiveExpressionContext context)
     {
         var left = Visit(context.expression(0));
@@ -197,73 +135,21 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var op = context.addOP().GetText();
         if(op == "+")
         {
-           return Add(left, right);
+           return SlanderLibrary.Add(left, right);
         }else if(op == "-")
         {
-            return Sub(left, right);
+            return SlanderLibrary.Sub(left, right);
         }else
         {
             throw new NotImplementedException();
         }
-    }
-    //* Adding for variables 
-    private object? Add(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l+r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf+rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-           return lInt+rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat+rInt;
-        }
-        if(left is string){
-            return $"{left}{right}";
-        }
-        if(right is string || right is string){
-            return $"{left}{right}";
-        }
-        throw new Exception("GRUND STUPID CANNOT ADD}." + left.GetType() +" " + right.GetType());
-    }
-        
-        //*Subtracting from the left and right arguments
-    private object? Sub(object? left, object? right)
-    
-    {
-        if(left is int l && right is int r)
-        {
-            return l-r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf-rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-           return lInt-rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat-rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT Subtract}." + left.GetType() +" " + right.GetType());
-    }
-    
+    }    
     //* Creating FUNCTION Definitions
     public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
         Visit(context.block());
         return null;
     }
-    
     //* Function Logic calls Like If Statements and WHile loops
     public override object? VisitWhileBlock([NotNull] GrundParser.WhileBlockContext context)
     {
@@ -279,7 +165,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
                 Visit(context.block());
             }while(condition(Visit(context.expression())));
         }
-        else
+        else if(context.elseIfBlock() != null)
         {
             Visit(context.elseIfBlock());
         }
@@ -289,16 +175,15 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //* IF Statements
     public override object? VisitIfBlock([NotNull] GrundParser.IfBlockContext context)
     {
-       Func<object?, bool> condition = context.IFBLOCK().GetText() == "WHILE" 
+       Func<object?, bool> condition = context.IFBLOCK().GetText() == "IF" 
         ? IsTrue 
         : IsFalse
-        ;
-
+        ;        
         if(condition(Visit(context.expression())))
         {
                 Visit(context.block());
         }
-        else
+        else if(context.elseIfBlock() != null)
         {
             Visit(context.elseIfBlock());
         }
@@ -313,150 +198,31 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
 
         if(op == "==")
         {
-            return IsEqual(left, right);
+            return SlanderLibrary.IsEqual(left, right);
         }
         if(op == "!=")
         {
-            return IsNotEqual(left, right);
+            return SlanderLibrary.IsNotEqual(left, right);
         }
         if(op == ">")
         {
-            return GreaterThan(left, right);
+            return SlanderLibrary.GreaterThan(left, right);
         }
         if(op == ">=")
         {
-            return GreaterThanOrEqual(left, right);
+            return SlanderLibrary.GreaterThanOrEqual(left, right);
         }
         if(op == "<")
         {
-            return LessThan(left, right);
+            return SlanderLibrary.LessThan(left, right);
         }
         if(op == "<=")
         {
-            return LessThanOrEqual(left, right);
+            return SlanderLibrary.LessThanOrEqual(left, right);
         }
         throw new NotImplementedException();
     }
-    private bool GreaterThanOrEqual(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l > r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf > rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-            return lInt > rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat > rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
-    }
-    private bool GreaterThan(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l >= r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf >= rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-            return lInt >= rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat >= rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
-    }
-    private bool LessThan(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l < r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf < rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-            return lInt < rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat < rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
-    }
-    private bool LessThanOrEqual(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l <= r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf <= rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-            return lInt <= rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat <= rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
-    }
-    private bool IsEqual(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l == r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf == rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-            return lInt == rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat == rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
-    }
-    private bool IsNotEqual(object? left, object? right)
-    {
-        if(left is int l && right is int r)
-        {
-            return l != r;
-        }
-        if(left is float lf && right is float rf)
-        {
-            return lf != rf;
-        }
-        if(left is int lInt && right is float rFloat)
-        {
-            return lInt != rFloat;
-        }
-        if(left is float lfFloat && right is int rInt)
-        {
-            return lfFloat != rInt;
-        }
-        throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
-    }
+
     private bool IsTrue(object? value)
     {
         if(value is bool b){

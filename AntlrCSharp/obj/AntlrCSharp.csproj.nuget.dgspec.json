@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "S:\\Libraries\\Documents\\coding\\Grund\\AntlrCSharp\\AntlrCSharp.csproj": {}
+    "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj": {}
   },
   "projects": {
-    "S:\\Libraries\\Documents\\coding\\Grund\\AntlrCSharp\\AntlrCSharp.csproj": {
+    "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "S:\\Libraries\\Documents\\coding\\Grund\\AntlrCSharp\\AntlrCSharp.csproj",
+        "projectUniqueName": "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj",
         "projectName": "AntlrCSharp",
-        "projectPath": "S:\\Libraries\\Documents\\coding\\Grund\\AntlrCSharp\\AntlrCSharp.csproj",
-        "packagesPath": "C:\\Users\\Jack\\.nuget\\packages\\",
-        "outputPath": "S:\\Libraries\\Documents\\coding\\Grund\\AntlrCSharp\\obj\\",
+        "projectPath": "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj",
+        "packagesPath": "C:\\Users\\Noah\\.nuget\\packages\\",
+        "outputPath": "E:\\coding\\test\\AntlrCSharp\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "S:\\System\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Jack\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Noah\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -55,7 +49,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -64,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -16,14 +16,12 @@ isworking = true;
 
 GF_WRITE(6 < 7);
 GF_WRITE(G_PI,"SHOW PI");
-WHILE jack < 7:
-    example = 420;
-    jack = jack + 1;
-    GF_WRITE(jack);
-END
 
 IF 6 < 3:
 GF_WRITE("Hello");
+END
+ELSE:
+GF_WRITE("WELP");
 END
 
 i = jack;
