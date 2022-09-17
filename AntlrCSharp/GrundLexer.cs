@@ -66,7 +66,7 @@ public partial class GrundLexer : Lexer {
 	private static readonly string[] _LiteralNames = {
 		null, "';'", "'IF'", "'ELSE'", "'='", "'('", "','", "')'", "'!'", "'*'", 
 		"'/'", "'%'", "'+'", "'-'", "'=='", "'!='", "'>'", "'<'", "'>='", "'<='", 
-		"':'", "'END'", null, "'FUNC'", null, null, null, null, null, "'NULL'"
+		"':'", "'END'", null, "'FUNK'", null, null, null, null, null, "'NULL'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
@@ -230,9 +230,9 @@ public partial class GrundLexer : Lexer {
 		'U', '\x2', '\x2', '\x82', 'w', '\x3', '\x2', '\x2', '\x2', '\x82', '|', 
 		'\x3', '\x2', '\x2', '\x2', '\x83', '.', '\x3', '\x2', '\x2', '\x2', '\x84', 
 		'\x85', '\a', 'H', '\x2', '\x2', '\x85', '\x86', '\a', 'W', '\x2', '\x2', 
-		'\x86', '\x87', '\a', 'P', '\x2', '\x2', '\x87', '\x88', '\a', '\x45', 
-		'\x2', '\x2', '\x88', '\x30', '\x3', '\x2', '\x2', '\x2', '\x89', '\x8A', 
-		'\a', '\x43', '\x2', '\x2', '\x8A', '\x8B', '\a', 'P', '\x2', '\x2', '\x8B', 
+		'\x86', '\x87', '\a', 'P', '\x2', '\x2', '\x87', '\x88', '\a', 'M', '\x2', 
+		'\x2', '\x88', '\x30', '\x3', '\x2', '\x2', '\x2', '\x89', '\x8A', '\a', 
+		'\x43', '\x2', '\x2', '\x8A', '\x8B', '\a', 'P', '\x2', '\x2', '\x8B', 
 		'\x92', '\a', '\x46', '\x2', '\x2', '\x8C', '\x8D', '\a', 'Q', '\x2', 
 		'\x2', '\x8D', '\x92', '\a', 'T', '\x2', '\x2', '\x8E', '\x8F', '\a', 
 		'Z', '\x2', '\x2', '\x8F', '\x90', '\a', 'Q', '\x2', '\x2', '\x90', '\x92', 

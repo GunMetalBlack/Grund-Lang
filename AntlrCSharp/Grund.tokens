@@ -51,5 +51,5 @@ IDENTIFIER=32
 '<='=19
 ':'=20
 'END'=21
-'FUNC'=23
+'FUNK'=23
 'NULL'=29

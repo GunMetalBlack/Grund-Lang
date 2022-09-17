@@ -245,14 +245,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //* Creating FUNCTION Definitions
     public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
-        Func<object?, bool> condition = context.FUNC().GetText() == "FUNC" 
-        ? IsTrue 
-        : IsFalse
-        ;
-        if(condition(Visit(context.IDENTIFIER())))
-        {
-            Visit(context.block());
-        }
+        Visit(context.block());
         return null;
     }
     
