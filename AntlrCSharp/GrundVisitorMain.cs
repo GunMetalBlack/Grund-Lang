@@ -7,14 +7,19 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     private List<string> ImmutableVariables {get;} = new();
 
     public GrundVisitorMain()
-    {
+    {   
+        //Math
+        var ID_PI = "G_PI";
+        var ID_E = "G_E";
+        //FUNK NAMES BUILT IN
+        var FUNC_ID_WRITE = "GF_WRITE";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
-        Variables["PI"] = Math.PI; ImmutableVariables.Add("PI");
-        Variables["E"] = Math.E; ImmutableVariables.Add("E");
-        Variables["WRITE"] = new Func<object?[], object?>(WRITE); ImmutableVariables.Add("WRITE"); 
+        Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
+        Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
+        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(GF_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE); 
     }
 
-    private object?[] WRITE(object?[] args)
+    private object?[] GF_WRITE(object?[] args)
     {
         foreach (var arg in args)
         {
@@ -46,13 +51,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         
         var varName = context.IDENTIFIER().GetText();
         var value = Visit(context.expression());
-        if(!ImmutableVariables.Contains(varName))
-        {
         Variables[varName] = value;
-        }else
-        {
-            throw new Exception("GRUND SAYS THE VARIABLE IS ALREADY A FUNCTION CHANGE NAME"+ " " + varName);
-        }
         return null;
     }
 
@@ -151,7 +150,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         {
             return lfFloat/rInt;
         }
-        throw new Exception("GRUND STUPID CANNOT Multiply}." + left.GetType() +" " + right.GetType());
+        throw new Exception("GRUND STUPID CANNOT Divide}." + left.GetType() +" " + right.GetType());
     }
     private object? Mod(object? left, object? right)
     {
