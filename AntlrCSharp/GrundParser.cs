@@ -39,7 +39,8 @@ public partial class GrundParser : Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, WHILE=22, FUNC=23, BOOL_OPERATOR=24, 
-		INTEGER=25, FLOAT=26, STRING=27, BOOL=28, NULL=29, WS=30, IDENTIFIER=31;
+		INTEGER=25, FLOAT=26, STRING=27, BOOL=28, NULL=29, WS=30, LINE_COMMENT=31, 
+		IDENTIFIER=32;
 	public const int
 		RULE_program = 0, RULE_line = 1, RULE_statement = 2, RULE_ifBlock = 3, 
 		RULE_elseIfBlock = 4, RULE_whileBlock = 5, RULE_assignment = 6, RULE_functionCall = 7, 
@@ -59,7 +60,8 @@ public partial class GrundParser : Parser {
 	private static readonly string[] _SymbolicNames = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, "WHILE", "FUNC", 
-		"BOOL_OPERATOR", "INTEGER", "FLOAT", "STRING", "BOOL", "NULL", "WS", "IDENTIFIER"
+		"BOOL_OPERATOR", "INTEGER", "FLOAT", "STRING", "BOOL", "NULL", "WS", "LINE_COMMENT", 
+		"IDENTIFIER"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -1273,7 +1275,7 @@ public partial class GrundParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '!', '\xA3', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\"', '\xA3', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
@@ -1343,9 +1345,9 @@ public partial class GrundParser : Parser {
 		'\x2', '\x46', 'G', '\a', '\x5', '\x2', '\x2', 'G', 'H', '\x5', '\n', 
 		'\x6', '\x2', 'H', 'J', '\x3', '\x2', '\x2', '\x2', 'I', '?', '\x3', '\x2', 
 		'\x2', '\x2', 'I', '\x43', '\x3', '\x2', '\x2', '\x2', 'J', '\r', '\x3', 
-		'\x2', '\x2', '\x2', 'K', 'L', '\a', '!', '\x2', '\x2', 'L', 'M', '\a', 
+		'\x2', '\x2', '\x2', 'K', 'L', '\a', '\"', '\x2', '\x2', 'L', 'M', '\a', 
 		'\x6', '\x2', '\x2', 'M', 'N', '\x5', '\x14', '\v', '\x2', 'N', '\xF', 
-		'\x3', '\x2', '\x2', '\x2', 'O', 'P', '\a', '!', '\x2', '\x2', 'P', 'Y', 
+		'\x3', '\x2', '\x2', '\x2', 'O', 'P', '\a', '\"', '\x2', '\x2', 'P', 'Y', 
 		'\a', '\a', '\x2', '\x2', 'Q', 'V', '\x5', '\x14', '\v', '\x2', 'R', 'S', 
 		'\a', '\b', '\x2', '\x2', 'S', 'U', '\x5', '\x14', '\v', '\x2', 'T', 'R', 
 		'\x3', '\x2', '\x2', '\x2', 'U', 'X', '\x3', '\x2', '\x2', '\x2', 'V', 
@@ -1354,7 +1356,7 @@ public partial class GrundParser : Parser {
 		'Y', 'Q', '\x3', '\x2', '\x2', '\x2', 'Y', 'Z', '\x3', '\x2', '\x2', '\x2', 
 		'Z', '[', '\x3', '\x2', '\x2', '\x2', '[', '\\', '\a', '\t', '\x2', '\x2', 
 		'\\', '\x11', '\x3', '\x2', '\x2', '\x2', ']', '^', '\a', '\x19', '\x2', 
-		'\x2', '^', '_', '\a', '!', '\x2', '\x2', '_', 'h', '\a', '\a', '\x2', 
+		'\x2', '^', '_', '\a', '\"', '\x2', '\x2', '_', 'h', '\a', '\a', '\x2', 
 		'\x2', '`', '\x65', '\x5', '\x14', '\v', '\x2', '\x61', '\x62', '\a', 
 		'\b', '\x2', '\x2', '\x62', '\x64', '\x5', '\x14', '\v', '\x2', '\x63', 
 		'\x61', '\x3', '\x2', '\x2', '\x2', '\x64', 'g', '\x3', '\x2', '\x2', 
@@ -1364,7 +1366,7 @@ public partial class GrundParser : Parser {
 		'i', '\x3', '\x2', '\x2', '\x2', 'i', 'j', '\x3', '\x2', '\x2', '\x2', 
 		'j', 'k', '\a', '\t', '\x2', '\x2', 'k', 'l', '\x5', ' ', '\x11', '\x2', 
 		'l', '\x13', '\x3', '\x2', '\x2', '\x2', 'm', 'n', '\b', '\v', '\x1', 
-		'\x2', 'n', 'y', '\x5', '\x1E', '\x10', '\x2', 'o', 'y', '\a', '!', '\x2', 
+		'\x2', 'n', 'y', '\x5', '\x1E', '\x10', '\x2', 'o', 'y', '\a', '\"', '\x2', 
 		'\x2', 'p', 'y', '\x5', '\x12', '\n', '\x2', 'q', 'y', '\x5', '\x10', 
 		'\t', '\x2', 'r', 's', '\a', '\a', '\x2', '\x2', 's', 't', '\x5', '\x14', 
 		'\v', '\x2', 't', 'u', '\a', '\t', '\x2', '\x2', 'u', 'y', '\x3', '\x2', 

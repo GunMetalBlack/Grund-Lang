@@ -16,6 +16,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
         Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
+        //** FunctionCall
         Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(GF_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE); 
     }
 
