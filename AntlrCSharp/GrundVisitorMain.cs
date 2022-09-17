@@ -2,9 +2,9 @@
 using Antlr4.Runtime.Misc;
 
 public struct GrundStackFrame {
-    string name;
-    Dictionary<string, object?> variables {get;}
-    bool inherit = false;
+    public string name;
+    public Dictionary<string, object?> variables {get;}
+    public bool inherit = false;
 
     public GrundStackFrame(string name, bool inherit = false) {
         this.name = name;
