@@ -271,6 +271,24 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         return null;
     }
 
+    //* IF Statements
+    public override object? VisitIfBlock([NotNull] GrundParser.IfBlockContext context)
+    {
+       Func<object?, bool> condition = context.IFBLOCK().GetText() == "WHILE" 
+        ? IsTrue 
+        : IsFalse
+        ;
+
+        if(condition(Visit(context.expression())))
+        {
+                Visit(context.block());
+        }
+        else
+        {
+            Visit(context.elseIfBlock());
+        }
+        return null;
+    }
     public override object? VisitComparisonExpression([NotNull] GrundParser.ComparisonExpressionContext context)
     {
         var left = Visit(context.expression(0));

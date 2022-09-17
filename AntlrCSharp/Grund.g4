@@ -6,9 +6,11 @@ line: statement | ifBlock | whileBlock | functionDefinition;
 
 statement: (assignment | functionCall)';';
 
-ifBlock: 'IF'  expression  block ('ELSE' elseIfBlock);
+ifBlock: IFBLOCK  expression  block | IFBLOCK  expression  block ('ELSE' elseIfBlock);
 
 elseIfBlock: block | ifBlock;
+
+IFBLOCK: 'IF';
  
 whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock);
 
