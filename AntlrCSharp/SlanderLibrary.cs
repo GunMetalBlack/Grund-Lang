@@ -24,7 +24,7 @@ public static object?[] GF_LIST_APPEND(object?[] args, Dictionary<string,object?
         var keyLookUp = args[0] as string;
         if(args[1] is string){typeToStore = args[1] as string;}else{typeToStore = args[1];} 
         List<object?>? list = Variables[keyLookUp] as List<object?>;
-        list.Append(typeToStore);
+        list.Add(typeToStore);
     }else
     {
         throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR TO MANY ARGUMENTS");
@@ -71,6 +71,8 @@ public static object? GF_LIST_LOOKUP(object?[] args, Dictionary<string,object?> 
         int indexToFind = (int)(typeToLookup as int?);
         List<object?>? list = Variables[keyLookUp] as List<object?>;
         if(list == null){throw new Exception("GRUND: YOU FOOL THE LIST YOUR LOOKING FOR IS NULL");}
+        Console.WriteLine(indexToFind);
+        Console.WriteLine(list.Count);
         if(indexToFind < list.Count){
             return list[indexToFind];
         }

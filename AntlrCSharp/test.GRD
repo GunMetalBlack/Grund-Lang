@@ -20,9 +20,9 @@ GF_WRITE(G_PI,"SHOW PI");
 // Wow that is the best thing ever!!!!
 GF_LIST_CREATE("TOOLS");
 
-GF_LIST_APPEND("TOOLS",1);
+GF_LIST_APPEND("TOOLS","PICKAXE");
 
-GF_LIST_LOOKUP("TOOLS",0);
+GF_WRITE(GF_LIST_LOOKUP("TOOLS",0));
 IF 6 < 3:
 GF_WRITE("Hello");
 END
