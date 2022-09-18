@@ -1,6 +1,6 @@
 
 using Antlr4.Runtime.Misc;
-
+using Antlr4.Runtime;
 public struct GrundStackFrame {
     public string name;
     public Dictionary<string, object?> variables {get;}
@@ -27,22 +27,25 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var ID_E = "G_E";
         //FUNK NAMES BUILT IN
         var FUNC_ID_WRITE = "GF_WRITE";
+        //* List Functions
+        var FUNC_ID_GF_LISTCREATE = "GF_LIST_CREATE";
+        var FUNC_ID_GF_LISTADD = "GF_LIST_APPEND";
+        var FUNC_ID_GF_LISTREPLACE = "GF_LIST_REPLACE";
+        var FUNC_ID_GF_LISTREMOVE = "GF_LIST_REMOVE";
+        var FUNC_ID_GF_LISTLOOKUP = "GF_LIST_LOOKUP";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("global"));
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
         Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
         //** FunctionCall
-        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(GF_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE); 
+        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE); 
+        Variables[FUNC_ID_GF_LISTCREATE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_CREATE(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTCREATE);
+        Variables[FUNC_ID_GF_LISTADD] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_APPEND(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTADD);
+        Variables[FUNC_ID_GF_LISTREMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTREMOVE);
+        Variables[FUNC_ID_GF_LISTREPLACE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REPLACE(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTREPLACE);
+        Variables[FUNC_ID_GF_LISTLOOKUP] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_LOOKUP(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTLOOKUP);
     }
 
-    private object?[] GF_WRITE(object?[] args)
-    {
-        foreach (var arg in args)
-        {
-            Console.WriteLine(arg);
-        }
-        return null;
-    }
 
     public override object? VisitFunctionCall(GrundParser.FunctionCallContext context)
     {
@@ -55,7 +58,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
 
         if(Variables[name] is not Func<object?[], object?> func)
-            throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION" + "THIS IS NOT A FUNCTION " + name);
+            throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION" + " THIS IS NOT A FUNCTION " + name);
             
         
          return func(args);
@@ -147,7 +150,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //* Creating FUNCTION Definitions
     public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
-        Visit(context.block());
+        
         return null;
     }
     //* Function Logic calls Like If Statements and WHile loops
