@@ -33,6 +33,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var FUNC_ID_GF_LISTREPLACE = "GF_LIST_REPLACE";
         var FUNC_ID_GF_LISTREMOVE = "GF_LIST_REMOVE";
         var FUNC_ID_GF_LISTLOOKUP = "GF_LIST_LOOKUP";
+        var FUNC_ID_GF_WRITE_INPUT = "GF_WRITE_INPUT";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("global"));
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
@@ -44,6 +45,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         Variables[FUNC_ID_GF_LISTREMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTREMOVE);
         Variables[FUNC_ID_GF_LISTREPLACE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REPLACE(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTREPLACE);
         Variables[FUNC_ID_GF_LISTLOOKUP] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_LOOKUP(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTLOOKUP);
+        Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INPUT); ImmutableVariables.Add(FUNC_ID_GF_WRITE_INPUT);
     }
 
 

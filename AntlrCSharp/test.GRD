@@ -30,4 +30,9 @@ ELSE:
 GF_WRITE("WELP");
 END
 
+
+GF_WRITE("Hows Your Name");
+Input = GF_WRITE_INPUT();
+
+GF_WRITE("Thats Great", Input);
 i = jack;

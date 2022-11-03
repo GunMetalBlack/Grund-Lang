@@ -5,9 +5,16 @@ public static object?[] GF_WRITE(object?[] args)
 {
     foreach (var arg in args)
     {
-        Console.WriteLine(arg);
+        Console.Write(arg);
     }
+    Console.WriteLine();
     return null;
+}
+public static object? GF_WRITE_INPUT(object?[] args)
+{
+    string toReturn = Console.ReadLine();
+    Object? obj = toReturn;
+    return obj.ToString();
 }
 public static object?[] GF_LIST_CREATE(object[]? args, Dictionary<string,object?> Variables)
 {   
