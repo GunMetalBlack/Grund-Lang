@@ -11,27 +11,30 @@ mod = 3 % 2;
 i = jack + float;
 
 Name = "JACK MY MIND IS WORKING";
-
+GF_WRITE("Before Func");
 isworking = true;
+FUNK TestHost():
+    GF_WRITE(6 < 7);
+    GF_WRITE(G_PI,"SHOW PI");
 
-GF_WRITE(6 < 7);
-GF_WRITE(G_PI,"SHOW PI");
+    // Wow that is the best thing ever!!!!
+    GF_LIST_CREATE("TOOLS");
 
-// Wow that is the best thing ever!!!!
-GF_LIST_CREATE("TOOLS");
+    GF_LIST_APPEND("TOOLS","PICKAXE");
 
-GF_LIST_APPEND("TOOLS","PICKAXE");
+    GF_WRITE(GF_LIST_LOOKUP("TOOLS",0));
+    IF 6 < 3:
+    GF_WRITE("Hello");
+    END
+    ELSE:
+    GF_WRITE("WELP");
+    END
 
-GF_WRITE(GF_LIST_LOOKUP("TOOLS",0));
-IF 6 < 3:
-GF_WRITE("Hello");
+    GF_WRITE("Hows Your Name");
+    Input = GF_WRITE_INPUT();
+
+    GF_WRITE("Thats Great", Input);
+    i = jack;
 END
-ELSE:
-GF_WRITE("WELP");
-END
 
-GF_WRITE("Hows Your Name");
-Input = GF_WRITE_INPUT();
-
-GF_WRITE("Thats Great", Input);
-i = jack;
+TestHost();

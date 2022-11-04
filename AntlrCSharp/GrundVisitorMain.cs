@@ -20,6 +20,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     private Stack<GrundStackFrame> StackFrames {get;} = new();
     private List<string> ImmutableVariables {get;} = new();
     private Dictionary<string, object?> Variables {get;} = new();
+    private Dictionary<string, GrundParser.BlockContext> FunctionIDs {get;} = new();
     public GrundVisitorMain()
     {   
         //Math
@@ -53,17 +54,22 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     {
         var name = context.IDENTIFIER().GetText();
         var args = context.expression().Select(Visit).ToArray();
-
-        if (!Variables.ContainsKey(name))
+        if (!Variables.ContainsKey(name) && !FunctionIDs.ContainsKey(name))
         {
             throw new Exception("GRUND SAYS THE FUNCTION IS NOT DEFINED TAKE THE L"+ "The Function name is " + name);
         }
-
+        if(FunctionIDs.ContainsKey(name))
+        {
+         Visit(FunctionIDs[name]);
+        return null;
+        }
         if(Variables[name] is not Func<object?[], object?> func)
+        {
             throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION" + " THIS IS NOT A FUNCTION " + name);
-            
-        
-         return func(args);
+        }else
+        {
+             return func(args);
+        }
     }
 
     //** Below is the implementation if Parsing Variables
@@ -152,7 +158,10 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //* Creating FUNCTION Definitions
     public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
-        
+        if(!FunctionIDs.ContainsKey(context.IDENTIFIER().GetText()))
+        {
+        FunctionIDs.Add(context.IDENTIFIER().GetText(),context.block());
+        }
         return null;
     }
     //* Function Logic calls Like If Statements and WHile loops

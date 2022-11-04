@@ -1,0 +1,11 @@
+FUNK TestHost():
+GF_WRITE("Sauce");
+x = 1 + 3;
+GF_WRITE(x);
+    IF 6 < 3:
+    GF_WRITE("Hello");
+    END
+
+END
+
+TestHost();

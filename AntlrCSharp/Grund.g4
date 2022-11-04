@@ -20,8 +20,9 @@ assignment: IDENTIFIER '='  expression;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
-functionDefinition: FUNC IDENTIFIER '(' (expression (',' expression)*)? ')' block;
 FUNC: 'FUNK';
+functionDefinition: FUNC IDENTIFIER '(' (expression (',' expression)*)? ')' block;
+
 
 expression
     : constant              #constantExpression
