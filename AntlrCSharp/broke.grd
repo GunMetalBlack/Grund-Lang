@@ -1,8 +1,3 @@
-FUNK create2DArray(a, b):
-    GF_WRITE(a);
-    GF_WRITE(b);
-    _return = a + b;
+IF(x == NULL):
+GF_WRITE("TEst");
 END
-
-create2DArray("1","2");
-GF_WRITE(_return);

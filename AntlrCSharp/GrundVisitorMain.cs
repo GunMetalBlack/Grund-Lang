@@ -70,7 +70,12 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             }
             Visit(FunctionIDs[name].block());
             StackFrames.Pop();
+            if(Variables.ContainsKey("_return")){
             return Variables["_return"];
+            }else
+            {
+                return null;
+            }
             throw new Exception("GRUND CANNOT FIND _return IN THE FUNCTION PLEASE RETURN");
         }
         if(Variables[name] is not Func<object?[], object?> func)
