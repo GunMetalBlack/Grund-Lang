@@ -92,6 +92,13 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>collectionsExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCollectionsExpression([NotNull] GrundParser.CollectionsExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>parenthesizedExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
@@ -191,6 +198,24 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitConstant([NotNull] GrundParser.ConstantContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.collections"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCollections([NotNull] GrundParser.CollectionsContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitList([NotNull] GrundParser.ListContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.dictionary"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDictionary([NotNull] GrundParser.DictionaryContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.block"/>.
 	/// </summary>

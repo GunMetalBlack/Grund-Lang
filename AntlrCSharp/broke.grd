@@ -1,0 +1,8 @@
+FUNK create2DArray(a, b):
+    GF_WRITE(a);
+    GF_WRITE(b);
+    _return = a + b;
+END
+
+create2DArray("1","2");
+GF_WRITE(_return);

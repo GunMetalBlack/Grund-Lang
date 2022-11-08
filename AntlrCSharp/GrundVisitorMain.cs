@@ -62,17 +62,16 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             StackFrames.Push(new GrundStackFrame(name));
             if(FunctionIDs[name].paramater() != null && context.expression() != null)
             {
+                if(FunctionIDs[name].paramater().Count() != args.Count()){throw new Exception("GRUND SCREAMS, EXPECTED " + FunctionIDs[name].paramater().Count().ToString() + " PARAMETERS BUT HAD "+ args.Count().ToString() + " VALUES STUPID!");}
                 for(int i = 0; i < FunctionIDs[name].paramater().Count(); i++)
                 {
-                    for(int j = 0; j < args.Count(); j++)
-                    {
-                        GetVariablesInCurrentStackFrame().Add(FunctionIDs[name].paramater(i).GetText(),args[j]);
-                    }
+                        GetVariablesInCurrentStackFrame()[(FunctionIDs[name].paramater(i).GetText())] = args[i]; 
                 }
             }
             Visit(FunctionIDs[name].block());
             StackFrames.Pop();
             return Variables["_return"];
+            throw new Exception("GRUND CANNOT FIND _return IN THE FUNCTION PLEASE RETURN");
         }
         if(Variables[name] is not Func<object?[], object?> func)
         {
@@ -95,7 +94,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         else
         {
-        GetVariablesInCurrentStackFrame().Add(varName, value);
+         GetVariablesInCurrentStackFrame()[varName] = value;
         }
         return null;
     }

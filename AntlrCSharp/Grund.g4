@@ -28,6 +28,7 @@ functionDefinition: FUNC IDENTIFIER '(' (paramater (',' paramater)*)? ')' block;
 
 expression
     : constant              #constantExpression
+    | collections           #collectionsExpression
     | IDENTIFIER            #identifierExpression
     | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
@@ -47,7 +48,9 @@ boolOP: BOOL_OPERATOR;
 BOOL_OPERATOR:'AND'|'OR'|'XOR';
 
 constant: INTEGER | FLOAT | STRING | BOOL | NULL;
-
+collections: list | dictionary;
+list:'[' (constant (',' constant)*)? ']';
+dictionary: '{' (constant (',' constant)*)? '}';
 INTEGER:[0-9]+;
 FLOAT:[0-9]+ '.' [0-9]+;
 STRING: ('"' ~'"'* '"')|('\'' ~'\''* '\'');
