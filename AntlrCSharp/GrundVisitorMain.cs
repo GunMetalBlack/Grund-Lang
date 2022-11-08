@@ -6,10 +6,9 @@ public struct GrundStackFrame {
     public Dictionary<string, object?> variables {get;}
     public bool inherit = false;
 
-    public GrundStackFrame(string name, bool inherit = false) {
+    public GrundStackFrame(string name) {
         this.name = name;
-        variables = new();
-        this.inherit = inherit;
+        variables = new(); 
     }
 
 }
@@ -20,7 +19,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     private Stack<GrundStackFrame> StackFrames {get;} = new();
     private List<string> ImmutableVariables {get;} = new();
     private Dictionary<string, object?> Variables {get;} = new();
-    private Dictionary<string, GrundParser.BlockContext> FunctionIDs {get;} = new();
+    private Dictionary<string, GrundParser.FunctionDefinitionContext> FunctionIDs {get;} = new();
     public GrundVisitorMain()
     {   
         //Math
@@ -36,7 +35,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var FUNC_ID_GF_LISTLOOKUP = "GF_LIST_LOOKUP";
         var FUNC_ID_GF_WRITE_INPUT = "GF_WRITE_INPUT";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
-        StackFrames.Push(new GrundStackFrame("global"));
+        StackFrames.Push(new GrundStackFrame("base"));
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
         Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
         //** FunctionCall
@@ -60,8 +59,20 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         if(FunctionIDs.ContainsKey(name))
         {
-         Visit(FunctionIDs[name]);
-        return null;
+            StackFrames.Push(new GrundStackFrame(name));
+            if(FunctionIDs[name].paramater() != null && context.expression() != null)
+            {
+                for(int i = 0; i < FunctionIDs[name].paramater().Count(); i++)
+                {
+                    for(int j = 0; j < args.Count(); j++)
+                    {
+                        GetVariablesInCurrentStackFrame().Add(FunctionIDs[name].paramater(i).GetText(),args[j]);
+                    }
+                }
+            }
+            Visit(FunctionIDs[name].block());
+            StackFrames.Pop();
+            return Variables["_return"];
         }
         if(Variables[name] is not Func<object?[], object?> func)
         {
@@ -78,19 +89,36 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         
         var varName = context.IDENTIFIER().GetText();
         var value = Visit(context.expression());
+        if(varName[0] == '_')
+        {
         Variables[varName] = value;
+        }
+        else
+        {
+        GetVariablesInCurrentStackFrame().Add(varName, value);
+        }
         return null;
     }
 
+    public Dictionary<string, object? > GetVariablesInCurrentStackFrame()
+    {
+        return StackFrames.First().variables;
+    }
     public override object VisitIdentifierExpression([NotNull] GrundParser.IdentifierExpressionContext context)
     {
         var varName = context.IDENTIFIER().GetText();
 
-        if(!Variables.ContainsKey(varName))
+        if(GetVariablesInCurrentStackFrame().ContainsKey(varName))
         {
-            throw new Exception(" GRUND OGGA No variable defined for " + varName);
+            return GetVariablesInCurrentStackFrame()[varName];
         }
-        return Variables[varName]; 
+        else if(Variables.ContainsKey(varName))
+        {
+            return Variables[varName];
+        }
+
+        throw new Exception(" GRUND OGGA No variable defined for " + varName);
+
     }
     //**Converts variable string to variable type 
     public override object? VisitConstant([NotNull] GrundParser.ConstantContext context)
@@ -160,7 +188,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     {
             if(!FunctionIDs.ContainsKey(context.IDENTIFIER().GetText()))
             {
-                 FunctionIDs.Add(context.IDENTIFIER().GetText(),context.block());
+                 FunctionIDs.Add(context.IDENTIFIER().GetText(),context);
             }
             return null;
         }

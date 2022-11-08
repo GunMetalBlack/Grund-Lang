@@ -80,6 +80,12 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunctionCall([NotNull] GrundParser.FunctionCallContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.paramater"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParamater([NotNull] GrundParser.ParamaterContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.functionDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

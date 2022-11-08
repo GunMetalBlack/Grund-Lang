@@ -2,7 +2,7 @@ grammar Grund;
 
 program: line* EOF;
 
-line: statement | ifBlock | whileBlock | functionDefinition; 
+line: statement | ifBlock | whileBlock | functionDefinition | functionCall | elseIfBlock | assignment; 
 
 statement: (assignment | functionCall)';';
 
@@ -21,7 +21,9 @@ assignment: IDENTIFIER '='  expression;
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
 FUNC: 'FUNK';
-functionDefinition: FUNC IDENTIFIER '(' (assignment (',' assignment)*)? ')' block;
+paramater: IDENTIFIER;
+
+functionDefinition: FUNC IDENTIFIER '(' (paramater (',' paramater)*)? ')' block;
 
 
 expression
