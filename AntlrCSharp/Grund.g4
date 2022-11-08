@@ -21,7 +21,7 @@ assignment: IDENTIFIER '='  expression;
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
 FUNC: 'FUNK';
-functionDefinition: FUNC IDENTIFIER '(' (expression (',' expression)*)? ')' block;
+functionDefinition: FUNC IDENTIFIER '(' (assignment (',' assignment)*)? ')' block;
 
 
 expression

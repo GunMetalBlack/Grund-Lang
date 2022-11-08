@@ -615,11 +615,11 @@ public partial class GrundParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
-			return GetRuleContexts<ExpressionContext>();
+		[System.Diagnostics.DebuggerNonUserCode] public AssignmentContext[] assignment() {
+			return GetRuleContexts<AssignmentContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
-			return GetRuleContext<ExpressionContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public AssignmentContext assignment(int i) {
+			return GetRuleContext<AssignmentContext>(i);
 		}
 		public FunctionDefinitionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -651,10 +651,10 @@ public partial class GrundParser : Parser {
 			State = 109;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__6) | (1L << FUNC) | (1L << INTEGER) | (1L << FLOAT) | (1L << STRING) | (1L << BOOL) | (1L << NULL) | (1L << IDENTIFIER))) != 0)) {
+			if (_la==IDENTIFIER) {
 				{
 				State = 101;
-				expression(0);
+				assignment();
 				State = 106;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
@@ -664,7 +664,7 @@ public partial class GrundParser : Parser {
 					State = 102;
 					Match(T__4);
 					State = 103;
-					expression(0);
+					assignment();
 					}
 					}
 					State = 108;
@@ -1392,8 +1392,8 @@ public partial class GrundParser : Parser {
 		'\x63', '\a', '\b', '\x2', '\x2', '\x63', '\x11', '\x3', '\x2', '\x2', 
 		'\x2', '\x64', '\x65', '\a', '\x19', '\x2', '\x2', '\x65', '\x66', '\a', 
 		'\"', '\x2', '\x2', '\x66', 'o', '\a', '\x6', '\x2', '\x2', 'g', 'l', 
-		'\x5', '\x14', '\v', '\x2', 'h', 'i', '\a', '\a', '\x2', '\x2', 'i', 'k', 
-		'\x5', '\x14', '\v', '\x2', 'j', 'h', '\x3', '\x2', '\x2', '\x2', 'k', 
+		'\x5', '\xE', '\b', '\x2', 'h', 'i', '\a', '\a', '\x2', '\x2', 'i', 'k', 
+		'\x5', '\xE', '\b', '\x2', 'j', 'h', '\x3', '\x2', '\x2', '\x2', 'k', 
 		'n', '\x3', '\x2', '\x2', '\x2', 'l', 'j', '\x3', '\x2', '\x2', '\x2', 
 		'l', 'm', '\x3', '\x2', '\x2', '\x2', 'm', 'p', '\x3', '\x2', '\x2', '\x2', 
 		'n', 'l', '\x3', '\x2', '\x2', '\x2', 'o', 'g', '\x3', '\x2', '\x2', '\x2', 

@@ -158,12 +158,12 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //* Creating FUNCTION Definitions
     public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
-        if(!FunctionIDs.ContainsKey(context.IDENTIFIER().GetText()))
-        {
-        FunctionIDs.Add(context.IDENTIFIER().GetText(),context.block());
+            if(!FunctionIDs.ContainsKey(context.IDENTIFIER().GetText()))
+            {
+                 FunctionIDs.Add(context.IDENTIFIER().GetText(),context.block());
+            }
+            return null;
         }
-        return null;
-    }
     //* Function Logic calls Like If Statements and WHile loops
     public override object? VisitWhileBlock([NotNull] GrundParser.WhileBlockContext context)
     {
