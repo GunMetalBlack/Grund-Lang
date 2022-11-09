@@ -251,6 +251,10 @@ public static object? GF_LIST_LOOKUP(object?[] args, Dictionary<string,object?> 
         {
             return lfFloat == rInt;
         }
+        if(left is string lfString && right is string rString)
+        {
+            return lfString == rString;
+        }
         throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
     }
      public static bool IsNotEqual(object? left, object? right)
@@ -270,6 +274,10 @@ public static object? GF_LIST_LOOKUP(object?[] args, Dictionary<string,object?> 
         if(left is float lfFloat && right is int rInt)
         {
             return lfFloat != rInt;
+        }
+        if(left is string lfString && right is string rString)
+        {
+            return lfString != rString;
         }
         throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
     }
