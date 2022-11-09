@@ -1,3 +1,7 @@
-IF(x == NULL):
-GF_WRITE("TEst");
+x = 0;
+y = 17;    
+
+WHILE x < y:
+ x = x + 1;
+ GF_WRITE("X IS " + x);
 END

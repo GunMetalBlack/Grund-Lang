@@ -10,11 +10,59 @@ public static object?[] GF_WRITE(object?[] args)
     Console.WriteLine();
     return null;
 }
+public static object?[] GF_WRITE_INLINE(object?[] args)
+{
+    foreach (var arg in args)
+    {
+        Console.Write(arg);
+    }
+    return null;
+}
 public static object? GF_WRITE_INPUT(object?[] args)
 {
     string toReturn = Console.ReadLine();
     Object? obj = toReturn;
     return obj.ToString();
+}
+public static object? GF_INDEX_CHAR(object?[] args)
+{
+    if(args[0] != null && args[1] != null)
+    {
+       string stringToSearch = args[0].ToString();
+       int indexToReturn = int.Parse(args[1].ToString());
+       if(!(stringToSearch.Length < indexToReturn))
+       {
+       return stringToSearch[indexToReturn];
+       }else
+       {
+        throw new Exception("GRUND CRIES LEARN TO COUNT HIPPY OUT OF RANGE STRING INDEX " + indexToReturn);
+       }
+    }else
+    {
+        throw new Exception("GRUND SAYS ERROR IN ARGUMENTS NULL REFERENCE *SPITS IN FACE*");
+    }
+}
+public static object? GF_PARSER(object?[] args)
+{
+    if(args[0] != null && args[1] != null){
+        string ParseType = args[0].ToString();
+         object toReturn = args[1]; 
+        if (ParseType == "INT")
+        {
+            toReturn = int.Parse(toReturn.ToString()); 
+            return toReturn; 
+        }else if (ParseType == "FLOAT")
+        {
+            toReturn = float.Parse(toReturn.ToString()); 
+            return toReturn; 
+        }else
+        {
+            throw new NotImplementedException();
+        }   
+    }else
+    {
+        throw new Exception("GRUND SAYS ERROR IN ARGUMENTS NULL REFERENCE *SPITS IN FACE*");
+    }
 }
 public static object?[] GF_LIST_CREATE(object[]? args, Dictionary<string,object?> Variables)
 {   
@@ -78,8 +126,6 @@ public static object? GF_LIST_LOOKUP(object?[] args, Dictionary<string,object?> 
         int indexToFind = (int)(typeToLookup as int?);
         List<object?>? list = Variables[keyLookUp] as List<object?>;
         if(list == null){throw new Exception("GRUND: YOU FOOL THE LIST YOUR LOOKING FOR IS NULL");}
-        Console.WriteLine(indexToFind);
-        Console.WriteLine(list.Count);
         if(indexToFind < list.Count){
             return list[indexToFind];
         }
