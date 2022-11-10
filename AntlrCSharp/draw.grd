@@ -1,3 +1,4 @@
-IF 6 == 1 OR 2 == 2:
-GF_WRITE("SUS");
+x = GF_WRITE_INPUT("INT");
+IF x < 5 AND 1 < x:
+    GF_WRITE("SUS");
 END

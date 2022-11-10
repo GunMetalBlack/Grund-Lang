@@ -227,6 +227,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //* IF Statements
     public override object? VisitIfBlock([NotNull] GrundParser.IfBlockContext context)
     {
+        
        Func<object?, bool> condition = context.IFBLOCK().GetText() == "IF" 
         ? IsTrue 
         : IsFalse
@@ -274,7 +275,14 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         throw new NotImplementedException();
     }
-
+    public override object VisitBooleanExpression([NotNull] GrundParser.BooleanExpressionContext context)
+    {
+        var left = Visit(context.expression(0));
+        var right = Visit(context.expression(1));
+        var op = context.boolOP().GetText();
+        
+        return true;
+    }
     private bool IsTrue(object? value)
     {
         if(value is bool b){

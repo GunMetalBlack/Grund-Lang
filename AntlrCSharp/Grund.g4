@@ -45,7 +45,7 @@ addOP:'+'|'-';
 compareOP:'=='|'!='|'>'|'<'|'>='|'<=';
 boolOP: BOOL_OPERATOR;
 
-BOOL_OPERATOR:'AND'|'OR'|'XOR';
+BOOL_OPERATOR:'AND'|'OR';
 
 constant: INTEGER | FLOAT | STRING | BOOL | NULL;
 collections: list | dictionary;

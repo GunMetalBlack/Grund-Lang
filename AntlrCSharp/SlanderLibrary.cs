@@ -20,9 +20,21 @@ public static object?[] GF_WRITE_INLINE(object?[] args)
 }
 public static object? GF_WRITE_INPUT(object?[] args)
 {
-    string toReturn = Console.ReadLine();
-    Object? obj = toReturn;
-    return obj.ToString();
+    string ParseType = args[0].ToString();
+    object toReturn = Console.ReadLine();
+    if (ParseType == "INT")
+        {
+            toReturn = int.Parse(toReturn.ToString()); 
+            return toReturn; 
+        }
+        else if (ParseType == "FLOAT")
+        {
+            toReturn = float.Parse(toReturn.ToString()); 
+            return toReturn; 
+        }else
+        {
+            return toReturn.ToString();
+        }
 }
 public static object? GF_INDEX_CHAR(object?[] args)
 {
@@ -54,6 +66,10 @@ public static object? GF_PARSER(object?[] args)
         }else if (ParseType == "FLOAT")
         {
             toReturn = float.Parse(toReturn.ToString()); 
+            return toReturn; 
+        }else if (ParseType == "STRING")
+        {
+            toReturn = toReturn.ToString(); 
             return toReturn; 
         }else
         {
@@ -153,6 +169,21 @@ public static object? GF_LIST_LOOKUP(object?[] args, Dictionary<string,object?> 
    
    
     //** Bools
+
+    public static bool boolOperators(object? left, object? right, string op)
+    {
+            if(op.Equals("AND"))
+            {
+                return left is bool l && right is bool r;
+            }
+            if(op.Equals("OR"))
+            {
+                return left is bool l || right is bool r;
+            }
+
+            throw new Exception("GRUND *HACKS AND VOMITS* IDFK HOW WE GOT HERE NOT A BOOL OPERATION");
+    }
+
     public static bool GreaterThanOrEqual(object? left, object? right)
     {
         if(left is int l && right is int r)
