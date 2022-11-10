@@ -24,11 +24,12 @@ FUNC: 'FUNK';
 paramater: IDENTIFIER;
 
 functionDefinition: FUNC IDENTIFIER '(' (paramater (',' paramater)*)? ')' block;
-
+listAccession: IDENTIFIER '[' expression ']';
 
 expression
     : constant              #constantExpression
     | collections           #collectionsExpression
+    | listAccession         #listAccessionExpression
     | IDENTIFIER            #identifierExpression
     | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
@@ -49,8 +50,8 @@ BOOL_OPERATOR:'AND'|'OR';
 
 constant: INTEGER | FLOAT | STRING | BOOL | NULL;
 collections: list | dictionary;
-list:'[' (constant (',' constant)*)? ']';
-dictionary: '{' (constant (',' constant)*)? '}';
+list:'[' (expression (',' expression)*)? ']';
+dictionary: '{' (( STRING ':' expression ',')*( STRING ':' expression))? '}';
 INTEGER:'-'?[0-9]+;
 FLOAT:'-'?[0-9]+ '.' [0-9]+;
 STRING: ('"' ~'"'* '"')|('\'' ~'\''* '\'');

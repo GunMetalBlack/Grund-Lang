@@ -5,7 +5,22 @@ public static object?[] GF_WRITE(object?[] args)
 {
     foreach (var arg in args)
     {
+        if(arg is List<object?> list)
+        {
+            Console.Write("[");
+            for(int i = 0; i < list.Count; i++)
+            {
+                if(!(i == list.Count - 1 )){
+                Console.Write(list.ElementAt(i) + ", ");
+                }else
+                {
+                     Console.Write(list.ElementAt(i));
+                }
+            }
+            Console.Write("]");
+        }else{
         Console.Write(arg);
+        }
     }
     Console.WriteLine();
     return null;

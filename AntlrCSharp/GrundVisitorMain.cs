@@ -114,6 +114,30 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     {
         return StackFrames.First().variables;
     }
+
+    public override object VisitListAccession([NotNull] GrundParser.ListAccessionContext context)
+    {
+         var varName = context.IDENTIFIER().GetText();
+         var varIndex = Visit(context.expression());
+        if(GetVariablesInCurrentStackFrame().ContainsKey(varName))
+        {
+            if(GetVariablesInCurrentStackFrame()[varName] is List<object?> list)
+            {
+               return list.ElementAt(int.Parse(varIndex.ToString()));
+            }
+             throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName +" IS NOT LIST");
+        }
+        else if(Variables.ContainsKey(varName))
+        {
+            if(Variables[varName] is List<object?> list)
+            {
+               return list.ElementAt(int.Parse(varIndex.ToString()));
+            }
+             throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName +" IS NOT LIST");
+        }
+        throw new Exception(" GRUND OGGA No variable defined for " + varName);
+    }
+
     public override object VisitIdentifierExpression([NotNull] GrundParser.IdentifierExpressionContext context)
     {
         var varName = context.IDENTIFIER().GetText();
@@ -133,7 +157,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //**Converts variable string to variable type 
     public override object? VisitConstant([NotNull] GrundParser.ConstantContext context)
     {
-         if(context.INTEGER() is { } i)
+        if(context.INTEGER() is { } i)
         {
             return int.Parse(i.GetText());
         }
@@ -153,6 +177,15 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
 
         throw new NotImplementedException();
+    }
+
+    public override object VisitCollections([NotNull] GrundParser.CollectionsContext context)
+    {
+        if(context.list() is { } l)
+        {
+            return  l.expression().Select(Visit).ToList();
+        }
+        throw new Exception("GRUND SLAMS FIST NOT VALID COLLECTIONS");
     }
 
     public override object VisitMultiplicativeExpression([NotNull] GrundParser.MultiplicativeExpressionContext context)
@@ -280,7 +313,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var left = Visit(context.expression(0));
         var right = Visit(context.expression(1));
         var op = context.boolOP().GetText();
-        
+
         return true;
     }
     private bool IsTrue(object? value)

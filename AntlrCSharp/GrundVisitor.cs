@@ -92,6 +92,12 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.listAccession"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitListAccession([NotNull] GrundParser.ListAccessionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>collectionsExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
@@ -154,6 +160,13 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitComparisonExpression([NotNull] GrundParser.ComparisonExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>listAccessionExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>multiplicativeExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.

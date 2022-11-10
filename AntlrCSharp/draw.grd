@@ -1,4 +1,10 @@
-x = GF_WRITE_INPUT("INT");
-IF x < 5 AND 1 < x:
-    GF_WRITE("SUS");
+x = [3,4,5,6];
+y = [0];
+z = [0];
+
+FUNK getIndex():
+_return = 0;
 END
+
+output = [x[y[z[getIndex()]]], 69, 420];
+GF_WRITE(output);
