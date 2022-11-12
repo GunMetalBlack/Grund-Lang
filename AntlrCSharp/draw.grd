@@ -1,10 +1,25 @@
-x = [3,4,5,6];
-y = [0];
-z = [0];
+i = [9, 2, 7, 6, 1, 3, 5, 4, 8];
+va = 0;
 
-FUNK getIndex():
-_return = 0;
+swapped = true;
+GF_WRITE(i);
+WHILE swapped:
+     swapped=false;
+     va = 0;
+  //loop through all numbers in the array.
+   WHILE va < 9 - 1:
+          //compare the two values.
+           IF i[va] > i[va+1]:
+
+               swap = i[va];
+               i[va] = i[va+1];
+               i[va+1] = swap;
+               swapped=true;
+           END
+
+       //increment
+       va = va + 1;  
+   END
 END
 
-output = [x[y[z[getIndex()]]], 69, 420];
-GF_WRITE(output);
+GF_WRITE(i);

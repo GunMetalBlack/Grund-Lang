@@ -27,13 +27,28 @@ public static object?[] GF_WRITE(object?[] args)
 }
 public static object?[] GF_WRITE_INLINE(object?[] args)
 {
-    foreach (var arg in args)
+   foreach (var arg in args)
     {
+        if(arg is List<object?> list)
+        {
+            Console.Write("[");
+            for(int i = 0; i < list.Count; i++)
+            {
+                if(!(i == list.Count - 1 )){
+                Console.Write(list.ElementAt(i) + ", ");
+                }else
+                {
+                     Console.Write(list.ElementAt(i));
+                }
+            }
+            Console.Write("]");
+        }else{
         Console.Write(arg);
+        }
     }
     return null;
 }
-public static object? GF_WRITE_INPUT(object?[] args)
+public static object? GF_WRITE_INPUT(object?[] args) 
 {
     string ParseType = args[0].ToString();
     object toReturn = Console.ReadLine();
@@ -104,16 +119,14 @@ public static object?[] GF_LIST_CREATE(object[]? args, Dictionary<string,object?
 }
 public static object?[] GF_LIST_APPEND(object?[] args, Dictionary<string,object?> Variables)
 {
-    if(args.Length == 2 && args[0] is string)
+    if(args[0] != null && args[1] != null)
     {
         var typeToStore = args[1];
-        var keyLookUp = args[0] as string;
-        if(args[1] is string){typeToStore = args[1] as string;}else{typeToStore = args[1];} 
-        List<object?>? list = Variables[keyLookUp] as List<object?>;
-        list.Add(typeToStore);
+        List<object?> keyLookUp = args[0] as List<object?> ;
+        keyLookUp.Add(typeToStore);
     }else
     {
-        throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR TO MANY ARGUMENTS");
+        throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR LIST");
     }
     return null;
 }

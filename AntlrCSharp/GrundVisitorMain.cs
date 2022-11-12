@@ -96,16 +96,46 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //** Below is the implementation if Parsing Variables
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {
-        
-        var varName = context.IDENTIFIER().GetText();
-        var value = Visit(context.expression());
-        if(varName[0] == '_')
+        if(context.listAccession() != null)
         {
-        Variables[varName] = value;
+            var varName = context.listAccession().IDENTIFIER().GetText();
+            var indexToFind =  Visit(context.listAccession().expression());
+            var toReplaceValue =  Visit(context.expression());
+            if(varName[0] == '_' && Variables[varName] is List<object?> _list)
+            {
+                try
+                {
+                    _list[int.Parse(indexToFind.ToString())] = toReplaceValue;  
+                }
+                catch (ArgumentOutOfRangeException)
+                {   
+                    throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + varName +" Learn TO COUNT. LINE: " + context.Start.Line.ToString());
+                }
+            }
+            else if(GetVariablesInCurrentStackFrame()[varName] is List<object?> list)
+            {
+                try
+                {
+                    list[int.Parse(indexToFind.ToString())] = toReplaceValue;  
+                }
+                catch (ArgumentOutOfRangeException)
+                {   
+                    throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + varName +" Learn TO COUNT. LINE: " + context.Start.Line.ToString());
+                }
+            }
         }
         else
         {
-         GetVariablesInCurrentStackFrame()[varName] = value;
+            var varName = context.IDENTIFIER().GetText();
+            var value = Visit(context.expression());
+            if(varName[0] == '_')
+            {
+            Variables[varName] = value;
+            }
+            else
+            {
+            GetVariablesInCurrentStackFrame()[varName] = value;
+            }
         }
         return null;
     }
@@ -123,15 +153,30 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         {
             if(GetVariablesInCurrentStackFrame()[varName] is List<object?> list)
             {
+               try
+               {
                return list.ElementAt(int.Parse(varIndex.ToString()));
+               }
+               catch(ArgumentOutOfRangeException)
+               {
+                  throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + varName +" Learn TO COUNT. LINE: " + context.Start.Line.ToString());
+               }
             }
-             throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName +" IS NOT LIST");
+             
+             throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName +" IS NOT LIST. LINE: " + context.Start.Line.ToString());
         }
         else if(Variables.ContainsKey(varName))
         {
             if(Variables[varName] is List<object?> list)
             {
+               try
+               {
                return list.ElementAt(int.Parse(varIndex.ToString()));
+               }
+               catch(ArgumentOutOfRangeException)
+               {
+                  throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + varName +" Learn TO COUNT. LINE: " + context.Start.Line.ToString());
+               }
             }
              throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName +" IS NOT LIST");
         }

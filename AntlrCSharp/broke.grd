@@ -1,7 +1,4 @@
-x = 0;
-y = 17;    
-
-WHILE x < y:
- x = x + 1;
- GF_WRITE("X IS " + x);
-END
+_y = [];
+x = 35;
+GF_LIST_APPEND(_y,x);
+GF_WRITE(_y);

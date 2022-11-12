@@ -2,7 +2,7 @@ grammar Grund;
 
 program: line* EOF;
 
-line: statement | ifBlock | whileBlock | functionDefinition | functionCall | elseIfBlock | assignment; 
+line: statement | ifBlock | whileBlock | functionDefinition | functionCall | elseIfBlock | assignment | listAccession; 
 
 statement: (assignment | functionCall)';';
 
@@ -16,7 +16,7 @@ whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock)
 
 WHILE: 'WHILE' | 'UNLESS';
 
-assignment: IDENTIFIER '='  expression;
+assignment: IDENTIFIER '='  expression | listAccession '=' expression;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
