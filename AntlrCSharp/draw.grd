@@ -1,25 +1,2 @@
-i = [9, 2, 7, 6, 1, 3, 5, 4, 8];
-va = 0;
-
-swapped = true;
-GF_WRITE(i);
-WHILE swapped:
-     swapped=false;
-     va = 0;
-  //loop through all numbers in the array.
-   WHILE va < 9 - 1:
-          //compare the two values.
-           IF i[va] > i[va+1]:
-
-               swap = i[va];
-               i[va] = i[va+1];
-               i[va+1] = swap;
-               swapped=true;
-           END
-
-       //increment
-       va = va + 1;  
-   END
-END
-
-GF_WRITE(i);
+ x = NULL;
+ GF_WRITE(x);

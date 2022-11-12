@@ -27,14 +27,14 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var ID_E = "G_E";
         //FUNK NAMES BUILT IN
         var FUNC_ID_WRITE = "GF_WRITE";
-        var FUNC_ID_WRITE_INLINE = "GF_WRITE_INLINE";
+        var FUNC_ID_WRITE_INLINE = "GF_WRITE_LN";
         //* List Functions
         var FUNC_ID_GF_LISTCREATE = "GF_LIST_CREATE";
-        var FUNC_ID_GF_LISTADD = "GF_LIST_APPEND";
+        var FUNC_ID_GF_LISTADD = "GL_APPEND";
         var FUNC_ID_GF_LISTREPLACE = "GF_LIST_REPLACE";
         var FUNC_ID_GF_LISTREMOVE = "GF_LIST_REMOVE";
         var FUNC_ID_GF_LISTLOOKUP = "GF_LIST_LOOKUP";
-        var FUNC_ID_GF_WRITE_INPUT = "GF_WRITE_INPUT";
+        var FUNC_ID_GF_WRITE_INPUT = "GF_INPUT";
         var FUNC_ID_GF_PARSER = "GF_PARSER";
         var FUNC_ID_GF_INDEX_CHAR = "GF_INDEX_CHAR";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
@@ -61,14 +61,14 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         var args = context.expression().Select(Visit).ToArray();
         if (!Variables.ContainsKey(name) && !FunctionIDs.ContainsKey(name))
         {
-            throw new Exception("GRUND SAYS THE FUNCTION IS NOT DEFINED TAKE THE L"+ "The Function name is " + name);
+            throw new Exception("GRUND SAYS THE FUNCTION IS NOT DEFINED TAKE THE L"+ "The Function name is " + name + "LINE: " + context.Start.Line.ToString());
         }
         if(FunctionIDs.ContainsKey(name))
         {
             StackFrames.Push(new GrundStackFrame(name));
             if(FunctionIDs[name].paramater() != null && context.expression() != null)
             {
-                if(FunctionIDs[name].paramater().Count() != args.Count()){throw new Exception("GRUND SCREAMS, EXPECTED " + FunctionIDs[name].paramater().Count().ToString() + " PARAMETERS BUT HAD "+ args.Count().ToString() + " VALUES STUPID!");}
+                if(FunctionIDs[name].paramater().Count() != args.Count()){throw new Exception("GRUND SCREAMS, EXPECTED " + FunctionIDs[name].paramater().Count().ToString() + " PARAMETERS BUT HAD "+ args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString());}
                 for(int i = 0; i < FunctionIDs[name].paramater().Count(); i++)
                 {
                         GetVariablesInCurrentStackFrame()[(FunctionIDs[name].paramater(i).GetText())] = args[i]; 
@@ -82,11 +82,11 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             {
                 return null;
             }
-            throw new Exception("GRUND CANNOT FIND _return IN THE FUNCTION PLEASE RETURN");
+            throw new Exception("GRUND CANNOT FIND _return IN THE FUNCTION PLEASE RETURN LINE: " + context.Start.Line.ToString());
         }
         if(Variables[name] is not Func<object?[], object?> func)
         {
-            throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION" + " THIS IS NOT A FUNCTION " + name);
+            throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION" + " THIS IS NOT A FUNCTION " + name + "LINE: " + context.Start.Line.ToString());
         }else
         {
              return func(args);
@@ -196,7 +196,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             return Variables[varName];
         }
 
-        throw new Exception(" GRUND OGGA No variable defined for " + varName);
+        throw new Exception(" GRUND OGGA No variable defined for " + varName + "LINE: " + context.Start.Line.ToString());
 
     }
     //**Converts variable string to variable type 
@@ -230,7 +230,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         {
             return  l.expression().Select(Visit).ToList();
         }
-        throw new Exception("GRUND SLAMS FIST NOT VALID COLLECTIONS");
+        throw new Exception("GRUND SLAMS FIST NOT VALID COLLECTIONS LINE: " + context.Start.Line.ToString());
     }
 
     public override object VisitMultiplicativeExpression([NotNull] GrundParser.MultiplicativeExpressionContext context)

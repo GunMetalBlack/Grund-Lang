@@ -1,7 +1,7 @@
 public class SlanderLibrary{
    
 //* FUNCTIONS ********************************
-public static object?[] GF_WRITE(object?[] args)
+public static object?[] GF_WRITE_INLINE(object?[] args)
 {
     foreach (var arg in args)
     {
@@ -25,7 +25,7 @@ public static object?[] GF_WRITE(object?[] args)
     Console.WriteLine();
     return null;
 }
-public static object?[] GF_WRITE_INLINE(object?[] args)
+public static object?[] GF_WRITE(object?[] args)
 {
    foreach (var arg in args)
     {
