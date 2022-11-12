@@ -196,7 +196,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             return Variables[varName];
         }
 
-        throw new Exception(" GRUND OGGA No variable defined for " + varName + "LINE: " + context.Start.Line.ToString());
+        throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
 
     }
     //**Converts variable string to variable type 
@@ -263,7 +263,8 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         if(op == "+")
         {
            return SlanderLibrary.Add(left, right);
-        }else if(op == "-")
+        }
+        else if(op == "-")
         {
             return SlanderLibrary.Sub(left, right);
         }else

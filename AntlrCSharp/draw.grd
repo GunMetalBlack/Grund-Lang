@@ -1,2 +1,2 @@
- x = NULL;
- GF_WRITE(x);
+l = [1,3,4,5]
+GF_WRITE("Wowo");

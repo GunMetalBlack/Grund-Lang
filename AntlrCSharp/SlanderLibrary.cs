@@ -348,23 +348,32 @@ public static object? GF_LIST_LOOKUP(object?[] args, Dictionary<string,object?> 
         {
             return l+r;
         }
-        if(left is float lf && right is float rf)
+        else if(left is float lf && right is float rf)
         {
             return lf+rf;
         }
-        if(left is int lInt && right is float rFloat)
+        else if(left is int lInt && right is float rFloat)
         {
            return lInt+rFloat;
         }
-        if(left is float lfFloat && right is int rInt)
+        else if(left is float lfFloat && right is int rInt)
         {
             return lfFloat+rInt;
         }
-        if(left is string){
+        else if(left is string){
             return $"{left}{right}";
         }
-        if(right is string || right is string){
+        else if(right is string || right is string){
             return $"{left}{right}";
+        }
+        else if(left is List<object?> Llist && right is List<object?> Rlist)
+        {
+            List<object?> result = Llist;
+            foreach(object? o in Rlist)
+            {
+                result.Add(o);
+            }
+            return result;
         }
         throw new Exception("GRUND STUPID CANNOT ADD}." + left.GetType() +" " + right.GetType());
     }
