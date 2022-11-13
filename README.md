@@ -8,5 +8,14 @@ Anyway, I will release the compiled version soon if anyone actually wants to use
 It can compile to exe. 
 
 ## Run Instructions
+After installation, enter your friendly neighborhood command prompt and enter the following command.
+Make sure the file you pass in has the .grd file extension.
+
+``` .\grund somefile.grd ```
+You can chain files together to combine mutiple scripts by enter the following command
+
+``` .\grund somefile.grd someother.grd test.grd ```
+
+
 
   
