@@ -9,7 +9,7 @@ It can compile to exe.
 
 ## Run Instructions
 Make sure the file you're sending has the.grd extension. 
-After installation, enter your friendly neighborhood command prompt and enter the following command:
+After installation, enter your friendly neighborhood command prompt and make sure your in the directory of the installation enter the following command:
 
 ``` .\grund somefile.grd ```
 You can chain files together to combine mutiple scripts by enter the following command
