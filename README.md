@@ -5,7 +5,6 @@ Variables are scoped and global, and the standard library is pretty bad; you are
 Its syntax is python c# like. 
 I will soon write documentation.
 Anyway, I will release the compiled version soon if anyone actually wants to use this burning plastic.
-It can compile to exe. 
 
 ## Run Instructions
 Make sure the file you're sending has the.grd extension. 
