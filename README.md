@@ -14,6 +14,8 @@ After installation, enter your friendly neighborhood command prompt and make sur
 You can chain files together to combine mutiple scripts by enter the following command
 
 ``` .\grund somefile.grd someother.grd test.grd ```
+You can add the Grund.exe to your system path so you can acess it anywhere. The command would look like -
+``` grund file.grd ```
 
 
 
