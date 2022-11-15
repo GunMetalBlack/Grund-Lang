@@ -3,9 +3,10 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
 public struct GrundStackFrame {
     public string name;
+    // This dictionary contains all the global variables
     public Dictionary<string, object?> variables {get;}
     public bool inherit = false;
-
+    // This stack frame dictates  the inheritance and scope for the language
     public GrundStackFrame(string name) {
         this.name = name;
         variables = new(); 
@@ -22,6 +23,8 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     private Dictionary<string, GrundParser.FunctionDefinitionContext> FunctionIDs {get;} = new();
     public GrundVisitorMain()
     {   
+        // These are all the global static variables that are defined for the language
+        // All functions in  Grund that are language dependent Like GF_WRITE are variables
         //Math
         var ID_PI = "G_PI";
         var ID_E = "G_E";
@@ -57,6 +60,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
 
     public override object? VisitFunctionCall(GrundParser.FunctionCallContext context)
     {
+        //It grabs the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
         var args = context.expression().Select(Visit).ToArray();
         if (!Variables.ContainsKey(name) && !FunctionIDs.ContainsKey(name))
@@ -65,17 +69,22 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         if(FunctionIDs.ContainsKey(name))
         {
+            // If we have a function then create a new scope for the function and go through each expression and adds it to the stack
             StackFrames.Push(new GrundStackFrame(name));
             if(FunctionIDs[name].paramater() != null && context.expression() != null)
             {
+                //Exception for if the expression count and function args don't match.
                 if(FunctionIDs[name].paramater().Count() != args.Count()){throw new Exception("GRUND SCREAMS, EXPECTED " + FunctionIDs[name].paramater().Count().ToString() + " PARAMETERS BUT HAD "+ args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString());}
                 for(int i = 0; i < FunctionIDs[name].paramater().Count(); i++)
                 {
                         GetVariablesInCurrentStackFrame()[(FunctionIDs[name].paramater(i).GetText())] = args[i]; 
                 }
             }
+            //If we do have a function call then we visit the stuff in the function!
             Visit(FunctionIDs[name].block());
+            //After thats over we simple exist the current scope.
             StackFrames.Pop();
+            //This is my work around for a proper return statement instead its a global variable that can be used at the end of the function
             if(Variables.ContainsKey("_return")){
             return Variables["_return"];
             }else
@@ -84,6 +93,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             }
             throw new Exception("GRUND CANNOT FIND _return IN THE FUNCTION PLEASE RETURN LINE: " + context.Start.Line.ToString());
         }
+        // If a grund function is not a function It should crash
         if(Variables[name] is not Func<object?[], object?> func)
         {
             throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION" + " THIS IS NOT A FUNCTION " + name + "LINE: " + context.Start.Line.ToString());
@@ -96,15 +106,20 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
     //** Below is the implementation if Parsing Variables
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {
+        //This is how we defined variables (entire function)
         if(context.listAccession() != null)
         {
+            //In this fun guy is how we define lists and accessing lists like x[1] = 3; should set the value of x[1] to 3
             var varName = context.listAccession().IDENTIFIER().GetText();
             var indexToFind =  Visit(context.listAccession().expression());
             var toReplaceValue =  Visit(context.expression());
+            //Every variable with an underscore in the beginning should be added to the global variable list if its a list object
             if(varName[0] == '_' && Variables[varName] is List<object?> _list)
             {
                 try
                 {
+                    //We get the current list that it's parsing and we take the expression of [>1<] 1 and force it to be an int
+                    //after we simply access the index of the list and add the value we wish to replace.
                     _list[int.Parse(indexToFind.ToString())] = toReplaceValue;  
                 }
                 catch (ArgumentOutOfRangeException)
@@ -114,6 +129,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             }
             else if(GetVariablesInCurrentStackFrame()[varName] is List<object?> list)
             {
+                // same thing as above but it adds it to the current scope instead
                 try
                 {
                     list[int.Parse(indexToFind.ToString())] = toReplaceValue;  
@@ -126,6 +142,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         else
         {
+            // If its not a list do this for everything else that needs to be assigned as a variable
             var varName = context.IDENTIFIER().GetText();
             var value = Visit(context.expression());
             if(varName[0] == '_')
@@ -139,20 +156,23 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
         }
         return null;
     }
-
+    // Helper function to reduce boilerplate. Sends all variables from current scope for evaluation.
     public Dictionary<string, object? > GetVariablesInCurrentStackFrame()
     {
         return StackFrames.First().variables;
     }
 
     public override object VisitListAccession([NotNull] GrundParser.ListAccessionContext context)
-    {
+    {   
+        // This is how we return a value at an index for example if(x[2] < 0). x[2] should return a value
          var varName = context.IDENTIFIER().GetText();
          var varIndex = Visit(context.expression());
+        //Checks if variable is in current scope and is a list.
         if(GetVariablesInCurrentStackFrame().ContainsKey(varName))
         {
             if(GetVariablesInCurrentStackFrame()[varName] is List<object?> list)
             {
+                //If it is then we return the value at the lists index
                try
                {
                return list.ElementAt(int.Parse(varIndex.ToString()));
@@ -165,6 +185,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
              
              throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName +" IS NOT LIST. LINE: " + context.Start.Line.ToString());
         }
+        //Checks if the variable is in global scope if it failed to be found in the stack
         else if(Variables.ContainsKey(varName))
         {
             if(Variables[varName] is List<object?> list)
@@ -185,6 +206,8 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
 
     public override object VisitIdentifierExpression([NotNull] GrundParser.IdentifierExpressionContext context)
     {
+        // Pretty simple, this function returns the value of the variable for example if a variable is defined as y = 4.
+        // then y < 3. y by itself should be 4
         var varName = context.IDENTIFIER().GetText();
 
         if(GetVariablesInCurrentStackFrame().ContainsKey(varName))
@@ -281,7 +304,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             }
             return null;
         }
-    //* Function Logic calls Like If Statements and WHile loops
+    //* Function Logic calls Like If Statements and while loops
     public override object? VisitWhileBlock([NotNull] GrundParser.WhileBlockContext context)
     {
         Func<object?, bool> condition = context.WHILE().GetText() == "WHILE" 

@@ -36,11 +36,10 @@ expression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression
     | expression multOP expression  #multiplicativeExpression
-    | expression addOP expression   #additiveExpression
+    | expression addOP expression  #additiveExpression
     | expression compareOP expression #comparisonExpression
     | expression boolOP expression #booleanExpression
     ;
-
 multOP: '*'|'/'|'%';
 addOP:'+'|'-';
 compareOP:'=='|'!='|'>'|'<'|'>='|'<=';

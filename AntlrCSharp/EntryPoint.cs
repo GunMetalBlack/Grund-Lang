@@ -6,8 +6,8 @@ namespace Grund
     {
         static void Main(string[] args)
         {
-             string combineFileContents = "";
-             foreach(string arg in args)  
+            string combineFileContents = "";
+            foreach(string arg in args)  
             {  
                 String fileToRun = arg;
                 var fileName = fileToRun;
