@@ -2,7 +2,7 @@ grammar Grund;
 
 program: line* EOF;
 
-line: statement | ifBlock | whileBlock | functionDefinition | functionCall | elseIfBlock | assignment | listAccession; 
+line: statement | ifBlock | whileBlock | functionDefinition | functionCall | elseIfBlock | assignment | listAccession | inLineIncrement;  
 
 statement: (assignment | functionCall)';';
 
@@ -20,6 +20,8 @@ assignment: IDENTIFIER '='  expression | listAccession '=' expression;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
+inLineIncrement: IDENTIFIER inLineOP ';' | IDENTIFIER inLineOP ';';
+
 FUNC: 'FUNK';
 paramater: IDENTIFIER;
 
@@ -35,14 +37,15 @@ expression
     | functionCall          #functionCallExpression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression
-    | expression multOP expression  #multiplicativeExpression
+    | expression multOP expression #multiplicativeExpression
     | expression addOP expression  #additiveExpression
     | expression compareOP expression #comparisonExpression
     | expression boolOP expression #booleanExpression
     ;
 multOP: '*'|'/'|'%';
-addOP:'+'|'-';
+addOP:'+'|'-' |'++'|'--';
 compareOP:'=='|'!='|'>'|'<'|'>='|'<=';
+inLineOP: '++'| '--';
 boolOP: BOOL_OPERATOR;
 
 BOOL_OPERATOR:'AND'|'OR';

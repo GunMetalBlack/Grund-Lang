@@ -1,3 +1,5 @@
-IF s == 0:
-l = 0;
+y = 1;
+WHILE y < 10:
+    y++;
 END
+GF_WRITE(y);

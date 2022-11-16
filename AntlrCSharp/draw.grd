@@ -1,2 +1,2 @@
-l = [1,3,4,5]
-GF_WRITE("Wowo");
+y = 1;
+GF_WRITE(y);

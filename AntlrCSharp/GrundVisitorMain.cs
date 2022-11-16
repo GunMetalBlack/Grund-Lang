@@ -277,6 +277,39 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
             throw new NotImplementedException();
         }        
     }
+    
+    public override object? VisitInLineIncrement(GrundParser.InLineIncrementContext context)
+    {
+        string op = context.inLineOP().GetText();
+        var toIncrement = context.IDENTIFIER().GetText();
+        if(op == "++"){
+            if(GetVariablesInCurrentStackFrame().ContainsKey(toIncrement) && GetVariablesInCurrentStackFrame()[toIncrement] is int intR)
+            {
+                GetVariablesInCurrentStackFrame()[toIncrement] = intR += 1;
+                return GetVariablesInCurrentStackFrame()[toIncrement];
+            }
+            else if(Variables.ContainsKey(toIncrement) && Variables[toIncrement] is float floatR)
+            {
+                Variables[toIncrement] = floatR += 1;
+                return Variables[toIncrement];
+            }
+        }
+        else if(op == "--")
+        {
+            if(GetVariablesInCurrentStackFrame().ContainsKey(toIncrement) && GetVariablesInCurrentStackFrame()[toIncrement] is int intR)
+            {
+                GetVariablesInCurrentStackFrame()[toIncrement] = intR -= 1;
+                return GetVariablesInCurrentStackFrame()[toIncrement];
+            }
+            else if(Variables.ContainsKey(toIncrement) && Variables[toIncrement] is float floatR)
+            {
+                Variables[toIncrement] = floatR -= 1;
+                return Variables[toIncrement];
+            }
+        }
+        throw new Exception("GRUND *HACKS AND BLOOD VOMITS* YOU'RE TRYING TO INCREASE SOMETHING OTHER THAN INT OR FLOAT! " + context.Start.Line.ToString() + "Value: " + toIncrement);
+    }
+    
     public override object? VisitAdditiveExpression(GrundParser.AdditiveExpressionContext context)
     {
         var left = Visit(context.expression(0));
