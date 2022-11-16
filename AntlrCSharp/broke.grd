@@ -1,5 +1,28 @@
-y = 1;
-WHILE y < 10:
-    y++;
+output = ["Try Again","Unclear","Going TO Happen", "Hot Sauce","2"];
+FUNK rand(number):
+    number = number * number;
+    number = number + 2;
+    number = number - 20;
+    IF number < 5:
+        _return = 2;
+    END
+    IF number < 20:
+        _return = 0;
+    END
+    IF 30 < number:
+        _return = 1;
+    END
+    IF 50 < number:
+        _return = 4;
+    END
 END
-GF_WRITE(y);
+i = 0;
+input = "";
+WHILE i <= 3:
+    i++;
+    GF_WRITE("Type A Number");
+    input = GF_INPUT();
+    input = GF_PARSER("INT",input);
+    rand(input);
+    GF_WRITE_LN(output[_return]);
+END

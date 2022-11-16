@@ -50,21 +50,23 @@ public static object?[] GF_WRITE(object?[] args)
 }
 public static object? GF_WRITE_INPUT(object?[] args) 
 {
-    string ParseType = args[0].ToString();
     object toReturn = Console.ReadLine();
-    if (ParseType == "INT")
+    if(args != null && args.Length != 0)
+    {
+        if(args[0].ToString() == "INT")
         {
-            toReturn = int.Parse(toReturn.ToString()); 
-            return toReturn; 
+           return int.Parse(toReturn.ToString());
         }
-        else if (ParseType == "FLOAT")
+        else if(args[0].ToString() == "FLOAT")
         {
-            toReturn = float.Parse(toReturn.ToString()); 
-            return toReturn; 
-        }else
-        {
-            return toReturn.ToString();
+            return float.Parse(toReturn.ToString());
         }
+    }
+    else
+    {
+    return toReturn.ToString();
+    }
+    throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
 }
 public static object? GF_INDEX_CHAR(object?[] args)
 {

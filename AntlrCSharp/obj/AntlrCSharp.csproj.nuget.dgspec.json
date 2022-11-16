@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj": {}
+    "/workspaces/Grund/AntlrCSharp/AntlrCSharp.csproj": {}
   },
   "projects": {
-    "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj": {
+    "/workspaces/Grund/AntlrCSharp/AntlrCSharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj",
+        "projectUniqueName": "/workspaces/Grund/AntlrCSharp/AntlrCSharp.csproj",
         "projectName": "AntlrCSharp",
-        "projectPath": "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj",
-        "packagesPath": "C:\\Users\\Noah\\.nuget\\packages\\",
-        "outputPath": "E:\\coding\\test\\AntlrCSharp\\obj\\",
+        "projectPath": "/workspaces/Grund/AntlrCSharp/AntlrCSharp.csproj",
+        "packagesPath": "/home/codespace/.nuget/packages/",
+        "outputPath": "/workspaces/Grund/AntlrCSharp/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Noah\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/codespace/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/dotnet/6/sdk/6.0.402/RuntimeIdentifierGraph.json"
         }
       }
     }
