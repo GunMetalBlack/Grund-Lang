@@ -10,4 +10,4 @@ build_property.EnableSingleFileAnalyzer = true
 build_property.EnableTrimAnalyzer = 
 build_property.IncludeAllContentForSelfExtract = 
 build_property.RootNamespace = AntlrCSharp
-build_property.ProjectDir = /workspaces/Grund/AntlrCSharp/
+build_property.ProjectDir = e:\coding\test\AntlrCSharp\
