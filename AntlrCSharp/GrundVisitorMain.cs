@@ -307,7 +307,7 @@ public class GrundVisitorMain:GrundBaseVisitor<object?>
                 return Variables[toIncrement];
             }
         }
-        throw new Exception("GRUND *HACKS AND BLOOD VOMITS* YOU'RE TRYING TO INCREASE SOMETHING OTHER THAN INT OR FLOAT! " + context.Start.Line.ToString() + "Value: " + toIncrement);
+        throw new Exception("GRUND *HACKS AND BLOOD VOMITS* YOU'RE TRYING TO INCREASE SOMETHING OTHER THAN INT OR FLOAT!"   + context.Start.Line.ToString() + "Value: " + toIncrement);
     }
     
     public override object? VisitAdditiveExpression(GrundParser.AdditiveExpressionContext context)
