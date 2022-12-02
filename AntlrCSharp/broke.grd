@@ -1,6 +1,4 @@
-WHILE 1 < 3 :
-    x = GF_KEY();
-    IF x != "":
-     GF_WRITE_LN(head);
-    END
+x = true;
+IF x == true:
+    GF_WRITE("WTF");
 END

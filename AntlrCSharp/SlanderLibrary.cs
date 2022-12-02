@@ -342,6 +342,10 @@ public class SlanderLibrary
         {
             return lfString == rString;
         }
+        if (left is bool lfBool && right is bool rBool)
+        {
+            return lfBool.Equals(rBool);
+        }
         throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
     }
     public static bool IsNotEqual(object? left, object? right)
