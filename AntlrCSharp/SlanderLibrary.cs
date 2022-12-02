@@ -79,8 +79,15 @@ public class SlanderLibrary
     }
     public static object? GF_GET_KEY(object?[] args)
     {
-        object toReturn = Console.ReadKey(true).KeyChar;
-        return toReturn.ToString();
+        if (Console.KeyAvailable) // Non-blocking peek
+        {
+            object toReturn = Console.ReadKey(true).KeyChar;
+            return toReturn.ToString();
+        }else
+        {
+            return null;
+        }
+
         throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
     }
     public static object? GF_INDEX_CHAR(object?[] args)

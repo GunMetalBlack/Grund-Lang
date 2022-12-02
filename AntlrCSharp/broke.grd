@@ -1,4 +1,4 @@
-x = true;
-IF x == true:
-    GF_WRITE("WTF");
+WHILE 1 < 2:
+    x = GF_KEY();
+    GF_WRITE(x,"SUS");
 END
