@@ -16,11 +16,11 @@ whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock)
 
 WHILE: 'WHILE' | 'UNLESS';
 
-assignment: IDENTIFIER '='  expression | listAccession '=' expression;
+assignment: IDENTIFIER '='  expression (';')? | listAccession '=' expression (';')?;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
-inLineIncrement: IDENTIFIER inLineOP ';' | IDENTIFIER inLineOP ';';
+inLineIncrement: IDENTIFIER inLineOP (';')? | IDENTIFIER inLineOP (';')?;
 
 FUNC: 'FUNK';
 paramater: IDENTIFIER;

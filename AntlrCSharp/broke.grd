@@ -1,4 +1,2 @@
-WHILE 1 < 2:
-    x = GF_KEY();
-    GF_WRITE(x,"SUS");
-END
+x = 2  y = 3
+GF_WRITE(x + y)
