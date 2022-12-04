@@ -1,2 +1,7 @@
-x = 2  y = 3
-GF_WRITE(x + y)
+FUNK pow(wow):
+    GF_WRITE("Test", wow);
+END
+
+x = pow("asd");
+
+
