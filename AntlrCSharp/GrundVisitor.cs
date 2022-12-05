@@ -86,11 +86,11 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitInLineIncrement([NotNull] GrundParser.InLineIncrementContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrundParser.paramater"/>.
+	/// Visit a parse tree produced by <see cref="GrundParser.parameter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitParamater([NotNull] GrundParser.ParamaterContext context);
+	Result VisitParameter([NotNull] GrundParser.ParameterContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.functionDefinition"/>.
 	/// </summary>

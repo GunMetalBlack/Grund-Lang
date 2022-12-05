@@ -23,9 +23,9 @@ functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 inLineIncrement: IDENTIFIER inLineOP (';')? | IDENTIFIER inLineOP (';')?;
 
 FUNC: 'FUNK';
-paramater: IDENTIFIER;
+parameter: IDENTIFIER;
 
-functionDefinition: FUNC IDENTIFIER '(' (paramater (',' paramater)*)? ')' block;
+functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
 listAccession: IDENTIFIER '[' expression ']';
 
 expression

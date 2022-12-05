@@ -125,7 +125,7 @@ public partial class GrundBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitInLineIncrement([NotNull] GrundParser.InLineIncrementContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrundParser.paramater"/>.
+	/// Visit a parse tree produced by <see cref="GrundParser.parameter"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -133,7 +133,7 @@ public partial class GrundBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitParamater([NotNull] GrundParser.ParamaterContext context) { return VisitChildren(context); }
+	public virtual Result VisitParameter([NotNull] GrundParser.ParameterContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.functionDefinition"/>.
 	/// <para>

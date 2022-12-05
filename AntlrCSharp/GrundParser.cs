@@ -44,13 +44,13 @@ public partial class GrundParser : Parser {
 	public const int
 		RULE_program = 0, RULE_line = 1, RULE_statement = 2, RULE_ifBlock = 3, 
 		RULE_elseIfBlock = 4, RULE_whileBlock = 5, RULE_assignment = 6, RULE_functionCall = 7, 
-		RULE_inLineIncrement = 8, RULE_paramater = 9, RULE_functionDefinition = 10, 
+		RULE_inLineIncrement = 8, RULE_parameter = 9, RULE_functionDefinition = 10, 
 		RULE_listAccession = 11, RULE_expression = 12, RULE_multOP = 13, RULE_addOP = 14, 
 		RULE_compareOP = 15, RULE_inLineOP = 16, RULE_boolOP = 17, RULE_constant = 18, 
 		RULE_collections = 19, RULE_list = 20, RULE_dictionary = 21, RULE_block = 22;
 	public static readonly string[] ruleNames = {
 		"program", "line", "statement", "ifBlock", "elseIfBlock", "whileBlock", 
-		"assignment", "functionCall", "inLineIncrement", "paramater", "functionDefinition", 
+		"assignment", "functionCall", "inLineIncrement", "parameter", "functionDefinition", 
 		"listAccession", "expression", "multOP", "addOP", "compareOP", "inLineOP", 
 		"boolOP", "constant", "collections", "list", "dictionary", "block"
 	};
@@ -779,25 +779,25 @@ public partial class GrundParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ParamaterContext : ParserRuleContext {
+	public partial class ParameterContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(GrundParser.IDENTIFIER, 0); }
-		public ParamaterContext(ParserRuleContext parent, int invokingState)
+		public ParameterContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_paramater; } }
+		public override int RuleIndex { get { return RULE_parameter; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitParamater(this);
+			if (typedVisitor != null) return typedVisitor.VisitParameter(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ParamaterContext paramater() {
-		ParamaterContext _localctx = new ParamaterContext(Context, State);
-		EnterRule(_localctx, 18, RULE_paramater);
+	public ParameterContext parameter() {
+		ParameterContext _localctx = new ParameterContext(Context, State);
+		EnterRule(_localctx, 18, RULE_parameter);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
@@ -822,11 +822,11 @@ public partial class GrundParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ParamaterContext[] parameter() {
-			return GetRuleContexts<ParamaterContext>();
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterContext[] parameter() {
+			return GetRuleContexts<ParameterContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ParamaterContext paramater(int i) {
-			return GetRuleContext<ParamaterContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterContext parameter(int i) {
+			return GetRuleContext<ParameterContext>(i);
 		}
 		public FunctionDefinitionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -861,7 +861,7 @@ public partial class GrundParser : Parser {
 			if (_la==IDENTIFIER) {
 				{
 				State = 144;
-				paramater();
+				parameter();
 				State = 149;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
@@ -871,7 +871,7 @@ public partial class GrundParser : Parser {
 					State = 145;
 					Match(T__4);
 					State = 146;
-					paramater();
+					parameter();
 					}
 					}
 					State = 151;

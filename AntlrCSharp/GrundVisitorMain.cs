@@ -77,7 +77,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             if (functionLookup.parameter().Count() != args.Count()) { throw new Exception("GRUND SCREAMS, EXPECTED " + ((GrundParser.FunctionDefinitionContext)(Variables[name])).parameter().Count().ToString() + " PARAMETERS BUT HAD " + args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString()); }
             for (int i = 0; i < functionLookup.parameter().Count(); i++)
             {
-                GetVariablesInCurrentStackFrame()[(functionLookup.paramater(i).GetText())] = args[i];
+                GetVariablesInCurrentStackFrame()[(functionLookup.parameter(i).GetText())] = args[i];
             }
         }
         //If we do have a function call then we visit the stuff in the function!
