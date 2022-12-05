@@ -822,7 +822,7 @@ public partial class GrundParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
 			return GetRuleContext<BlockContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ParamaterContext[] paramater() {
+		[System.Diagnostics.DebuggerNonUserCode] public ParamaterContext[] parameter() {
 			return GetRuleContexts<ParamaterContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ParamaterContext paramater(int i) {

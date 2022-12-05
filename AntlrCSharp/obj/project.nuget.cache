@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ucIMNcGBRqa55MwOsVmKWEaJDMjVnCuvZj8YxcDxOsuaqdb8dXhGbr8AXL4bt8OtzxktP+cyl0zGWF+bF2P0Xw==",
+  "dgSpecHash": "bEJ6l83VSgqq/IKgzRDCMWvFb8PMaZcwNuoOtSJSDTOmQ9xmAxMH6s3oVZ8hLUwUMWG/HxBPUepBTHTFBau2YQ==",
   "success": true,
-  "projectFilePath": "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj",
+  "projectFilePath": "E:\\coding\\test\\AntlrCSHarp\\AntlrCSharp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Noah\\.nuget\\packages\\antlr4.runtime.standard\\4.9.0\\antlr4.runtime.standard.4.9.0.nupkg.sha512",
     "C:\\Users\\Noah\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",

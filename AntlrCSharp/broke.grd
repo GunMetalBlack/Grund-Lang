@@ -1,7 +1,7 @@
-FUNK pow(wow):
-    GF_WRITE("Test", wow);
+FUNK TestHost():
+ GF_WRITE("wow");
 END
 
-x = pow("asd");
+print = TestHost;
 
-
+print();

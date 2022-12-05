@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj": {}
+    "E:\\coding\\test\\AntlrCSHarp\\AntlrCSharp.csproj": {}
   },
   "projects": {
-    "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj": {
+    "E:\\coding\\test\\AntlrCSHarp\\AntlrCSharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj",
+        "projectUniqueName": "E:\\coding\\test\\AntlrCSHarp\\AntlrCSharp.csproj",
         "projectName": "AntlrCSharp",
-        "projectPath": "E:\\coding\\test\\AntlrCSharp\\AntlrCSharp.csproj",
+        "projectPath": "E:\\coding\\test\\AntlrCSHarp\\AntlrCSharp.csproj",
         "packagesPath": "C:\\Users\\Noah\\.nuget\\packages\\",
-        "outputPath": "E:\\coding\\test\\AntlrCSharp\\obj\\",
+        "outputPath": "E:\\coding\\test\\AntlrCSHarp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Noah\\AppData\\Roaming\\NuGet\\NuGet.Config"

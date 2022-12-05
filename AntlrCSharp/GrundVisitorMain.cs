@@ -22,7 +22,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     private Stack<GrundStackFrame> StackFrames { get; } = new();
     private List<string> ImmutableVariables { get; } = new();
     private Dictionary<string, object?> Variables { get; } = new();
-    private Dictionary<string, GrundParser.FunctionDefinitionContext> FunctionIDs { get; } = new();
     public GrundVisitorMain()
     {
         // These are all the global static variables that are defined for the language
@@ -61,53 +60,84 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<object?[], object?>(SlanderLibrary.GF_INDEX_CHAR); ImmutableVariables.Add(FUNC_ID_GF_INDEX_CHAR);
     }
 
-
-    public override object? VisitFunctionCall(GrundParser.FunctionCallContext context)
-    {
-        //It grabs the function name and any expressions it has and turns into an array 
+    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup) {
+        
+        // Grab the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
         var args = context.expression().Select(Visit).ToArray();
-        if (!Variables.ContainsKey(name) && !FunctionIDs.ContainsKey(name))
-        {
-            throw new Exception("GRUND SAYS THE FUNCTION IS NOT DEFINED TAKE THE L" + "The Function name is " + name + "LINE: " + context.Start.Line.ToString());
+
+        if(functionLookup == null) {
+            return null;
         }
-        if (FunctionIDs.ContainsKey(name))
+        // If we have a function then create a new scope for the function and go through each expression and adds it to the stack
+        StackFrames.Push(new GrundStackFrame(name));
+        if (functionLookup.parameter() != null && context.expression() != null)
         {
-            // If we have a function then create a new scope for the function and go through each expression and adds it to the stack
-            StackFrames.Push(new GrundStackFrame(name));
-            if (FunctionIDs[name].paramater() != null && context.expression() != null)
+            //Exception for if the expression count and function args don't match.
+            if (functionLookup.parameter().Count() != args.Count()) { throw new Exception("GRUND SCREAMS, EXPECTED " + ((GrundParser.FunctionDefinitionContext)(Variables[name])).parameter().Count().ToString() + " PARAMETERS BUT HAD " + args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString()); }
+            for (int i = 0; i < functionLookup.parameter().Count(); i++)
             {
-                //Exception for if the expression count and function args don't match.
-                if (FunctionIDs[name].paramater().Count() != args.Count()) { throw new Exception("GRUND SCREAMS, EXPECTED " + FunctionIDs[name].paramater().Count().ToString() + " PARAMETERS BUT HAD " + args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString()); }
-                for (int i = 0; i < FunctionIDs[name].paramater().Count(); i++)
-                {
-                    GetVariablesInCurrentStackFrame()[(FunctionIDs[name].paramater(i).GetText())] = args[i];
-                }
+                GetVariablesInCurrentStackFrame()[(functionLookup.paramater(i).GetText())] = args[i];
             }
-            //If we do have a function call then we visit the stuff in the function!
-            Visit(FunctionIDs[name].block());
-            //After thats over we simple exist the current scope.
-            StackFrames.Pop();
-            //This is my work around for a proper return statement instead its a global variable that can be used at the end of the function
-            if (Variables.ContainsKey("_return"))
-            {
-                return Variables["_return"];
-            }
-            else
-            {
-                return null;
-            }
-            throw new Exception("GRUND CANNOT FIND _return IN THE FUNCTION PLEASE RETURN LINE: " + context.Start.Line.ToString());
         }
-        // If a grund function is not a function It should crash
-        if (Variables[name] is not Func<object?[], object?> func)
+        //If we do have a function call then we visit the stuff in the function!
+        Visit(functionLookup.block());
+        //After thats over we simply exit the current scope.
+        StackFrames.Pop();
+        //This is my work around for a proper return statement instead its a global variable that can be used at the end of the function
+        if (Variables.ContainsKey("_return"))
         {
-            throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION" + " THIS IS NOT A FUNCTION " + name + "LINE: " + context.Start.Line.ToString());
+            return Variables["_return"];
         }
         else
         {
-            return func(args);
+            return null;
         }
+    }
+
+    public override object? VisitFunctionCall(GrundParser.FunctionCallContext context)
+    {
+        // Grab the function name and any expressions it has and turns into an array 
+        var name = context.IDENTIFIER().GetText();
+        var args = context.expression().Select(Visit).ToArray();
+
+        // Handle scoped functions
+        if (GetVariablesInCurrentStackFrame().ContainsKey(name))
+        {
+            // Handle user-defined functions
+            {
+                if(GetVariablesInCurrentStackFrame()[name] is GrundParser.FunctionDefinitionContext functionLookup)
+                {
+                    return ExecuteUserDefinedFunction(context, functionLookup);
+                }
+            }
+            // Handle build-in Grund functions
+            if(GetVariablesInCurrentStackFrame()[name] is Func<object?[], object?> func)
+            {
+                return func(args);
+            }
+        }
+
+        // Handle global functions
+        if (Variables.ContainsKey(name))
+        {
+            // Handle user-defined functions
+            {
+                if(Variables[name] is GrundParser.FunctionDefinitionContext functionLookup)
+                {
+                    return ExecuteUserDefinedFunction(context, functionLookup);
+                }
+            }
+            // Handle build-in Grund functions
+            if(Variables[name] is Func<object?[], object?> func)
+            {
+                return func(args);
+            }
+        }
+
+        // Wasn't user-defined or global - throw an exception
+        throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION THIS IS NOT A FUNCTION " + name + " LINE: " + context.Start.Line.ToString());
+
     }
 
     //** Below is the implementation if Parsing Variables
@@ -344,9 +374,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     //* Creating FUNCTION Definitions
     public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
-        if (!FunctionIDs.ContainsKey(context.IDENTIFIER().GetText()))
+        if (!Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
-            FunctionIDs.Add(context.IDENTIFIER().GetText(), context);
+            Variables.Add(context.IDENTIFIER().GetText(), context);
         }
         return null;
     }
