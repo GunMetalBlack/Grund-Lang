@@ -5,8 +5,8 @@ Variables are scoped and global, and the standard library is pretty bad; you are
 Its syntax is python c# like. 
 I will soon write documentation.
 Anyway, I will release the compiled version soon if anyone actually wants to use this burning plastic.
-[Link To Wiki](https://github.com/GunMetalBlack/Grund/wiki)
-
+[Documentation](https://github.com/GunMetalBlack/Grund/wiki)
+[Grund Speed Tests](https://docs.google.com/spreadsheets/d/1rW4sEgHRKovaxHGaUdG8YHd5OibnwNfNGlLQ4VjN1Rk/edit?usp=sharing)
 ## Run Instructions
 Make sure the file you're sending has the.grd extension. 
 After installation, enter your friendly neighborhood command prompt and make sure your in the directory of the installation enter the following command:
