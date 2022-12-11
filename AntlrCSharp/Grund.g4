@@ -2,9 +2,9 @@ grammar Grund;
 
 program: line* EOF;
 
-line: statement | ifBlock | whileBlock | functionDefinition | functionCall | elseIfBlock | assignment | listAccession | inLineIncrement;  
+line: statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | listAccession | inLineIncrement | strucDefinition | memberAccession ;  
 
-statement: (assignment | functionCall)';';
+statement: (assignment | functionCall | blockScopeAssignment)(';')?;
 
 ifBlock: IFBLOCK  expression  block | IFBLOCK  expression  block ('ELSE' elseIfBlock);
 
@@ -15,17 +15,26 @@ IFBLOCK: 'IF';
 whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock);
 
 WHILE: 'WHILE' | 'UNLESS';
+THIS: 'THIS:';
+STATIC: 'STATIC';
+CLASSPOINTER: '=>';
 
-assignment: IDENTIFIER '='  expression (';')? | listAccession '=' expression (';')?;
+blockScopeAssignment: STATIC ':' assignment* 'END' | STATIC '{' assignment* '}';
+
+assignment: IDENTIFIER '='  expression (';')? | listAccession '=' expression (';')? | THIS IDENTIFIER '='  expression (';')? | IDENTIFIER CLASSPOINTER  expression'<>'(';')? ;
+
+memberAccession: IDENTIFIER '<' IDENTIFIER '>' (';')? | IDENTIFIER '<' functionCall '>' (';')?;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
 inLineIncrement: IDENTIFIER inLineOP (';')? | IDENTIFIER inLineOP (';')?;
 
-FUNC: 'FUNK';
+FUNC: 'FUNK' | 'METH';
 parameter: IDENTIFIER;
-
+STRUCT:  'STRUK';
+strucDefinition: STRUCT IDENTIFIER block;
 functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
+
 listAccession: IDENTIFIER '[' expression ']';
 
 expression
@@ -35,6 +44,7 @@ expression
     | IDENTIFIER            #identifierExpression
     | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
+    | memberAccession       #expressionOrMemberAccessionExpression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression
     | expression multOP expression #multiplicativeExpression
@@ -61,7 +71,7 @@ BOOL: 'true' | 'false';
 NULL: 'NULL';
 
 
-block: ':' line* 'END';
+block: ':' line* 'END' |'{' line* '}';
 
 WS : [ \t\r\n]+ -> skip;
 LINE_COMMENT:'//' ~[\r\n]* -> skip;

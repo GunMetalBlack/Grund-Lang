@@ -68,11 +68,23 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitWhileBlock([NotNull] GrundParser.WhileBlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.blockScopeAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBlockScopeAssignment([NotNull] GrundParser.BlockScopeAssignmentContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.assignment"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAssignment([NotNull] GrundParser.AssignmentContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.memberAccession"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMemberAccession([NotNull] GrundParser.MemberAccessionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.functionCall"/>.
 	/// </summary>
@@ -92,6 +104,12 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParameter([NotNull] GrundParser.ParameterContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.strucDefinition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStrucDefinition([NotNull] GrundParser.StrucDefinitionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.functionDefinition"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -103,20 +121,6 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitListAccession([NotNull] GrundParser.ListAccessionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>collectionsExpression</c>
-	/// labeled alternative in <see cref="GrundParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitCollectionsExpression([NotNull] GrundParser.CollectionsExpressionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>parenthesizedExpression</c>
-	/// labeled alternative in <see cref="GrundParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitParenthesizedExpression([NotNull] GrundParser.ParenthesizedExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>constantExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
@@ -146,13 +150,6 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunctionDefinitionExpression([NotNull] GrundParser.FunctionDefinitionExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>functionCallExpression</c>
-	/// labeled alternative in <see cref="GrundParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFunctionCallExpression([NotNull] GrundParser.FunctionCallExpressionContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>notExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
@@ -167,13 +164,6 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitComparisonExpression([NotNull] GrundParser.ComparisonExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>listAccessionExpression</c>
-	/// labeled alternative in <see cref="GrundParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>multiplicativeExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
@@ -187,6 +177,41 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitBooleanExpression([NotNull] GrundParser.BooleanExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>collectionsExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCollectionsExpression([NotNull] GrundParser.CollectionsExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>parenthesizedExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParenthesizedExpression([NotNull] GrundParser.ParenthesizedExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>expressionOrMemberAccessionExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExpressionOrMemberAccessionExpression([NotNull] GrundParser.ExpressionOrMemberAccessionExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>functionCallExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunctionCallExpression([NotNull] GrundParser.FunctionCallExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>listAccessionExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.multOP"/>.
 	/// </summary>

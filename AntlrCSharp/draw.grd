@@ -1,10 +1,22 @@
-head = " -------+  \
-  \\\\\\\\\  \
-  //_//__\\\  |
-  /\0' `0~ |\ /
-  (|^<, ^  .)|
-   ( ._.  ||/
-    \ .  / |
-     +--/  |";
 
+print = GF_WRITE;
+print("TOOLS");
+
+STRUK wubble:
+    FUNK INIT(ballSize):
+        THIS ballSize = ballSize;
+    END
     
+    FUNK CALL():
+    
+    END
+    
+    STAT FUNK x():
+    
+    END
+    STAT wack = NULL; 
+    ballSize = 1;
+END
+x =  wubble.INIT();
+x.ballSize = -1000;
+

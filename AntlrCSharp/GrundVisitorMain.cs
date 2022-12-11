@@ -1,6 +1,7 @@
 
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
+using Grund;
 public struct GrundStackFrame
 {
     public string name;
@@ -22,6 +23,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     private Stack<GrundStackFrame> StackFrames { get; } = new();
     private List<string> ImmutableVariables { get; } = new();
     private Dictionary<string, object?> Variables { get; } = new();
+
+    private Dictionary<string, object?> Structs { get; } = new();
+    private Dictionary<string, object?> StaticStructMembers { get; } = new();
     public GrundVisitorMain()
     {
         // These are all the global static variables that are defined for the language
@@ -239,6 +243,102 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName + " IS NOT LIST");
         }
         throw new Exception(" GRUND OGGA No variable defined for " + varName);
+    }
+
+public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext context)
+{
+    // Return early if there are no lines in the struct definition
+    var lines = context.block().line();
+    if (lines == null || !lines.Any())
+    {
+        return null;
+    }
+
+    var structName = context.IDENTIFIER().GetText();
+    var structMembers = new Dictionary<string, object?>();
+    foreach (var line in lines)
+    {
+        if(line.functionDefinition() != null)
+        {
+            // Process function definitions
+            var methodName = line.functionDefinition().IDENTIFIER().GetText();
+            var methodValue = line.functionDefinition();
+            structMembers.Add(methodName, methodValue);
+        }
+        else if(line.statement().blockScopeAssignment() != null)
+        {
+            structMembers.Add("GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE",structName);
+            var assignmentCount = line.statement().blockScopeAssignment().assignment();
+            foreach (var assignment in assignmentCount)
+            {
+                var staticFeildName = assignment.IDENTIFIER().GetText();
+                var staticFeildValue = assignment.expression();
+                StaticStructMembers.Add(structName+staticFeildName,staticFeildValue);
+            }
+        }
+        else if(line.statement().assignment().THIS() != null)
+        {
+            // Process instance field assignments
+            var thisFieldName = line.statement().assignment().IDENTIFIER().GetText();
+            var thisFieldValue = line.statement().assignment().expression();
+            structMembers.Add(thisFieldName , thisFieldValue);
+        }
+    }
+
+    // Check if the struct contains a constructor
+    if (!(structMembers.ContainsKey(structName) && structMembers[structName] is GrundParser.FunctionDefinitionContext))
+    {
+        // Log a warning message if the struct does not contain a constructor
+        Console.WriteLine("Grund sighs: STRUK " + structName + " is missing constructor definition");
+    }
+
+    // Add the struct members to the global Variables dictionary
+    Variables.Add(structName,structMembers);
+    return null;
+}
+    public override object? VisitMemberAccession(GrundParser.MemberAccessionContext context)
+    {
+        var structInstanceName = context.IDENTIFIER(0).GetText();
+        var memberName = context.IDENTIFIER(1)?.GetText() ?? context.functionCall()?.IDENTIFIER()?.GetText();
+        if (structInstanceName == null || memberName == null)
+        {
+            throw new Exception("Grund: how It's Impossible due to syntax");
+        }
+        
+        object? value = null;
+        
+        if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> staticStruct && staticStruct.ContainsKey("GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE") && StaticStructMembers.ContainsKey(staticStruct["GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE"]+memberName))
+        {
+            var staticStructID = staticStruct["GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE"];
+            value = StaticStructMembers.GetValueOrDefault(staticStructID+memberName);
+        }
+        else if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> staticStackStruct && staticStackStruct.ContainsKey("GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE")&& StaticStructMembers.ContainsKey(staticStackStruct["GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE"]+memberName))
+        {
+            var staticStructID = staticStackStruct["GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE"];
+            value = StaticStructMembers.GetValueOrDefault(staticStructID+memberName);
+        }
+        else if (GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
+        {
+            value = scopeStruct.GetValueOrDefault(memberName);
+        }
+        else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> globalStruct)
+        {
+            value = globalStruct.GetValueOrDefault(memberName);
+        }
+        
+        if (value != null)
+        {
+            if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.functionCall() != null)
+            {
+                return ExecuteUserDefinedFunction(context.functionCall(), functionDefinition);
+            }
+            else
+            {
+                return Visit((Antlr4.Runtime.Tree.IParseTree)value);
+            }
+        }
+        
+        return null;
     }
 
     public override object VisitIdentifierExpression([NotNull] GrundParser.IdentifierExpressionContext context)

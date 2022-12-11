@@ -1,7 +1,17 @@
-FUNK TestHost():
- GF_WRITE("wow");
+STRUK wow:
+    STATIC
+    {
+        p = 3;
+    }
+    THIS: f = 1;
+    THIS: g = 3; 
+    METH wow(z,f,x,p):
+        _return = z + f + x + p;
+    END
 END
 
-print = TestHost;
+x => wow<> 
 
-print();
+GF_WRITE(x<wow(1,x<f>,x<g>,x<p>)>)
+
+
