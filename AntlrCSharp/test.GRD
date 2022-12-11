@@ -1,2 +1,7 @@
-// Define a function called "hello" that prints a greeting
-_print = GF_WRITE;FUNK hello():x=[1,2,3,4]_print(x);END hello();
+_x = 3;
+
+FUNK wh():
+    GF_WRITE(_x);
+END
+
+wh()

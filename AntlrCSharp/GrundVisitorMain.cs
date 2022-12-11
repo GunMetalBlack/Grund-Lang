@@ -7,6 +7,7 @@ public struct GrundStackFrame
     public string name;
     // This dictionary contains all the global variables
     public Dictionary<string, object?> variables { get; }
+    
     public bool inherit = false;
     // This stack frame dictates  the inheritance and scope for the language
     public GrundStackFrame(string name)
@@ -23,9 +24,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     private Stack<GrundStackFrame> StackFrames { get; } = new();
     private List<string> ImmutableVariables { get; } = new();
     private Dictionary<string, object?> Variables { get; } = new();
-
-    private Dictionary<string, object?> Structs { get; } = new();
     private Dictionary<string, object?> StaticStructMembers { get; } = new();
+    private string CurrentStructName { get; set; }
     public GrundVisitorMain()
     {
         // These are all the global static variables that are defined for the language
@@ -268,12 +268,19 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         else if(line.statement().blockScopeAssignment() != null)
         {
             structMembers.Add("GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE",structName);
+            CurrentStructName = structName;
             var assignmentCount = line.statement().blockScopeAssignment().assignment();
             foreach (var assignment in assignmentCount)
             {
                 var staticFeildName = assignment.IDENTIFIER().GetText();
-                var staticFeildValue = assignment.expression();
-                StaticStructMembers.Add(structName+staticFeildName,staticFeildValue);
+                var staticFeildValue = Visit(assignment.expression());
+                if(!(StaticStructMembers.ContainsKey(structName+staticFeildName)))
+                {
+                    StaticStructMembers.Add(structName+staticFeildName,staticFeildValue);
+                }else
+                {
+                    StaticStructMembers[structName+staticFeildName] = staticFeildValue;
+                }
             }
         }
         else if(line.statement().assignment().THIS() != null)
@@ -346,7 +353,7 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         // Pretty simple, this function returns the value of the variable for example if a variable is defined as y = 4.
         // then y < 3. y by itself should be 4
         var varName = context.IDENTIFIER().GetText();
-
+        // Get the parent context
         if (GetVariablesInCurrentStackFrame().ContainsKey(varName))
         {
             return GetVariablesInCurrentStackFrame()[varName];
@@ -354,6 +361,9 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         else if (Variables.ContainsKey(varName))
         {
             return Variables[varName];
+        }else if (CurrentStructName != null && StaticStructMembers.ContainsKey(CurrentStructName+varName))
+        {
+             return StaticStructMembers[CurrentStructName+varName];
         }
 
         throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
