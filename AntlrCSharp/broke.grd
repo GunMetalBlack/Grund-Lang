@@ -1,17 +1,16 @@
 STRUK wow:
-        STATIC
-        {
-            p = 5;
-            p = p + 3;
-        }
+    STATIC{
+      p = 3;
+      p = p + 3;
+    }
     METH wow():
         _return = p;
     END
 END
 
 x => wow<>
-
-GF_WRITE("Something Died",x<wow()>) 
+v = p
+GF_WRITE("Something Died",x<wow()>,v) 
 //TODO p is not acessable
 //SO MAny problems with structs
 

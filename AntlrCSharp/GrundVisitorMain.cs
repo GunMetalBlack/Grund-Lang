@@ -268,8 +268,8 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         else if(line.statement().blockScopeAssignment() != null)
         {
             structMembers.Add("GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE",structName);
-            CurrentStructName = structName;
             var assignmentCount = line.statement().blockScopeAssignment().assignment();
+            CurrentStructName = structName;
             foreach (var assignment in assignmentCount)
             {
                 var staticFeildName = assignment.IDENTIFIER().GetText();
@@ -339,6 +339,10 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
             {
                 return ExecuteUserDefinedFunction(context.functionCall(), functionDefinition);
             }
+            else if(!(value is Antlr4.Runtime.Tree.IParseTree))
+            {
+                return value;
+            }
             else
             {
                 return Visit((Antlr4.Runtime.Tree.IParseTree)value);
@@ -361,7 +365,8 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         else if (Variables.ContainsKey(varName))
         {
             return Variables[varName];
-        }else if (CurrentStructName != null && StaticStructMembers.ContainsKey(CurrentStructName+varName))
+        }
+        else if (CurrentStructName != null && StaticStructMembers.ContainsKey(CurrentStructName+varName))
         {
              return StaticStructMembers[CurrentStructName+varName];
         }
