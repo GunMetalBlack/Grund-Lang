@@ -1,17 +1,15 @@
-STRUK wow:
-    STATIC{
-      p = 3;
-      p = p + 3;
-    }
-    METH wow():
-        _return = p;
-    END
+STRUK Item:
+  STATIC
+  {
+    p = 1
+  }
+  METH Item(name, value, duration):
+    GF_WRITE(p)
+  END
 END
 
-x => wow<>
-v = p
-GF_WRITE("Something Died",x<wow()>,v) 
-//TODO p is not acessable
-//SO MAny problems with structs
+x => Item<>
+GF_WRITE(x<p>)
+
 
 

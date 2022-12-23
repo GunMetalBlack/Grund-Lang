@@ -1,7 +1,8 @@
 _x = 3;
-
-FUNK wh():
-    GF_WRITE(_x);
-END
+print = GF_WRITE
+FUNK wh()
+{
+    print(_x);
+}
 
 wh()

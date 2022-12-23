@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
 using Grund;
+using System.Collections.Concurrent;
 public struct GrundStackFrame
 {
     public string name;
@@ -24,8 +25,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     private Stack<GrundStackFrame> StackFrames { get; } = new();
     private List<string> ImmutableVariables { get; } = new();
     private Dictionary<string, object?> Variables { get; } = new();
-    private Dictionary<string, object?> StaticStructMembers { get; } = new();
-    private string CurrentStructName { get; set; }
+    private Dictionary<string, Dictionary<string, object?>> StaticStructMembers { get; } = new();
     public GrundVisitorMain()
     {
         // These are all the global static variables that are defined for the language
@@ -267,27 +267,25 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         }
         else if(line.statement().blockScopeAssignment() != null)
         {
-            structMembers.Add("GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE",structName);
             var assignmentCount = line.statement().blockScopeAssignment().assignment();
-            CurrentStructName = structName;
+            var staticMembers = new Dictionary<string, object?>();
             foreach (var assignment in assignmentCount)
             {
-                var staticFeildName = assignment.IDENTIFIER().GetText();
-                var staticFeildValue = Visit(assignment.expression());
-                if(!(StaticStructMembers.ContainsKey(structName+staticFeildName)))
-                {
-                    StaticStructMembers.Add(structName+staticFeildName,staticFeildValue);
-                }else
-                {
-                    StaticStructMembers[structName+staticFeildName] = staticFeildValue;
-                }
+                var staticFieldName = assignment.IDENTIFIER().GetText();
+                var staticFieldValue = Visit(assignment.expression());
+                staticMembers.Add(staticFieldName, staticFieldValue);
             }
+            if(!(structMembers.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")))
+            {
+            structMembers.Add("GF_STRUK_POINTER_PLEASE_DON'T_USE",structName);
+            }
+            StaticStructMembers.Add(structName, staticMembers);
         }
         else if(line.statement().assignment().THIS() != null)
         {
             // Process instance field assignments
             var thisFieldName = line.statement().assignment().IDENTIFIER().GetText();
-            var thisFieldValue = line.statement().assignment().expression();
+            var thisFieldValue = Visit(line.statement().assignment().expression());
             structMembers.Add(thisFieldName , thisFieldValue);
         }
     }
@@ -296,9 +294,9 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
     if (!(structMembers.ContainsKey(structName) && structMembers[structName] is GrundParser.FunctionDefinitionContext))
     {
         // Log a warning message if the struct does not contain a constructor
-        Console.WriteLine("Grund sighs: STRUK " + structName + " is missing constructor definition");
+        throw new Exception("Grund sighs: STRUK " + structName + " is missing constructor definition " + "Make sure the constructor has the same name as the STRUK");
     }
-
+    
     // Add the struct members to the global Variables dictionary
     Variables.Add(structName,structMembers);
     return null;
@@ -311,28 +309,30 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         {
             throw new Exception("Grund: how It's Impossible due to syntax");
         }
-        
+
         object? value = null;
-        
-        if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> staticStruct && staticStruct.ContainsKey("GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE") && StaticStructMembers.ContainsKey(staticStruct["GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE"]+memberName))
-        {
-            var staticStructID = staticStruct["GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE"];
-            value = StaticStructMembers.GetValueOrDefault(staticStructID+memberName);
+        if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
+        {   
+            if(scopeStruct.GetValueOrDefault(memberName) != null)
+            {
+             value = scopeStruct.GetValueOrDefault(memberName);
+            }            
+            else if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+            {
+                value = StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName];
+            }      
         }
-        else if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> staticStackStruct && staticStackStruct.ContainsKey("GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE")&& StaticStructMembers.ContainsKey(staticStackStruct["GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE"]+memberName))
+        else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> Struct)
         {
-            var staticStructID = staticStackStruct["GF_STRUK_STATIC_ID_DO_NOT_EDIT_PLEASE"];
-            value = StaticStructMembers.GetValueOrDefault(staticStructID+memberName);
+            if(Struct.GetValueOrDefault(memberName) != null)
+            {
+              value = Struct.GetValueOrDefault(memberName);
+            }  
+            else if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+            {
+                value = StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName];
+            }
         }
-        else if (GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
-        {
-            value = scopeStruct.GetValueOrDefault(memberName);
-        }
-        else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> globalStruct)
-        {
-            value = globalStruct.GetValueOrDefault(memberName);
-        }
-        
         if (value != null)
         {
             if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.functionCall() != null)
@@ -366,10 +366,7 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         {
             return Variables[varName];
         }
-        else if (CurrentStructName != null && StaticStructMembers.ContainsKey(CurrentStructName+varName))
-        {
-             return StaticStructMembers[CurrentStructName+varName];
-        }
+
 
         throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
 
