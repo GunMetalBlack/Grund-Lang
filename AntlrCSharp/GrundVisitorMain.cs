@@ -194,25 +194,25 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             
             if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
             {   
-                if(scopeStruct.ContainsKey(memberName) != null)
-                {
-                  scopeStruct[memberName] = value;
-                }            
-                else if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+                if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
                 {
                  StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName] = value;
-                }      
+                }
+                else if(scopeStruct.ContainsKey(memberName) != null)
+                {
+                  scopeStruct[memberName] = value;
+                }                  
             }
             else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> Struct)
             {
-                if(Struct.ContainsKey(memberName) != null)
-                {
-                    Struct[memberName] = value;
-                }  
-                else if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+                if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
                 {
                     StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName] = value;
                 }
+                else if(Struct.ContainsKey(memberName) != null)
+                {
+                    Struct[memberName] = value;
+                }  
             }
         }
         else if(context.CLASSPOINTER() != null)
@@ -354,10 +354,10 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
     Variables.Add(structName,structMembers);
     return null;
 }
-    public override object VisitMemberAccessionExpression([NotNull] GrundParser.MemberAccessionExpressionContext context)
+    public override object VisitMemberAccession([NotNull] GrundParser.MemberAccessionContext context)
     {
-        var structInstanceName = context.memberAccession().IDENTIFIER(0).GetText();
-        var memberName = context.memberAccession().IDENTIFIER(1)?.GetText() ?? context.memberAccession().functionCall()?.IDENTIFIER()?.GetText();
+        var structInstanceName = context.IDENTIFIER(0).GetText();
+        var memberName = context.IDENTIFIER(1)?.GetText() ?? context.functionCall()?.IDENTIFIER()?.GetText();
         if (structInstanceName == null || memberName == null)
         {
             throw new Exception("Grund: how It's Impossible due to syntax");
@@ -366,31 +366,32 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         object? value = null;
         if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
         {   
-            if(scopeStruct.GetValueOrDefault(memberName) != null)
+            if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+            {
+                value = StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName];
+            }
+            else if(scopeStruct.GetValueOrDefault(memberName) != null)
             {
              value = scopeStruct.GetValueOrDefault(memberName);
             }            
-            else if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
-            {
-                value = StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName];
-            }      
+      
         }
         else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> Struct)
         {
-            if(Struct.GetValueOrDefault(memberName) != null)
-            {
-              value = Struct.GetValueOrDefault(memberName);
-            }  
-            else if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+            if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
             {
                 value = StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName];
             }
+            else if(Struct.GetValueOrDefault(memberName) != null)
+            {
+              value = Struct.GetValueOrDefault(memberName);
+            }  
         }
         if (value != null)
         {
-            if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.memberAccession().functionCall() != null)
+            if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.functionCall() != null)
             {
-                return ExecuteUserDefinedFunction(context.memberAccession().functionCall(), functionDefinition);
+                return ExecuteUserDefinedFunction(context.functionCall(), functionDefinition);
             }
             else if(!(value is Antlr4.Runtime.Tree.IParseTree))
             {
