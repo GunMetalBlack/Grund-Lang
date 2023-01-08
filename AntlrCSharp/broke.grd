@@ -1,16 +1,20 @@
 STRUK Item:
   STATIC
   {
-    p = 1
+    p = 10
   }
+  THIS: snacks = 3;
   METH Item():
-    p = p + 1
-    GF_WRITE(p)
+    _return = p;
   END
 END
 
 x => Item<>
-GF_WRITE(x<Item()>)
+y => Item<>
 
+x.p = 39
 
+GF_WRITE_LN(x.p)
+GF_WRITE_LN(y.p)
 
+GF_WRITE_LN(x.p)

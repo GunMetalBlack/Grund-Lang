@@ -21,9 +21,11 @@ CLASSPOINTER: '=>';
 
 blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
-assignment: IDENTIFIER '='  expression (';')? | listAccession '=' expression (';')? | THIS IDENTIFIER '='  expression (';')? | IDENTIFIER CLASSPOINTER  expression'<>'(';')? ;
+assignment: IDENTIFIER '='  expression (';')? | listAccession '=' expression (';')? | THIS IDENTIFIER '='  expression (';')? | IDENTIFIER CLASSPOINTER  expression'<>'(';')?|  memberAssignment expression;
 
-memberAccession: IDENTIFIER '<' IDENTIFIER '>' (';')? | IDENTIFIER '<' functionCall '>' (';')?;
+memberAssignment: memberAccession '=';
+
+memberAccession: IDENTIFIER '.' IDENTIFIER (';')? | IDENTIFIER '.' functionCall(';')?;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
@@ -44,7 +46,7 @@ expression
     | IDENTIFIER            #identifierExpression
     | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
-    | memberAccession       #expressionOrMemberAccessionExpression
+    | memberAccession       #memberAccessionExpression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression
     | expression multOP expression #multiplicativeExpression

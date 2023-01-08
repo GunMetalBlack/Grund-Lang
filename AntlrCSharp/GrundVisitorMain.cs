@@ -181,6 +181,59 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                 }
             }
         }
+         else if(context.memberAssignment() != null)
+        {
+            var value = Visit(context.expression());
+            var structInstanceName = context.memberAssignment().memberAccession().IDENTIFIER(0).GetText();
+            var memberName = context.memberAssignment().memberAccession().IDENTIFIER(1)?.GetText() ?? context.memberAssignment().memberAccession().functionCall()?.IDENTIFIER()?.GetText();
+           
+            if (structInstanceName == null || memberName == null)
+            {
+                throw new Exception("Grund: how It's Impossible due to syntax");
+            }
+            
+            if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
+            {   
+                if(scopeStruct.ContainsKey(memberName) != null)
+                {
+                  scopeStruct[memberName] = value;
+                }            
+                else if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+                {
+                 StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName] = value;
+                }      
+            }
+            else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> Struct)
+            {
+                if(Struct.ContainsKey(memberName) != null)
+                {
+                    Struct[memberName] = value;
+                }  
+                else if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+                {
+                    StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName] = value;
+                }
+            }
+        }
+        else if(context.CLASSPOINTER() != null)
+        {
+            var varName = context.IDENTIFIER().GetText();
+            var value = Visit(context.expression());
+            Dictionary<string, object?> newStuctMembers = new Dictionary<string, object?>();
+            foreach(KeyValuePair<string, object?> kvp in (Dictionary<string, object?>)value)
+            {
+                newStuctMembers.Add(kvp.Key, kvp.Value);
+            }
+            if (varName[0] == '_')
+            {
+                
+                Variables[varName] = newStuctMembers;
+            }
+            else
+            {
+                GetVariablesInCurrentStackFrame()[varName] = newStuctMembers;
+            }
+        }
         else
         {
             // If its not a list do this for everything else that needs to be assigned as a variable
@@ -301,10 +354,10 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
     Variables.Add(structName,structMembers);
     return null;
 }
-    public override object? VisitMemberAccession(GrundParser.MemberAccessionContext context)
+    public override object VisitMemberAccessionExpression([NotNull] GrundParser.MemberAccessionExpressionContext context)
     {
-        var structInstanceName = context.IDENTIFIER(0).GetText();
-        var memberName = context.IDENTIFIER(1)?.GetText() ?? context.functionCall()?.IDENTIFIER()?.GetText();
+        var structInstanceName = context.memberAccession().IDENTIFIER(0).GetText();
+        var memberName = context.memberAccession().IDENTIFIER(1)?.GetText() ?? context.memberAccession().functionCall()?.IDENTIFIER()?.GetText();
         if (structInstanceName == null || memberName == null)
         {
             throw new Exception("Grund: how It's Impossible due to syntax");
@@ -335,9 +388,9 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         }
         if (value != null)
         {
-            if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.functionCall() != null)
+            if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.memberAccession().functionCall() != null)
             {
-                return ExecuteUserDefinedFunction(context.functionCall(), functionDefinition);
+                return ExecuteUserDefinedFunction(context.memberAccession().functionCall(), functionDefinition);
             }
             else if(!(value is Antlr4.Runtime.Tree.IParseTree))
             {
@@ -347,6 +400,9 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
             {
                 return Visit((Antlr4.Runtime.Tree.IParseTree)value);
             }
+        }else
+        {
+            throw new Exception("GRUND Says theres no value for that class there jimbo? "+ "LINE: " + context.Start.Line.ToString());
         }
         
         return null;
@@ -357,7 +413,7 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         // Pretty simple, this function returns the value of the variable for example if a variable is defined as y = 4.
         // then y < 3. y by itself should be 4
         var varName = context.IDENTIFIER().GetText();
-        var parentContext = context.Parent.Parent.Parent;
+        var parentContext = context.Parent;
         // Get the parent context
         if (GetVariablesInCurrentStackFrame().ContainsKey(varName))
         {
@@ -377,7 +433,7 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
                 if (parentContext == null)
                 {
                     // We didn't find a StrucDefinitionContext, so we can kill Grund
-                    throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
+                    throw new Exception("GRUNDS SPITS: No maide- ? I mean class definition?");
                 }
             }
             if(parentContext is GrundParser.StrucDefinitionContext structDef){

@@ -80,6 +80,12 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitAssignment([NotNull] GrundParser.AssignmentContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.memberAssignment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMemberAssignment([NotNull] GrundParser.MemberAssignmentContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.memberAccession"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -192,19 +198,19 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParenthesizedExpression([NotNull] GrundParser.ParenthesizedExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>expressionOrMemberAccessionExpression</c>
-	/// labeled alternative in <see cref="GrundParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExpressionOrMemberAccessionExpression([NotNull] GrundParser.ExpressionOrMemberAccessionExpressionContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>functionCallExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFunctionCallExpression([NotNull] GrundParser.FunctionCallExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>memberAccessionExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMemberAccessionExpression([NotNull] GrundParser.MemberAccessionExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>listAccessionExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
