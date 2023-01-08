@@ -19,7 +19,7 @@ THIS: 'THIS:';
 STATIC: 'STATIC';
 CLASSPOINTER: '=>';
 
-blockScopeAssignment: STATIC IDENTIFIER ':' assignment* 'END' | STATIC IDENTIFIER '{' assignment* '}';
+blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
 assignment: IDENTIFIER '='  expression (';')? | listAccession '=' expression (';')? | THIS IDENTIFIER '='  expression (';')? | IDENTIFIER CLASSPOINTER  expression'<>'(';')? ;
 

@@ -1,5 +1,5 @@
 STRUK Item:
-  STATIC Item
+  STATIC
   {
     p = 1
   }
