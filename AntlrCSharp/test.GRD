@@ -1,8 +1,18 @@
-_x = 3;
-print = GF_WRITE
-FUNK wh()
-{
-    print(_x);
-}
 
-wh()
+_print = GF_WRITE_LN
+FUNK chicken():
+    lay_eggs = 0;
+    count = 0;
+    dead_eggs = 0;
+    WHILE lay_eggs < 400:
+        lay_eggs++;
+        count++;
+        IF count == 5:
+            count = 0
+            dead_eggs++
+        END
+        _print("Layed Eggs: ",lay_eggs," Dead eggs: ",dead_eggs );
+    END
+END
+
+chicken()

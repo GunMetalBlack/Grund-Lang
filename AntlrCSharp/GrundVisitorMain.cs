@@ -357,6 +357,7 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         // Pretty simple, this function returns the value of the variable for example if a variable is defined as y = 4.
         // then y < 3. y by itself should be 4
         var varName = context.IDENTIFIER().GetText();
+        var parentContext = context.Parent.Parent.Parent;
         // Get the parent context
         if (GetVariablesInCurrentStackFrame().ContainsKey(varName))
         {
@@ -365,9 +366,27 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         else if (Variables.ContainsKey(varName))
         {
             return Variables[varName];
+        }else
+        {
+            while (!(parentContext is GrundParser.StrucDefinitionContext))
+            {
+                // Get the parent of the parent context
+                parentContext = parentContext.Parent;
+
+                // If the parent is null, we've reached the root of the tree
+                if (parentContext == null)
+                {
+                    // We didn't find a StrucDefinitionContext, so we can kill Grund
+                    throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
+                }
+            }
+            if(parentContext is GrundParser.StrucDefinitionContext structDef){
+                if(StaticStructMembers.ContainsKey(structDef.IDENTIFIER().GetText()))
+                {
+                    return StaticStructMembers[structDef.IDENTIFIER().GetText()][varName];
+                }
+            }
         }
-
-
         throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
 
     } 

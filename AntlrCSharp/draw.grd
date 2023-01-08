@@ -11,9 +11,9 @@ STRUK wubble:
     
     END
     
-    STAT FUNK x():
+    STAT FUNK x(){
     
-    END
+    }
     STAT wack = NULL; 
     ballSize = 1;
 END
