@@ -4,15 +4,12 @@ STRUK Item:
     p = 10
   }
   THIS: snacks = 3;
-  METH Item():
-    
+  METH Item(p):
+    GF_WRITE(p)
   END
 END
 
 x => Item<>
-y => Item<>
 
-x.p = 3
-GF_WRITE_LN(x.p)
-GF_WRITE_LN(y.p)
+x.Item(x.p)
 
