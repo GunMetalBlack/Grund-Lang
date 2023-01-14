@@ -46,6 +46,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var FUNC_ID_GF_GET_KEY = "GF_KEY";
         var FUNC_ID_GF_PARSER = "GF_PARSER";
         var FUNC_ID_GF_INDEX_CHAR = "GF_INDEX_CHAR";
+        var FUNC_ID_GF_CLS = "GF_CLS";
+        var FUNC_ID_GF_CURSOR_MOVE = "GF_CURSOR_MOVE";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("base"));
         Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
@@ -62,6 +64,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         Variables[FUNC_ID_GF_GET_KEY] = new Func<object?[], object?>(SlanderLibrary.GF_GET_KEY); ImmutableVariables.Add(FUNC_ID_GF_GET_KEY);
         Variables[FUNC_ID_GF_PARSER] = new Func<object?[], object?>(SlanderLibrary.GF_PARSER); ImmutableVariables.Add(FUNC_ID_GF_PARSER);
         Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<object?[], object?>(SlanderLibrary.GF_INDEX_CHAR); ImmutableVariables.Add(FUNC_ID_GF_INDEX_CHAR);
+        Variables[FUNC_ID_GF_CLS] = new Func<object?[], object?>(SlanderLibrary.GF_CLS); ImmutableVariables.Add(FUNC_ID_GF_CLS);
+         Variables[FUNC_ID_GF_CURSOR_MOVE] = new Func<object?[], object?>(SlanderLibrary.GF_CURSOR_MOVE); ImmutableVariables.Add(FUNC_ID_GF_CURSOR_MOVE); ImmutableVariables.Add(FUNC_ID_GF_CURSOR_MOVE);
     }
 
     public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup) {
@@ -434,7 +438,7 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
                 if (parentContext == null)
                 {
                     // We didn't find a StrucDefinitionContext, so we can kill Grund
-                    throw new Exception("GRUNDS SPITS: No maide- ? I mean class definition?");
+                    throw new Exception("GRUNDS SPITS: No maide- ? I mean class definition? OR  GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
                 }
             }
             if(parentContext is GrundParser.StrucDefinitionContext structDef){

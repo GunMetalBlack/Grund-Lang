@@ -1,15 +1,2 @@
-STRUK Item:
-  STATIC
-  {
-    p = 10
-  }
-  THIS: snacks = 3;
-  METH Item(p):
-    GF_WRITE(p)
-  END
-END
-
-x => Item<>
-
-x.Item(x.p)
-
+GF_CURSOR_MOVE(10,10);
+GF_WRITE("SUS")

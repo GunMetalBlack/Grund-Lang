@@ -15,19 +15,17 @@ namespace Grund{
             {
                 if (arg is List<object?> list)
                 {
-                    Console.Write("[");
                     for (int i = 0; i < list.Count; i++)
                     {
                         if (!(i == list.Count - 1))
                         {
-                            Console.Write(list.ElementAt(i) + ", ");
+                            Console.Write(list.ElementAt(i));
                         }
                         else
                         {
                             Console.Write(list.ElementAt(i));
                         }
                     }
-                    Console.Write("]");
                 }
                 else
                 {
@@ -44,24 +42,40 @@ namespace Grund{
             {
                 if (arg is List<object?> list)
                 {
-                    Console.Write("[");
                     for (int i = 0; i < list.Count; i++)
                     {
                         if (!(i == list.Count - 1))
                         {
-                            Console.Write(list.ElementAt(i) + ", ");
+                            Console.Write(list.ElementAt(i));
                         }
                         else
                         {
                             Console.Write(list.ElementAt(i));
                         }
                     }
-                    Console.Write("]");
                 }
                 else
                 {
                     Console.Write(arg);
                 }
+            }
+            return null;
+        }
+        public static object?[] GF_CURSOR_MOVE(object?[] args)
+        {
+            if(args.Length == 2)
+            {
+                if(args[0] is int x && args[1] is int y)
+                {
+                    Console.SetCursorPosition(x,y);
+                }
+                else
+                {
+                    throw new Exception("Grund Screams: USE INT'S YOU MORON! CURSOR CAN'T MOVE!");
+                }
+            }else
+            {
+                throw new Exception("Grund: DUDE REALLY YOUR MISSING ARGS! FOR CURSOR");
             }
             return null;
         }
@@ -84,6 +98,11 @@ namespace Grund{
                 return toReturn.ToString();
             }
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
+        }
+        public static object?[] GF_CLS(object?[] args)
+        {
+            Console.Clear();
+            return null;
         }
         public static object? GF_GET_KEY(object?[] args)
         {
@@ -172,13 +191,17 @@ namespace Grund{
         }
         public static object? GF_LENGTH(object?[] args, Dictionary<string, object?> Variables)
         {
-            if (args.Length == 1)
+            if (args.Length == 1 && !(args[0] is List<object?>))
             {
                 var lengthProp = args[0].GetType().GetProperty("Length");
                 if (lengthProp != null)
                 {
                     return lengthProp.GetValue(args[0], null);
                 }
+            }
+            else if (args.Length == 1 && args[0] is List<object?> list)
+            {
+                return list.Count;
             }
             else
             {
