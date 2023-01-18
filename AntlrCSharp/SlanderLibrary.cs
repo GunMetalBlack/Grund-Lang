@@ -376,9 +376,17 @@ namespace Grund{
         }
         public static bool IsEqual(object? left, object? right)
         {
-            if (left == null && right == null)
+            if (left == null || right == null)
             {
                 return left == right;
+            }
+            if(left != null && right == null)
+            {
+                return false;
+            }
+            if(left == null && right != null)
+            {
+                return false;
             }
             if (left is int l && right is int r)
             {

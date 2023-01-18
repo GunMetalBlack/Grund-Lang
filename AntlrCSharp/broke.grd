@@ -1,2 +1,4 @@
-GF_CURSOR_MOVE(10,10);
-GF_WRITE("SUS")
+
+WHILE GF_KEY() != "s":
+    GF_WRITE("HUH")
+END
