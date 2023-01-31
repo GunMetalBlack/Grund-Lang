@@ -117,6 +117,26 @@ namespace Grund{
 
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
         }
+        public static object? GF_RAND(object?[] args)
+        {
+            if ((args[0] != null && args[1] != null)&& (args[0] is int low && args[1] is int high))
+            {
+                if(low >= 0)
+                {
+                    var random = new Random();
+                    var rNum = random.Next(low, high);
+                    return rNum;
+                }
+                else
+                {
+                    throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED YOU CANNOT USE NEGATIVE NUMBERS FOR LOW IN RAND FUNCTION");
+                }
+            }else
+            {
+                throw new Exception("GRUND PUNCHES YOU IN THE FACE YOU'RE MISSING ARGUMENTS SIR");
+            }
+            return null;
+        }
         public static object? GF_INDEX_CHAR(object?[] args)
         {
             if (args[0] != null && args[1] != null)

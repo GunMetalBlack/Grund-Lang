@@ -23,7 +23,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 {
 
     private Stack<GrundStackFrame> StackFrames { get; } = new();
-    private List<string> ImmutableVariables { get; } = new();
     private Dictionary<string, object?> Variables { get; } = new();
     private Dictionary<string, Dictionary<string, object?>> StaticStructMembers { get; } = new();
     public GrundVisitorMain()
@@ -48,24 +47,26 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var FUNC_ID_GF_INDEX_CHAR = "GF_INDEX_CHAR";
         var FUNC_ID_GF_CLS = "GF_CLS";
         var FUNC_ID_GF_CURSOR_MOVE = "GF_CURSOR_MOVE";
+        var FUNC_ID_GF_RAND = "GF_RANDOM";
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("base"));
-        Variables[ID_PI] = Math.PI; ImmutableVariables.Add(ID_PI);
-        Variables[ID_E] = Math.E; ImmutableVariables.Add(ID_E);
+        Variables[ID_PI] = Math.PI; 
+        Variables[ID_E] = Math.E; 
         //** FunctionCall
-        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE); ImmutableVariables.Add(FUNC_ID_WRITE);
-        Variables[FUNC_ID_WRITE_INLINE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INLINE); ImmutableVariables.Add(FUNC_ID_WRITE_INLINE); ImmutableVariables.Add(FUNC_ID_WRITE_INLINE);
-        Variables[FUNC_ID_GF_LISTCREATE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_CREATE(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTCREATE);
-        Variables[FUNC_ID_GF_LISTADD] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_APPEND(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTADD);
-        Variables[FUNC_ID_GF_LISTREMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTREMOVE);
-        Variables[FUNC_ID_GF_LENGTH] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LENGTH(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LENGTH);
-        Variables[FUNC_ID_GF_LISTLOOKUP] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_LOOKUP(listname, Variables)); ImmutableVariables.Add(FUNC_ID_GF_LISTLOOKUP);
-        Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INPUT); ImmutableVariables.Add(FUNC_ID_GF_WRITE_INPUT);
-        Variables[FUNC_ID_GF_GET_KEY] = new Func<object?[], object?>(SlanderLibrary.GF_GET_KEY); ImmutableVariables.Add(FUNC_ID_GF_GET_KEY);
-        Variables[FUNC_ID_GF_PARSER] = new Func<object?[], object?>(SlanderLibrary.GF_PARSER); ImmutableVariables.Add(FUNC_ID_GF_PARSER);
-        Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<object?[], object?>(SlanderLibrary.GF_INDEX_CHAR); ImmutableVariables.Add(FUNC_ID_GF_INDEX_CHAR);
-        Variables[FUNC_ID_GF_CLS] = new Func<object?[], object?>(SlanderLibrary.GF_CLS); ImmutableVariables.Add(FUNC_ID_GF_CLS);
-         Variables[FUNC_ID_GF_CURSOR_MOVE] = new Func<object?[], object?>(SlanderLibrary.GF_CURSOR_MOVE); ImmutableVariables.Add(FUNC_ID_GF_CURSOR_MOVE); ImmutableVariables.Add(FUNC_ID_GF_CURSOR_MOVE);
+        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE);
+        Variables[FUNC_ID_WRITE_INLINE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INLINE); 
+        Variables[FUNC_ID_GF_LISTCREATE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_CREATE(listname, Variables)); 
+        Variables[FUNC_ID_GF_LISTADD] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_APPEND(listname, Variables)); 
+        Variables[FUNC_ID_GF_LISTREMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname, Variables)); 
+        Variables[FUNC_ID_GF_LENGTH] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LENGTH(listname, Variables)); 
+        Variables[FUNC_ID_GF_LISTLOOKUP] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_LOOKUP(listname, Variables)); 
+        Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INPUT); 
+        Variables[FUNC_ID_GF_GET_KEY] = new Func<object?[], object?>(SlanderLibrary.GF_GET_KEY); 
+        Variables[FUNC_ID_GF_PARSER] = new Func<object?[], object?>(SlanderLibrary.GF_PARSER); 
+        Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<object?[], object?>(SlanderLibrary.GF_INDEX_CHAR); 
+        Variables[FUNC_ID_GF_CLS] = new Func<object?[], object?>(SlanderLibrary.GF_CLS); 
+        Variables[FUNC_ID_GF_CURSOR_MOVE] = new Func<object?[], object?>(SlanderLibrary.GF_CURSOR_MOVE); 
+        Variables[FUNC_ID_GF_RAND] = new Func<object?[], object?>(SlanderLibrary.GF_RAND);
     }
 
     public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup) {
