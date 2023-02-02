@@ -6,7 +6,7 @@ line: statement | ifBlock | whileBlock | functionDefinition | functionCall | ass
 
 statement: (assignment | functionCall | blockScopeAssignment)(';')?;
 
-ifBlock: IFBLOCK  expression  block | IFBLOCK  expression  block ('ELSE' elseIfBlock);
+ifBlock: IFBLOCK ('(')? expression (')')? block | IFBLOCK ('(')? expression (')')? block ('ELSE' elseIfBlock);
 
 elseIfBlock: block | ifBlock;
 

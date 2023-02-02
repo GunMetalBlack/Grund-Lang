@@ -1,36 +1,16 @@
-_answers = ["It is certain", "It is decidedly so", "Without a doubt", "Yes – definitely", "You may rely on it", "As I see it, yes", "Most likely", "Outlook good", "Yes Signs point to yes", "Reply hazy", "try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Dont count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"]
-
-GF_WRITE("Hello World, I am the Magic 8 Ball, What is your name?")
-_name = GF_INPUT()
-GF_WRITE_LN("hello " + _name)
-
-FUNK ending():
-    GF_CLS();
-    GF_WRITE_LN("Please Have A Nice Day!");
+STRUK student:
+    METH student(name,absent,period):
+        THIS:Name = name
+        THIS:Absent = absent
+        THIS:Period = period
+    END
+END
+studnetList = []
+x = 0
+WHILE x < 20:
+    x++
+    GL_ADD(studnetList,sd => student<>)
+    sd.student("Bill","BreakNose","")
 END
 
-FUNK Replay():
-    GF_WRITE("Do you have another question? [Y/N]")
-    reply = GF_INPUT()
-    IF reply == "Y" OR reply == "y" :
-        Magic8Ball()
-		END
-    ELSE IF reply == 'N' OR reply == 'n':
-          ending();  
-		END
-    ELSE:
-        GF_WRITE_LN("I apologies, I did not catch that. Please repeat.")
-        Replay()
-		END
-END
-
-FUNK Magic8Ball():
-	GF_WRITE(_name," ask A Question: ")
-	question = GF_INPUT()
-    GF_WRITE_LN(_answers[GF_RANDOM(0,7)]);
-	Replay()
-END
-
-
-Magic8Ball();
-
+GF_WRITE(wow.test())
