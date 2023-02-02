@@ -188,7 +188,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
          else if(context.memberAssignment() != null)
         {
-            var value = Visit(context.expression());
+            var value = Visit(context.memberAssignment().expression());
             var structInstanceName = context.memberAssignment().memberAccession().IDENTIFIER(0).GetText();
             var memberName = context.memberAssignment().memberAccession().IDENTIFIER(1)?.GetText() ?? context.memberAssignment().memberAccession().functionCall()?.IDENTIFIER()?.GetText();
            
@@ -199,7 +199,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             
             if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
             {   
-                if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString())&&  StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()].TryGetValue(memberName, out value))
+                if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
                 {
                  StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName] = value;
                 }
@@ -210,7 +210,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             }
             else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> Struct)
             {
-                if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString())&&  StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()].TryGetValue(memberName, out value))
+                if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
                 {
                     StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName] = value;
                 }

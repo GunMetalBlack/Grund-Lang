@@ -1,16 +1,22 @@
-STRUK student:
-    METH student(name,absent,period):
-        THIS:Name = name
-        THIS:Absent = absent
-        THIS:Period = period
-    END
-END
-studnetList = []
-x = 0
-WHILE x < 20:
-    x++
-    GL_ADD(studnetList,sd => student<>)
-    sd.student("Bill","BreakNose","")
+STRUK Item:
+  METH Item(self, pSnacks):
+    self.snacks = pSnacks;
+  END
 END
 
-GF_WRITE(wow.test())
+STRUK student:
+  METH student(self, name, absent, period):
+    self.Name = name
+    self.Absent = absent
+    self.Period = period
+  END
+  METH show_up_to_class(self):
+    self.Absent = false;
+  END
+END
+
+student => student<>;
+student.student(student, "bob", true, 6);
+GF_WRITE_LN(student.Absent)
+student.show_up_to_class(student)
+GF_WRITE_LN(student.Absent)
