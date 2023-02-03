@@ -69,12 +69,12 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         Variables[FUNC_ID_GF_RAND] = new Func<object?[], object?>(SlanderLibrary.GF_RAND);
     }
 
-    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup) {
+    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, object? structInstance = null) {
         
         // Grab the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
-        var args = context.expression().Select(Visit).ToArray();
-
+        object?[] args = context.expression().Select(Visit).ToArray();
+        if(structInstance != null) args = args.Prepend(structInstance).ToArray();
         if(functionLookup == null) {
             return null;
         }
@@ -189,7 +189,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
          else if(context.memberAssignment() != null)
         {
             var value = Visit(context.memberAssignment().expression());
-            var structInstanceName = context.memberAssignment().memberAccession().IDENTIFIER(0).GetText();
+            var structInstanceName = context.memberAssignment().memberAccession().IDENTIFIER(0).GetText(); // todo remove this
+            // var structInstance = FindVariableInCurrentState(context.memberAssignment().memberAccession().IDENTIFIER(0).GetText());
             var memberName = context.memberAssignment().memberAccession().IDENTIFIER(1)?.GetText() ?? context.memberAssignment().memberAccession().functionCall()?.IDENTIFIER()?.GetText();
            
             if (structInstanceName == null || memberName == null)
@@ -197,7 +198,11 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                 throw new Exception("Grund: how It's Impossible due to syntax");
             }
             
+            bool memberIsStatic = false;
+            // bool structInstanceIsDictionary = structInstance is Dictionary<string, object?>;
+            // LookupStructMember(null/*structInstance*/, memberName, out memberIsStatic);
             if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
+            // if(structInstance is Dictionary<string, object?> scopeStruct)
             {   
                 if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
                 {
@@ -303,63 +308,78 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         throw new Exception(" GRUND OGGA No variable defined for " + varName);
     }
 
-public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext context)
-{
-    // Return early if there are no lines in the struct definition
-    var lines = context.block().line();
-    if (lines == null || !lines.Any())
+    public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext context)
     {
+        // Return early if there are no lines in the struct definition
+        var lines = context.block().line();
+        if (lines == null || !lines.Any())
+        {
+            return null;
+        }
+
+        var structName = context.IDENTIFIER().GetText();
+        var structMembers = new Dictionary<string, object?>();
+        foreach (var line in lines)
+        {
+            if(line.functionDefinition() != null)
+            {
+                // Process function definitions
+                var methodName = line.functionDefinition().IDENTIFIER().GetText();
+                var methodValue = line.functionDefinition();
+                structMembers.Add(methodName, methodValue);
+            }
+            else if(line.statement().blockScopeAssignment() != null)
+            {
+                var assignmentCount = line.statement().blockScopeAssignment().assignment();
+                var staticMembers = new Dictionary<string, object?>();
+                foreach (var assignment in assignmentCount)
+                {
+                    var staticFieldName = assignment.IDENTIFIER().GetText();
+                    var staticFieldValue = Visit(assignment.expression());
+                    staticMembers.Add(staticFieldName, staticFieldValue);
+                }
+                if(!(structMembers.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")))
+                {
+                 structMembers.Add("GF_STRUK_POINTER_PLEASE_DON'T_USE",structName);
+                }
+                StaticStructMembers.Add(structName, staticMembers);
+            }
+            else if(line.statement().assignment().THIS() != null)
+            {
+                // Process instance field assignments
+                var thisFieldName = line.statement().assignment().IDENTIFIER().GetText();
+                var thisFieldValue = Visit(line.statement().assignment().expression());
+                structMembers.Add(thisFieldName , thisFieldValue);
+            }
+        }
+
+        // Check if the struct contains a constructor
+        if (!(structMembers.ContainsKey(structName) && structMembers[structName] is GrundParser.FunctionDefinitionContext))
+        {
+            // Log a warning message if the struct does not contain a constructor
+            throw new Exception("Grund sighs: STRUK " + structName + " is missing constructor definition " + "Make sure the constructor has the same name as the STRUK");
+        }
+        
+        // Add the struct members to the global Variables dictionary
+        Variables.Add(structName,structMembers);
         return null;
     }
 
-    var structName = context.IDENTIFIER().GetText();
-    var structMembers = new Dictionary<string, object?>();
-    foreach (var line in lines)
-    {
-        if(line.functionDefinition() != null)
-        {
-            // Process function definitions
-            var methodName = line.functionDefinition().IDENTIFIER().GetText();
-            var methodValue = line.functionDefinition();
-            structMembers.Add(methodName, methodValue);
-        }
-        else if(line.statement().blockScopeAssignment() != null)
-        {
-            var assignmentCount = line.statement().blockScopeAssignment().assignment();
-            var staticMembers = new Dictionary<string, object?>();
-            foreach (var assignment in assignmentCount)
-            {
-                var staticFieldName = assignment.IDENTIFIER().GetText();
-                var staticFieldValue = Visit(assignment.expression());
-                staticMembers.Add(staticFieldName, staticFieldValue);
-            }
-            if(!(structMembers.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")))
-            {
-            structMembers.Add("GF_STRUK_POINTER_PLEASE_DON'T_USE",structName);
-            }
-            StaticStructMembers.Add(structName, staticMembers);
-        }
-        else if(line.statement().assignment().THIS() != null)
-        {
-            // Process instance field assignments
-            var thisFieldName = line.statement().assignment().IDENTIFIER().GetText();
-            var thisFieldValue = Visit(line.statement().assignment().expression());
-            structMembers.Add(thisFieldName , thisFieldValue);
-        }
+    public object? FindVariableInCurrentState(string identifier) {
+        if(GetVariablesInCurrentStackFrame().ContainsKey(identifier)) return GetVariablesInCurrentStackFrame()[identifier];
+        if(Variables.ContainsKey(identifier)) return Variables[identifier];
+        return null;
     }
 
-    // Check if the struct contains a constructor
-    if (!(structMembers.ContainsKey(structName) && structMembers[structName] is GrundParser.FunctionDefinitionContext))
-    {
-        // Log a warning message if the struct does not contain a constructor
-        throw new Exception("Grund sighs: STRUK " + structName + " is missing constructor definition " + "Make sure the constructor has the same name as the STRUK");
+    public object? LookupStructMember(Dictionary<string, object?> structMembers, string memberName, out bool memberIsStatic) {
+        memberIsStatic = true;
+        string? structPointerString = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
+        if (structPointerString != null && StaticStructMembers.ContainsKey(structPointerString)) return StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null);
+        memberIsStatic = false;
+        return structMembers.GetValueOrDefault(memberName, null);
     }
-    
-    // Add the struct members to the global Variables dictionary
-    Variables.Add(structName,structMembers);
-    return null;
-}
-    public override object VisitMemberAccession([NotNull] GrundParser.MemberAccessionContext context)
+
+    public override object? VisitMemberAccession([NotNull] GrundParser.MemberAccessionContext context)
     {
         var structInstanceName = context.IDENTIFIER(0).GetText();
         var memberName = context.IDENTIFIER(1)?.GetText() ?? context.functionCall()?.IDENTIFIER()?.GetText();
@@ -367,51 +387,26 @@ public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext 
         {
             throw new Exception("Grund: how It's Impossible due to syntax");
         }
-
-        object? value = null;
-        if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
-        {   
-            if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()) &&  StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()].TryGetValue(memberName, out value))
-            {
-                value = StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName];
+        bool memberIsStatic = false;
+        if(FindVariableInCurrentState(structInstanceName) is Dictionary<string, object?> structMembers) {
+            object? value = LookupStructMember(structMembers, memberName, out memberIsStatic);
+            if(value == null) {
+                string? structName = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
+                throw new Exception("GRUND Says theres no value for " + structInstanceName + "." + memberName + " in that class " + (structName == null ? "UNKNOWN" : structName) + " there jimbo?" + "LINE: " + context.Start.Line.ToString());
             }
-            else if(scopeStruct.GetValueOrDefault(memberName) != null)
-            {
-             value = scopeStruct.GetValueOrDefault(memberName);
-            }            
-      
-        }
-        else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> Struct)
-        {
-            if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString())&&  StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()].TryGetValue(memberName, out value))
-            {
-                value = StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName];
-            }
-            else if(Struct.GetValueOrDefault(memberName) != null)
-            {
-              value = Struct.GetValueOrDefault(memberName);
-            }  
-        }
-        if (value != null)
-        {
             if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.functionCall() != null)
             {
-                return ExecuteUserDefinedFunction(context.functionCall(), functionDefinition);
+                return ExecuteUserDefinedFunction(context.functionCall(), functionDefinition, memberIsStatic ? null : structMembers);
             }
             else if(!(value is Antlr4.Runtime.Tree.IParseTree))
             {
                 return value;
             }
-            else
-            {
-                return Visit((Antlr4.Runtime.Tree.IParseTree)value);
-            }
-        }else
-        {
-            throw new Exception("GRUND Says theres no value for that class there jimbo? "+ "LINE: " + context.Start.Line.ToString());
+            return Visit((Antlr4.Runtime.Tree.IParseTree)value);
         }
-        
-        return null;
+        else {
+            throw new Exception("GRUND Says that class instance doesn't exist there jimbo? "+ "LINE: " + context.Start.Line.ToString());
+        }
     }
 
     public override object VisitIdentifierExpression([NotNull] GrundParser.IdentifierExpressionContext context)
