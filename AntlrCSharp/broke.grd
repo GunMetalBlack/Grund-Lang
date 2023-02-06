@@ -1,10 +1,14 @@
-STRUK Item:
-  METH Item(self, pSnacks):
-    self.snacks = pSnacks;
+STRUK Item :
+  METH Item(self, absent):
+    self.Absent = absent;
+  END
+  METH show_up_to_class(self):
+    self.Absent = false;
+    GF_WRITE_LN(self.Absent)
   END
 END
 
-STRUK student:
+STRUK student EXTENDS Item:
   METH student(self, name, absent, period):
     self.Name = name
     self.Absent = absent
@@ -18,6 +22,7 @@ END
 x => student<>; // hate it but stays for now
 x.student("bob", true, 6);
 
-GF_WRITE_LN(x.Absent)
-x.show_up_to_class()
-GF_WRITE_LN(x.Absent)
+
+
+wow(y)
+

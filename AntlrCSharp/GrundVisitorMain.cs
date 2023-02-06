@@ -198,7 +198,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                 throw new Exception("Grund: how It's Impossible due to syntax");
             }
             
-            bool memberIsStatic = false;
+            // bool memberIsStatic = false;
             // bool structInstanceIsDictionary = structInstance is Dictionary<string, object?>;
             // LookupStructMember(null/*structInstance*/, memberName, out memberIsStatic);
             if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)

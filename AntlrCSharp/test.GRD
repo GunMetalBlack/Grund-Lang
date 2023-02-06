@@ -1,35 +1,11 @@
-FUNK construct_student(name, absent, period) {
-    sd => student<>;
-    sd.student(name, absent, period);
-    // change the studen name
-    // sd.Name = "Jeff";
-    // sd.Absent = "You Mom";
-    // sd.Period = "3rd";
-    _return = sd;
-}
-
-FUNK print_student_list(student_list) {
-    list_length = GF_LENGTH(student_list);
-    x = 0;
-    WHILE x < list_length:
-        current_student = student_list[x];
-        GF_WRITE_LN(current_student.Name);
-        x++;
-    END
-}
-
-STRUK student:
-    METH student(name,absent,period):
-        THIS:Name = name
-        THIS:Absent = absent
-        THIS:Period = period
-    END
-END
-studentList = []
-x = 0;
-WHILE x < 5:
-    GL_ADD(studentList, construct_student("Bill","BreakNose","zxc"));
-    x++;
+FUNK wow():
+    GF_WRITE_LN("Sus")
 END
 
-print_student_list(studentList)
+FUNK wow():
+    x = 1
+    GF_WRITE_LN(x)
+END
+
+
+wow()
