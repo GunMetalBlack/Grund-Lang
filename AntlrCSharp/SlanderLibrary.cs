@@ -145,7 +145,7 @@ namespace Grund{
                 int indexToReturn = int.Parse(args[1].ToString());
                 if (!(stringToSearch.Length <= indexToReturn))
                 {
-                    return stringToSearch[indexToReturn];
+                    return stringToSearch[indexToReturn].ToString();
                 }
                 else
                 {
