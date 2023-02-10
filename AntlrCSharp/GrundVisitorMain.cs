@@ -18,7 +18,7 @@ public struct GrundStackFrame
     }
 
 }
-
+            
 public class GrundVisitorMain : GrundBaseVisitor<object?>
 {
 
@@ -317,8 +317,13 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             return null;
         }
 
-        var structName = context.IDENTIFIER().GetText();
+        var structName = context.IDENTIFIER(0).GetText();
         var structMembers = new Dictionary<string, object?>();
+        var staticMembers = new Dictionary<string, object?>();
+        if(!(structMembers.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")))
+        {
+         structMembers.Add("GF_STRUK_POINTER_PLEASE_DON'T_USE",structName);
+        }
         foreach (var line in lines)
         {
             if(line.functionDefinition() != null)
@@ -331,16 +336,11 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             else if(line.statement().blockScopeAssignment() != null)
             {
                 var assignmentCount = line.statement().blockScopeAssignment().assignment();
-                var staticMembers = new Dictionary<string, object?>();
                 foreach (var assignment in assignmentCount)
                 {
                     var staticFieldName = assignment.IDENTIFIER().GetText();
                     var staticFieldValue = Visit(assignment.expression());
                     staticMembers.Add(staticFieldName, staticFieldValue);
-                }
-                if(!(structMembers.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")))
-                {
-                 structMembers.Add("GF_STRUK_POINTER_PLEASE_DON'T_USE",structName);
                 }
                 StaticStructMembers.Add(structName, staticMembers);
             }
@@ -359,22 +359,44 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             // Log a warning message if the struct does not contain a constructor
             throw new Exception("Grund sighs: STRUK " + structName + " is missing constructor definition " + "Make sure the constructor has the same name as the STRUK");
         }
-        
+        if(context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
+        {
+            var parentStructName = context.IDENTIFIER(1).GetText();
+            Dictionary<string, object?> parentStruct = (Dictionary<string, object?>)Variables[parentStructName];
+            foreach (KeyValuePair<string, object> kvp in parentStruct)
+            {
+                if (structMembers.ContainsKey(kvp.Key))
+                {
+                    structMembers[kvp.Key] = kvp.Value;
+                }
+                else
+                {
+                    structMembers.Add(kvp.Key, kvp.Value);
+                }
+            }
+            staticMembers.Add("STRUK_PARENT_POINTER_PLEASE_DON'T_USE" , parentStructName);
+            StaticStructMembers.Add(structName, staticMembers);
+        }
         // Add the struct members to the global Variables dictionary
         Variables.Add(structName,structMembers);
         return null;
     }
 
-    public object? FindVariableInCurrentState(string identifier) {
+    public object? FindVariableInCurrentState(string identifier)
+    {
         if(GetVariablesInCurrentStackFrame().ContainsKey(identifier)) return GetVariablesInCurrentStackFrame()[identifier];
         if(Variables.ContainsKey(identifier)) return Variables[identifier];
         return null;
     }
 
-    public object? LookupStructMember(Dictionary<string, object?> structMembers, string memberName, out bool memberIsStatic) {
+    public object? LookupStructMember(Dictionary<string, object?> structMembers, string memberName, out bool memberIsStatic) 
+    {
         memberIsStatic = true;
         string? structPointerString = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
-        if (structPointerString != null && StaticStructMembers.ContainsKey(structPointerString)) return StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null);
+        if (structPointerString != null && StaticStructMembers.ContainsKey(structPointerString)) 
+        {
+            return StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null);
+        }
         memberIsStatic = false;
         return structMembers.GetValueOrDefault(memberName, null);
     }
@@ -388,9 +410,11 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             throw new Exception("Grund: how It's Impossible due to syntax");
         }
         bool memberIsStatic = false;
-        if(FindVariableInCurrentState(structInstanceName) is Dictionary<string, object?> structMembers) {
+        if(FindVariableInCurrentState(structInstanceName) is Dictionary<string, object?> structMembers)
+        {
             object? value = LookupStructMember(structMembers, memberName, out memberIsStatic);
-            if(value == null) {
+            if(value == null)
+            {
                 string? structName = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
                 throw new Exception("GRUND Says theres no value for " + structInstanceName + "." + memberName + " in that class " + (structName == null ? "UNKNOWN" : structName) + " there jimbo?" + "LINE: " + context.Start.Line.ToString());
             }
@@ -404,7 +428,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             }
             return Visit((Antlr4.Runtime.Tree.IParseTree)value);
         }
-        else {
+        else
+        {
             throw new Exception("GRUND Says that class instance doesn't exist there jimbo? "+ "LINE: " + context.Start.Line.ToString());
         }
     }
@@ -438,9 +463,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                 }
             }
             if(parentContext is GrundParser.StrucDefinitionContext structDef){
-                if(StaticStructMembers.ContainsKey(structDef.IDENTIFIER().GetText()))
+                if(StaticStructMembers.ContainsKey(structDef.IDENTIFIER(0).GetText()))
                 {
-                    return StaticStructMembers[structDef.IDENTIFIER().GetText()][varName];
+                    return StaticStructMembers[structDef.IDENTIFIER(0).GetText()][varName];
                 }
             }
         }
@@ -565,6 +590,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         if (!Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
             Variables.Add(context.IDENTIFIER().GetText(), context);
+        }else if(Variables.ContainsKey(context.IDENTIFIER().GetText()))
+        {
+            Variables[context.IDENTIFIER().GetText()] = context;
         }
         return null;
     }

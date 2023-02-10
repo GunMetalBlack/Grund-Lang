@@ -1,11 +1,11 @@
-FUNK wow():
-    GF_WRITE_LN("Sus")
+FUNK recursion(a,b,times,len):
+    IF times <= len:
+        GF_WRITE_LN(a)
+        recursion(b, a + b , times + 1, len)
+    END
 END
-
-FUNK wow():
-    x = 1
-    GF_WRITE_LN(x)
-END
-
-
-wow()
+fn z (){
+    
+}
+_return
+recursion(0,1,1,66)

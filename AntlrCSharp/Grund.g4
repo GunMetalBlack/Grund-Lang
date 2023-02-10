@@ -18,6 +18,7 @@ WHILE: 'WHILE' | 'UNLESS';
 THIS: 'THIS:';
 STATIC: 'STATIC';
 CLASSPOINTER: '=>';
+EXTENDS: 'EXTENDS';
 
 blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
@@ -34,7 +35,7 @@ inLineIncrement: IDENTIFIER inLineOP (';')? | IDENTIFIER inLineOP (';')?;
 FUNC: 'FUNK' | 'METH';
 parameter: IDENTIFIER;
 STRUCT:  'STRUK';
-strucDefinition: STRUCT IDENTIFIER block;
+strucDefinition: STRUCT IDENTIFIER block | STRUCT IDENTIFIER EXTENDS IDENTIFIER block;
 functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
 
 listAccession: IDENTIFIER '[' expression ']';
