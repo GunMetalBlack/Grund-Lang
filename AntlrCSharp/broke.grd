@@ -4,7 +4,6 @@ STRUK slam:
   END
 END
 
-
 STRUK Sus EXTENDS slam:
   METH Sus():
   END
@@ -31,8 +30,6 @@ STRUK student EXTENDS Item:
 END
 
 
-x => student<>; // hate it but stays for now
-x.student("bob");
-x.show_up_to_class();
-x.add(1,3);
-x.slam();
+x => Sus<>; // hate it but stays for now
+x.slam()
+

@@ -397,8 +397,26 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         {
             return StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null);
         }
+        else if(structPointerString != null && StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null) != null)
+        {
+            RecursiveParentStructLookUp(StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null).ToString(), memberName);
+          
+        }
         memberIsStatic = false;
         return structMembers.GetValueOrDefault(memberName, null);
+    }
+    
+    public object? RecursiveParentStructLookUp(string structParentPointerString, string memberName)
+    {
+        if(StaticStructMembers.ContainsKey(structParentPointerString) && StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault(memberName, null) != null)
+        {
+            return StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault(memberName, null);
+        }
+        else if((StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null)) != null)
+        {
+             RecursiveParentStructLookUp(StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null).ToString() , memberName);
+        }
+        return null;
     }
 
     public override object? VisitMemberAccession([NotNull] GrundParser.MemberAccessionContext context)
