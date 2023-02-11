@@ -197,33 +197,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             {
                 throw new Exception("Grund: how It's Impossible due to syntax");
             }
-            
-            // bool memberIsStatic = false;
-            // bool structInstanceIsDictionary = structInstance is Dictionary<string, object?>;
-            // LookupStructMember(null/*structInstance*/, memberName, out memberIsStatic);
-            if(GetVariablesInCurrentStackFrame().ContainsKey(structInstanceName) && GetVariablesInCurrentStackFrame()[structInstanceName] is Dictionary<string, object?> scopeStruct)
-            // if(structInstance is Dictionary<string, object?> scopeStruct)
-            {   
-                if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
-                {
-                 StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName] = value;
-                }
-                else if(scopeStruct.ContainsKey(memberName) != null)
-                {
-                  scopeStruct[memberName] = value;
-                }                  
-            }
-            else if(Variables.ContainsKey(structInstanceName) && Variables[structInstanceName] is Dictionary<string, object?> Struct)
-            {
-                if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
-                {
-                    StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][memberName] = value;
-                }
-                else if(Struct.ContainsKey(memberName) != null)
-                {
-                    Struct[memberName] = value;
-                }  
-            }
+            memberAssignmentFunction(structInstanceName, memberName, value, context);
         }
         else if(context.CLASSPOINTER() != null)
         {
@@ -257,6 +231,36 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             {
                 GetVariablesInCurrentStackFrame()[varName] = value;
             }
+        }
+        return null;
+    }
+    public object? memberAssignmentFunction(string? StructInstanceName, string? MemberName, object? Reassignment, GrundParser.AssignmentContext context)
+    {
+        if(GetVariablesInCurrentStackFrame().ContainsKey(StructInstanceName) && GetVariablesInCurrentStackFrame()[StructInstanceName] is Dictionary<string, object?> scopeStruct)
+        {   
+            if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+            {
+                StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][MemberName] = Reassignment;
+            }
+            else if(scopeStruct.ContainsKey(MemberName) != null)
+            {
+                scopeStruct[MemberName] = Reassignment;
+            }                  
+        }
+        else if(Variables.ContainsKey(StructInstanceName) && Variables[StructInstanceName] is Dictionary<string, object?> Struct)
+        {
+            if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+            {
+                StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][MemberName] = Reassignment;
+            }
+            else if(Struct.ContainsKey(MemberName) != null)
+            {
+                Struct[MemberName] = Reassignment;
+            }
+        }
+        else
+        {
+            throw new Exception("Could not find either (" + MemberName + ") in struct or StructInstance (" + StructInstanceName + ") Grund says! " + "LINE: " + context.Start.Line.ToString());
         }
         return null;
     }

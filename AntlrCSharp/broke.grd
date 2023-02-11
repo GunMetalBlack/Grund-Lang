@@ -1,35 +1,17 @@
-STRUK slam:
-  METH slam(self):
-    GF_WRITE_LN("Yes")
-  END
-END
 
-STRUK Sus EXTENDS slam:
-  METH Sus():
-  END
-  METH add(self,a,b):
-    GF_WRITE_LN(a + b)
-  END
-END
-
-
-STRUK Item EXTENDS Sus:
+STRUK item:
   METH Item(self, absent):
     self.Absent = absent;
   END
-  METH show_up_to_class(self):
-    self.Absent = false;
-    GF_WRITE_LN(self.Absent)
-  END
 END
 
-STRUK student EXTENDS Item:
+STRUK student EXTENDS item:
   METH student(self, name):
     self.Name = name
   END
 END
 
 
-x => Sus<>; // hate it but stays for now
-x.slam()
+x => student<>; // hate it but stays for now
+x.student()
 
