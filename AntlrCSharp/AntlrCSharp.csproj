@@ -8,6 +8,7 @@
     <ApplicationIcon>Yes.ico</ApplicationIcon>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Nullable>enable</Nullable>
+    <AssemblyName>grund</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
