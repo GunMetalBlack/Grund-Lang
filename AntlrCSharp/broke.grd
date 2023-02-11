@@ -1,17 +1,33 @@
+STRUK jack:
+  STATIC:
+    wack = "wack"
+  END
+  METH jack(sus):
+  END
+END
 
-STRUK item:
-  METH Item(self, absent):
+STRUK item EXTENDS jack:
+  STATIC:
+    x = 12;
+  END
+  METH item(self, absent):
     self.Absent = absent;
   END
 END
 
 STRUK student EXTENDS item:
+  STATIC:
+    y = 1;
+  END
   METH student(self, name):
     self.Name = name
   END
 END
 
 
-x => student<>; // hate it but stays for now
-x.student()
+x => student<>;
+kcaj => jack<>;
 
+x.wack = "3"
+GF_WRITE_LN(x.wack)
+GF_WRITE_LN(kcaj.wack)

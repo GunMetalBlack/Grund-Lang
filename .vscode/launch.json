@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/AntlrCSharp/bin/Debug/net6.0/AntlrCSharp.dll",
+            "program": "${workspaceFolder}/AntlrCSharp/bin/Debug/net6.0/grund.dll",
             "args": ["broke.grd"],
             "cwd": "${workspaceFolder}/AntlrCSharp",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

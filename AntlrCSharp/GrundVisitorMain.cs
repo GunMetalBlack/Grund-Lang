@@ -324,10 +324,26 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var structName = context.IDENTIFIER(0).GetText();
         var structMembers = new Dictionary<string, object?>();
         var staticMembers = new Dictionary<string, object?>();
-        if(!(structMembers.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")))
+        if(context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
         {
-         structMembers.Add("GF_STRUK_POINTER_PLEASE_DON'T_USE",structName);
+            var parentStructName = context.IDENTIFIER(1).GetText();
+            Dictionary<string, object?> parentStruct = (Dictionary<string, object?>)Variables[parentStructName];
+            foreach (KeyValuePair<string, object> kvp in parentStruct)
+            {
+                if (structMembers.ContainsKey(kvp.Key))
+                {
+                    structMembers[kvp.Key] = kvp.Value;
+                }
+                else
+                {
+                    structMembers.Add(kvp.Key, kvp.Value);
+                }
+            }
+            staticMembers.Add("STRUK_PARENT_POINTER_PLEASE_DON'T_USE" , parentStructName);
         }
+        //Overrides Parent Static Struct pointers Its pointer is THE PARENT_POINTER 
+        //GF_STRUCT_POINTER is a pointer name  
+        structMembers["GF_STRUK_POINTER_PLEASE_DON'T_USE"] = structName;
         foreach (var line in lines)
         {
             if(line.functionDefinition() != null)
@@ -346,7 +362,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                     var staticFieldValue = Visit(assignment.expression());
                     staticMembers.Add(staticFieldName, staticFieldValue);
                 }
-                StaticStructMembers.Add(structName, staticMembers);
             }
             else if(line.statement().assignment().THIS() != null)
             {
@@ -363,25 +378,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             // Log a warning message if the struct does not contain a constructor
             throw new Exception("Grund sighs: STRUK " + structName + " is missing constructor definition " + "Make sure the constructor has the same name as the STRUK");
         }
-        if(context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
-        {
-            var parentStructName = context.IDENTIFIER(1).GetText();
-            Dictionary<string, object?> parentStruct = (Dictionary<string, object?>)Variables[parentStructName];
-            foreach (KeyValuePair<string, object> kvp in parentStruct)
-            {
-                if (structMembers.ContainsKey(kvp.Key))
-                {
-                    structMembers[kvp.Key] = kvp.Value;
-                }
-                else
-                {
-                    structMembers.Add(kvp.Key, kvp.Value);
-                }
-            }
-            staticMembers.Add("STRUK_PARENT_POINTER_PLEASE_DON'T_USE" , parentStructName);
-            StaticStructMembers.Add(structName, staticMembers);
-        }
         // Add the struct members to the global Variables dictionary
+        StaticStructMembers.Add(structName, staticMembers);
         Variables.Add(structName,structMembers);
         return null;
     }
@@ -393,25 +391,50 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         return null;
     }
 
-    public object? LookupStructMember(Dictionary<string, object?> structMembers, string memberName, out bool memberIsStatic) 
+    public object? LookupStructMember(Dictionary<string, object?> structMembers, string memberName, out bool memberIsStatic, out bool success) 
     {
+        // We need to return whether or not the member that we find is static (using the "out" keyword in the parameter declaration rather
+        // than returning it directly). We don't know if it's static or not yet, so for now we assume true.
         memberIsStatic = true;
+        // Same goes for success - assuming success until we fail
+        success = true;
+        // Static struct members are stored as dictionary which is itself stored in another dictionary "StaticStructMembers" using the struct name as the key.
+        // We are attempting to access a static member via an instance of the struct, so we need to know the struct name (not the instance name) to use as the
+        // key for lookup in the dictionary. We accomplish this using "GF_STRUK_POINTER_PLEASE_DON'T_USE", a (poorly named named but there's no going back)
+        // instance member string containing the struct name that we automatically inserted during instance construction.
         string? structPointerString = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
-        if (structPointerString != null && StaticStructMembers.ContainsKey(structPointerString)) 
+        // Lookup the static members for this struct, and return a value if one is found for this member name.
+        if (structPointerString != null && StaticStructMembers.ContainsKey(structPointerString) && (StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null) != null)) 
         {
             return StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null);
         }
-        else if(structPointerString != null && StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null) != null)
+        // If we didn't find a match in our own static members, try looking in our parent struct (the one that we are declared to extend from), and then its
+        // parent struct, and then its parent struct, etc. Similarly to the magic "GF_STRUK_POINTER_PLEASE_DON'T_USE" instance member used before, each struct
+        // contains a magic static member "STRUK_PARENT_POINTER_PLEASE_DON'T_USE" to retrieve the name of its parent struct for this purpose.
+        if((StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null)) is string parentKey && parentKey != null)
         {
-            RecursiveParentStructLookUp(StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null).ToString(), memberName);
-          
+            // Check immediate parent struct
+            if(StaticStructMembers.GetValueOrDefault(parentKey, null).ContainsKey(memberName))
+            {
+                return StaticStructMembers.GetValueOrDefault(parentKey, null)?.GetValueOrDefault(memberName, null);
+            }
+            // Recursively check parents of parent
+            return RecursiveParentStructLookUp(StaticStructMembers.GetValueOrDefault(parentKey, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null).ToString(), memberName);   
         }
-        memberIsStatic = false;
-        return structMembers.GetValueOrDefault(memberName, null);
+        // If we've made it to this point, then no match was found for static members.
+        // Now we check if it's an instance variable, flag it as such, and return its value.
+        if(structMembers.ContainsKey(memberName))
+        {
+            return structMembers.GetValueOrDefault(memberName, null);
+        }
+        // Otherwise, the member cannot be found anywhere (either static or instance, in the current struct or its parents). Flag as such and return null.
+        success = false;
+        return null;
     }
     
     public object? RecursiveParentStructLookUp(string structParentPointerString, string memberName)
     {
+        //If we can find the parent struct pointer and the value it pulls is real then we return the value else we check the grandparents pointer and value!!!
         if(StaticStructMembers.ContainsKey(structParentPointerString) && StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault(memberName, null) != null)
         {
             return StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault(memberName, null);
@@ -431,11 +454,12 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         {
             throw new Exception("Grund: how It's Impossible due to syntax");
         }
-        bool memberIsStatic = false;
         if(FindVariableInCurrentState(structInstanceName) is Dictionary<string, object?> structMembers)
         {
-            object? value = LookupStructMember(structMembers, memberName, out memberIsStatic);
-            if(value == null)
+            bool memberIsStatic = false;
+            bool success = false;
+            object? value = LookupStructMember(structMembers, memberName, out memberIsStatic, out success);
+            if(!success)
             {
                 string? structName = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
                 throw new Exception("GRUND Says theres no value for " + structInstanceName + "." + memberName + " in that class " + (structName == null ? "UNKNOWN" : structName) + " there jimbo?" + "LINE: " + context.Start.Line.ToString());
@@ -625,7 +649,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         ? IsTrue
         : IsFalse
         ;
-
+        
         if (condition(Visit(context.expression())))
         {
             do

@@ -298,7 +298,7 @@ namespace Grund{
             throw new Exception("GRUND *HACKS AND VOMITS* IDFK HOW WE GOT HERE NOT A BOOL OPERATION");
         }
 
-        public static bool GreaterThanOrEqual(object? left, object? right)
+        public static bool GreaterThan(object? left, object? right)
         {
             if (left == null || right == null)
             {
@@ -322,7 +322,7 @@ namespace Grund{
             }
             throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
         }
-        public static bool GreaterThan(object? left, object? right)
+        public static bool GreaterThanOrEqual(object? left, object? right)
         {
             if (left == null || right == null)
             {
