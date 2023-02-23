@@ -1,7 +1,7 @@
 # Grund 
 ## TLDR
 You're free to use this if your brain is the size of a wall bust.
-Variables are scoped and global, and the standard library is pretty bad; you are welcome.
+Variables are scoped and global, and the standard library is pretty bad; you're welcome.
 Its syntax is python c# and java like. 
 Anyway, if anyone actually wants to use this burning plastic, documentation below! PS:Make sure to grab the Grund Vscode Extension.
 [Documentation](https://github.com/GunMetalBlack/Grund/wiki),
