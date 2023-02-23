@@ -2,9 +2,8 @@
 ## TLDR
 You're free to use this if your brain is the size of a wall bust.
 Variables are scoped and global, and the standard library is pretty bad; you are welcome.
-Its syntax is python c# like. 
-I will soon write documentation.
-Anyway, I will release the compiled version soon if anyone actually wants to use this burning plastic.
+Its syntax is python c# and java like. 
+Anyway, if anyone actually wants to use this burning plastic, documentation below! PS:Make sure to grab the Grund Vscode Extension.
 [Documentation](https://github.com/GunMetalBlack/Grund/wiki),
 [Grund Speed Tests](https://docs.google.com/spreadsheets/d/1rW4sEgHRKovaxHGaUdG8YHd5OibnwNfNGlLQ4VjN1Rk/edit?usp=sharing)
 ## Run Instructions
