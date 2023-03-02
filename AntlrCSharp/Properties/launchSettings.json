@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AntlrCSharp": {
+      "commandName": "Project",
+      "commandLineArgs": "E:\\coding\\test\\AntlrCSharp\\test.grd"
+    }
+  }
+}

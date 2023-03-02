@@ -286,15 +286,17 @@ namespace Grund{
 
         public static bool boolOperators(object? left, object? right, string op)
         {
-            if (op.Equals("AND"))
+            if (left is bool l && right is bool r)
             {
-                return left is bool l && right is bool r;
+                if (op.Equals("AND"))
+                {
+                    return l && r;
+                }
+                if (op.Equals("OR"))
+                {
+                    return l || r;
+                }
             }
-            if (op.Equals("OR"))
-            {
-                return left is bool l || right is bool r;
-            }
-
             throw new Exception("GRUND *HACKS AND VOMITS* IDFK HOW WE GOT HERE NOT A BOOL OPERATION");
         }
 

@@ -720,8 +720,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var left = Visit(context.expression(0));
         var right = Visit(context.expression(1));
         var op = context.boolOP().GetText();
-
-        return true;
+        return SlanderLibrary.boolOperators(left, right, op); 
     }
     private bool IsTrue(object? value)
     {
