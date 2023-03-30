@@ -423,6 +423,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         // If we've made it to this point, then no match was found for static members.
         // Now we check if it's an instance variable, flag it as such, and return its value.
+        memberIsStatic = false;       
         if(structMembers.ContainsKey(memberName))
         {
             return structMembers.GetValueOrDefault(memberName, null);
