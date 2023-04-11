@@ -61,6 +61,7 @@ namespace Grund{
             }
             return null;
         }
+        // Moves Console Cursors position
         public static object?[] GF_CURSOR_MOVE(object?[] args)
         {
             if(args.Length == 2)
@@ -79,6 +80,7 @@ namespace Grund{
             }
             return null;
         }
+        //Standard Input
         public static object? GF_WRITE_INPUT(object?[] args)
         {
             object toReturn = Console.ReadLine();
@@ -99,11 +101,13 @@ namespace Grund{
             }
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
         }
+        // Clear Screen
         public static object?[] GF_CLS(object?[] args)
         {
             Console.Clear();
             return null;
         }
+        //Get key without stopping execution
         public static object? GF_GET_KEY(object?[] args)
         {
             if (Console.KeyAvailable) // Non-blocking peek
@@ -117,6 +121,7 @@ namespace Grund{
 
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
         }
+        //Random Value
         public static object? GF_RAND(object?[] args)
         {
             if ((args[0] != null && args[1] != null)&& (args[0] is int low && args[1] is int high))
@@ -188,18 +193,23 @@ namespace Grund{
                 throw new Exception("GRUND SAYS ERROR IN ARGUMENTS NULL REFERENCE *SPITS IN FACE*");
             }
         }
-        public static object?[] GF_LIST_CREATE(object[]? args, Dictionary<string, object?> Variables)
+        public static object?[] GF_SLEEP(object[]? args)
         {
-            var nameObject = args[0];
-            var name = nameObject as string;
-            Variables[name] = new List<object?>();
+            object timeToSleep = args[0];
+            if(timeToSleep is int time)
+            {
+                Thread.Sleep(time);
+            }
             return null;
         }
-        public static object?[] GF_LIST_APPEND(object?[] args, Dictionary<string, object?> Variables)
+        public static object?[] GF_LIST_APPEND(object?[] args)
         {
+            //Grabs the first list and the second value as arguments to the function 
             if (args[0] != null && args[1] != null)
             {
+                //Store the first as value 
                 var typeToStore = args[1];
+                //save the second as list 
                 List<object?> keyLookUp = args[0] as List<object?>;
                 keyLookUp.Add(typeToStore);
             }
@@ -229,15 +239,11 @@ namespace Grund{
             }
             return null;
         }
-        public static object?[] GF_LIST_REMOVE(object?[] args, Dictionary<string, object?> Variables)
+        public static object?[] GF_LIST_REMOVE(object?[] args)
         {
-            if (args.Length == 2 && args[0] is string && args[1] is int)
+            if (args.Length == 2 && args[0] is List<object?> gList && args[1] is object gValue)
             {
-                var keyLookUp = args[0] as string;
-                var typeToRemove = args[1];
-                int indexToRemove = (int)(typeToRemove as int?);
-                List<object?>? list = Variables[keyLookUp] as List<object?>;
-                list.Remove(indexToRemove);
+                gList.Remove(gValue);
             }
             else
             {
@@ -245,27 +251,27 @@ namespace Grund{
             }
             return null;
         }
-        public static object? GF_LIST_LOOKUP(object?[] args, Dictionary<string, object?> Variables)
+        public static object? GF_CONTAINS(object?[] args)
         {
-            if (args.Length == 2 && args[0] is string && args[1] is int)
+            if (args.Length == 2 && args[0] is Object gObject && args[1] is object gValue)
             {
-                var keyLookUp = args[0] as string;
-                var typeToLookup = args[1];
-                int indexToFind = (int)(typeToLookup as int?);
-                List<object?>? list = Variables[keyLookUp] as List<object?>;
-                if (list == null) { throw new Exception("GRUND: YOU FOOL THE LIST YOUR LOOKING FOR IS NULL"); }
-                if (indexToFind < list.Count)
+                //Yup this is clean 
+                if(gObject is List<object?> glist)
                 {
-                    return list[indexToFind];
+                    return glist.Contains(gValue);
+                }
+                else if(gObject is string gstring && gValue is string gChar)
+                {
+                    return gstring.Contains(gChar);
                 }
                 else
                 {
-                    throw new Exception("GRUND: YELLS ITS EMPTY OR OUT OF RANGE");
+                    throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR LIST. AND / OR SECOND ARGUMENT IS NOT OBJECT OR STRING");
                 }
             }
             else
             {
-                throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR SECOND ARGUMENT IS NOT INT");
+                throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR LIST. AND / OR SECOND ARGUMENT IS NOT OBJECT");
             }
         }
 

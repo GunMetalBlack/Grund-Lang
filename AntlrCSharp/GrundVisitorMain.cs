@@ -29,18 +29,16 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     {
         // These are all the global static variables that are defined for the language
         // All functions in  Grund that are language dependent Like GF_WRITE are variables
+        
         //Math
         var ID_PI = "G_PI";
         var ID_E = "G_E";
+        
         //FUNK NAMES BUILT IN
         var FUNC_ID_WRITE = "GF_WRITE";
         var FUNC_ID_WRITE_INLINE = "GF_WRITE_LN";
-        //* List Functions
-        var FUNC_ID_GF_LISTCREATE = "GF_LIST_CREATE";
-        var FUNC_ID_GF_LISTADD = "GL_ADD";
+        var FUNC_ID_GF_SLEEP = "GF_SLEEP";
         var FUNC_ID_GF_LENGTH = "GF_LENGTH";
-        var FUNC_ID_GF_LISTREMOVE = "GF_LIST_REMOVE";
-        var FUNC_ID_GF_LISTLOOKUP = "GF_LIST_LOOKUP";
         var FUNC_ID_GF_WRITE_INPUT = "GF_INPUT";
         var FUNC_ID_GF_GET_KEY = "GF_KEY";
         var FUNC_ID_GF_PARSER = "GF_PARSER";
@@ -48,18 +46,25 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var FUNC_ID_GF_CLS = "GF_CLS";
         var FUNC_ID_GF_CURSOR_MOVE = "GF_CURSOR_MOVE";
         var FUNC_ID_GF_RAND = "GF_RANDOM";
+         var FUNC_ID_GF_CONTAINS = "GF_CONTAINS";
+        
+        //* List Functions
+        var FUNC_ID_GL_REMOVE = "GL_REMOVE";
+        var FUNC_ID_GL_LIST_ADD = "GL_ADD";
+
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("base"));
         Variables[ID_PI] = Math.PI; 
         Variables[ID_E] = Math.E; 
-        //** FunctionCall
+        
+        //** FunctionCall Creation
         Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE);
         Variables[FUNC_ID_WRITE_INLINE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INLINE); 
-        Variables[FUNC_ID_GF_LISTCREATE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_CREATE(listname, Variables)); 
-        Variables[FUNC_ID_GF_LISTADD] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_APPEND(listname, Variables)); 
-        Variables[FUNC_ID_GF_LISTREMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname, Variables)); 
+        Variables[FUNC_ID_GF_SLEEP] = new Func<object?[], object?>(SlanderLibrary.GF_SLEEP); 
+        Variables[FUNC_ID_GL_LIST_ADD] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_APPEND(listname)); 
+        Variables[FUNC_ID_GL_REMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname)); 
         Variables[FUNC_ID_GF_LENGTH] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LENGTH(listname, Variables)); 
-        Variables[FUNC_ID_GF_LISTLOOKUP] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_LOOKUP(listname, Variables)); 
+        Variables[FUNC_ID_GF_CONTAINS] = new Func<object?[], object?>(listname => SlanderLibrary.GF_CONTAINS(listname)); 
         Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INPUT); 
         Variables[FUNC_ID_GF_GET_KEY] = new Func<object?[], object?>(SlanderLibrary.GF_GET_KEY); 
         Variables[FUNC_ID_GF_PARSER] = new Func<object?[], object?>(SlanderLibrary.GF_PARSER); 

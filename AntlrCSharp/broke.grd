@@ -1,2 +1,14 @@
-s = "sus"
-s++
+STRUK Math:
+  STATIC:
+    pi = 3.14159;
+  END
+    METH Math(self):
+    END
+    METH Square(self,x):
+    _return =  x * x;
+  END
+END
+radius = 5
+Math => Math<>
+area = Math.Square(radius) * Math.pi
+GF_WRITE(area)
