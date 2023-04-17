@@ -158,8 +158,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {
         //This is how we defined variables (entire function)
-        if (context.listAccession() != null)
-        {
+        if (Visit(context.expression(0)))
+       { 
             //In this fun guy is how we define lists and accessing lists like x[1] = 3; should set the value of x[1] to 3
             var varName = context.listAccession().IDENTIFIER().GetText();
             var indexToFind = Visit(context.listAccession().expression());
@@ -275,46 +275,26 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         return StackFrames.First().variables;
     }
 
-    public override object VisitListAccession([NotNull] GrundParser.ListAccessionContext context)
+    public override object VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context)
     {
         // This is how we return a value at an index for example if(x[2] < 0). x[2] should return a value
-        var varName = context.IDENTIFIER().GetText();
-        var varIndex = Visit(context.expression());
+        var gList = Visit(context.expression(0));
+        var gInt = Visit(context.expression(1));
         //Checks if variable is in current scope and is a list.
-        if (GetVariablesInCurrentStackFrame().ContainsKey(varName))
-        {
-            if (GetVariablesInCurrentStackFrame()[varName] is List<object?> list)
+            if (gList is List<object?> list)
             {
                 //If it is then we return the value at the lists index
                 try
                 {
-                    return list.ElementAt(int.Parse(varIndex.ToString()));
+                    return list.ElementAt(int.Parse(gInt.ToString()));
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + varName + " Learn TO COUNT. LINE: " + context.Start.Line.ToString());
+                    throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + " Learn TO COUNT. LINE: " + context.Start.Line.ToString());
                 }
             }
 
-            throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName + " IS NOT LIST. LINE: " + context.Start.Line.ToString());
-        }
-        //Checks if the variable is in global scope if it failed to be found in the stack
-        else if (Variables.ContainsKey(varName))
-        {
-            if (Variables[varName] is List<object?> list)
-            {
-                try
-                {
-                    return list.ElementAt(int.Parse(varIndex.ToString()));
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + varName + " Learn TO COUNT. LINE: " + context.Start.Line.ToString());
-                }
-            }
-            throw new Exception("GRUND SAYS SYNTAX ERROR: " + varName + " IS NOT LIST");
-        }
-        throw new Exception(" GRUND OGGA No variable defined for " + varName);
+            throw new Exception("GRUND SAYS ERROR: " + " IS NOT LIST. LINE: " + context.Start.Line.ToString());
     }
 
     public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext context)
@@ -367,13 +347,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                     var staticFieldValue = Visit(assignment.expression());
                     staticMembers.Add(staticFieldName, staticFieldValue);
                 }
-            }
-            else if(line.statement().assignment().THIS() != null)
-            {
-                // Process instance field assignments
-                var thisFieldName = line.statement().assignment().IDENTIFIER().GetText();
-                var thisFieldValue = Visit(line.statement().assignment().expression());
-                structMembers.Add(thisFieldName , thisFieldValue);
             }
         }
 
@@ -524,33 +497,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
 
     } 
-    //**Converts variable string to variable type 
-    public override object? VisitConstant([NotNull] GrundParser.ConstantContext context)
-    {
-        if (context.INTEGER() is { } i)
-        {
-            return int.Parse(i.GetText());
-        }
-        if (context.FLOAT() is { } f)
-        {
-            return float.Parse(f.GetText());
-        }
-        if (context.STRING() is { } s)
-        {
-            return s.GetText()[1..^1];
-        }
-        if (context.BOOL() is { } b)
-        {
-            return b.GetText() == "true";
-        }
-        if (context.NULL() is { })
-        {
-            return null;
-        }
-
-        throw new NotImplementedException();
-    }
-
+ 
     public override object VisitCollections([NotNull] GrundParser.CollectionsContext context)
     {
         if (context.list() is { } l)

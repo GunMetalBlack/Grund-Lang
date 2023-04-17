@@ -2,7 +2,7 @@ grammar Grund;
 
 program: line* EOF;
 
-line: statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | listAccession | inLineIncrement | strucDefinition | memberAccession ;  
+line: statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | inLineIncrement | strucDefinition;  
 
 statement: (assignment | functionCall | blockScopeAssignment)(';')?;
 
@@ -22,11 +22,11 @@ EXTENDS: 'EXTENDS';
 
 blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
-assignment: IDENTIFIER '='  expression (';')? | listAccession '=' expression (';')? | THIS IDENTIFIER '='  expression (';')? | IDENTIFIER CLASSPOINTER  expression'<>'(';')? | memberAssignment(';')?;
+assignment: expression '='  expression (';')?; 
 
-memberAssignment: memberAccession '=' expression;
+//memberAssignment: memberAccession '=' expression;
 
-memberAccession: IDENTIFIER '.' IDENTIFIER (';')? | IDENTIFIER '.' functionCall(';')?;
+//memberAccession: IDENTIFIER '.' IDENTIFIER (';')? | IDENTIFIER '.' functionCall(';')?;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
@@ -38,16 +38,16 @@ STRUCT:  'STRUK';
 strucDefinition: STRUCT IDENTIFIER block | STRUCT IDENTIFIER EXTENDS IDENTIFIER block;
 functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
 
-listAccession: IDENTIFIER '[' expression ']';
+
 
 expression
     : constant              #constantExpression
     | collections           #collectionsExpression
-    | listAccession         #listAccessionExpression
+    | expression '[' expression ']' #listAccessionExpression
     | IDENTIFIER            #identifierExpression
     | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
-    | memberAccession       #memberAccessionExpression
+    | expression '.' expression #dotExpression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression
     | expression multOP expression #multiplicativeExpression
