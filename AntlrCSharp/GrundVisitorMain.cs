@@ -2,13 +2,14 @@
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
 using Grund;
-using System.Collections.Concurrent;
+using static Grund.GrundTypeWrapper;
+
 public struct GrundStackFrame
 {
     public string name;
     // This dictionary contains all the global variables
     public Dictionary<string, object?> variables { get; }
-    
+
     public bool inherit = false;
     // This stack frame dictates  the inheritance and scope for the language
     public GrundStackFrame(string name)
@@ -18,7 +19,7 @@ public struct GrundStackFrame
     }
 
 }
-            
+
 public class GrundVisitorMain : GrundBaseVisitor<object?>
 {
 
@@ -29,11 +30,11 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     {
         // These are all the global static variables that are defined for the language
         // All functions in  Grund that are language dependent Like GF_WRITE are variables
-        
+
         //Math
         var ID_PI = "G_PI";
         var ID_E = "G_E";
-        
+
         //FUNK NAMES BUILT IN
         var FUNC_ID_WRITE = "GF_WRITE";
         var FUNC_ID_WRITE_INLINE = "GF_WRITE_LN";
@@ -46,41 +47,43 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var FUNC_ID_GF_CLS = "GF_CLS";
         var FUNC_ID_GF_CURSOR_MOVE = "GF_CURSOR_MOVE";
         var FUNC_ID_GF_RAND = "GF_RANDOM";
-         var FUNC_ID_GF_CONTAINS = "GF_CONTAINS";
-        
+        var FUNC_ID_GF_CONTAINS = "GF_CONTAINS";
+
         //* List Functions
         var FUNC_ID_GL_REMOVE = "GL_REMOVE";
         var FUNC_ID_GL_LIST_ADD = "GL_ADD";
 
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("base"));
-        Variables[ID_PI] = Math.PI; 
-        Variables[ID_E] = Math.E; 
-        
+        Variables[ID_PI] = Math.PI;
+        Variables[ID_E] = Math.E;
+
         //** FunctionCall Creation
         Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE);
-        Variables[FUNC_ID_WRITE_INLINE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INLINE); 
-        Variables[FUNC_ID_GF_SLEEP] = new Func<object?[], object?>(SlanderLibrary.GF_SLEEP); 
-        Variables[FUNC_ID_GL_LIST_ADD] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_APPEND(listname)); 
-        Variables[FUNC_ID_GL_REMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname)); 
-        Variables[FUNC_ID_GF_LENGTH] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LENGTH(listname, Variables)); 
-        Variables[FUNC_ID_GF_CONTAINS] = new Func<object?[], object?>(listname => SlanderLibrary.GF_CONTAINS(listname)); 
-        Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INPUT); 
-        Variables[FUNC_ID_GF_GET_KEY] = new Func<object?[], object?>(SlanderLibrary.GF_GET_KEY); 
-        Variables[FUNC_ID_GF_PARSER] = new Func<object?[], object?>(SlanderLibrary.GF_PARSER); 
-        Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<object?[], object?>(SlanderLibrary.GF_INDEX_CHAR); 
-        Variables[FUNC_ID_GF_CLS] = new Func<object?[], object?>(SlanderLibrary.GF_CLS); 
-        Variables[FUNC_ID_GF_CURSOR_MOVE] = new Func<object?[], object?>(SlanderLibrary.GF_CURSOR_MOVE); 
+        Variables[FUNC_ID_WRITE_INLINE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INLINE);
+        Variables[FUNC_ID_GF_SLEEP] = new Func<object?[], object?>(SlanderLibrary.GF_SLEEP);
+        Variables[FUNC_ID_GL_LIST_ADD] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_APPEND(listname));
+        Variables[FUNC_ID_GL_REMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname));
+        Variables[FUNC_ID_GF_LENGTH] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LENGTH(listname, Variables));
+        Variables[FUNC_ID_GF_CONTAINS] = new Func<object?[], object?>(listname => SlanderLibrary.GF_CONTAINS(listname));
+        Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INPUT);
+        Variables[FUNC_ID_GF_GET_KEY] = new Func<object?[], object?>(SlanderLibrary.GF_GET_KEY);
+        Variables[FUNC_ID_GF_PARSER] = new Func<object?[], object?>(SlanderLibrary.GF_PARSER);
+        Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<object?[], object?>(SlanderLibrary.GF_INDEX_CHAR);
+        Variables[FUNC_ID_GF_CLS] = new Func<object?[], object?>(SlanderLibrary.GF_CLS);
+        Variables[FUNC_ID_GF_CURSOR_MOVE] = new Func<object?[], object?>(SlanderLibrary.GF_CURSOR_MOVE);
         Variables[FUNC_ID_GF_RAND] = new Func<object?[], object?>(SlanderLibrary.GF_RAND);
     }
 
-    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, object? structInstance = null) {
-        
+    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, object? structInstance = null)
+    {
+
         // Grab the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
         object?[] args = context.expression().Select(Visit).ToArray();
-        if(structInstance != null) args = args.Prepend(structInstance).ToArray();
-        if(functionLookup == null) {
+        if (structInstance != null) args = args.Prepend(structInstance).ToArray();
+        if (functionLookup == null)
+        {
             return null;
         }
         // If we have a function then create a new scope for the function and go through each expression and adds it to the stack
@@ -120,13 +123,13 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         {
             // Handle user-defined functions
             {
-                if(GetVariablesInCurrentStackFrame()[name] is GrundParser.FunctionDefinitionContext functionLookup)
+                if (GetVariablesInCurrentStackFrame()[name] is GrundParser.FunctionDefinitionContext functionLookup)
                 {
                     return ExecuteUserDefinedFunction(context, functionLookup);
                 }
             }
             // Handle build-in Grund functions
-            if(GetVariablesInCurrentStackFrame()[name] is Func<object?[], object?> func)
+            if (GetVariablesInCurrentStackFrame()[name] is Func<object?[], object?> func)
             {
                 return func(args);
             }
@@ -137,13 +140,13 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         {
             // Handle user-defined functions
             {
-                if(Variables[name] is GrundParser.FunctionDefinitionContext functionLookup)
+                if (Variables[name] is GrundParser.FunctionDefinitionContext functionLookup)
                 {
                     return ExecuteUserDefinedFunction(context, functionLookup);
                 }
             }
             // Handle build-in Grund functions
-            if(Variables[name] is Func<object?[], object?> func)
+            if (Variables[name] is Func<object?[], object?> func)
             {
                 return func(args);
             }
@@ -157,77 +160,23 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     //** Below is the implementation if Parsing Variables
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {
-        //This is how we defined variables (entire function)
-        if (Visit(context.expression(0)))
-       { 
-            //In this fun guy is how we define lists and accessing lists like x[1] = 3; should set the value of x[1] to 3
-            var varName = context.listAccession().IDENTIFIER().GetText();
-            var indexToFind = Visit(context.listAccession().expression());
-            var toReplaceValue = Visit(context.expression());
-            //Every variable with an underscore in the beginning should be added to the global variable list if its a list object
-            if (varName[0] == '_' && Variables[varName] is List<object?> _list)
+            if(!(Visit(context.expression(0)) is GrundDynamicTypeWrapper) || !(Visit(context.expression(1)) is GrundDynamicTypeWrapper))
             {
-                try
-                {
-                    //We get the current list that it's parsing and we take the expression of [>1<] 1 and force it to be an int
-                    //after we simply access the index of the list and add the value we wish to replace.
-                    _list[int.Parse(indexToFind.ToString())] = toReplaceValue;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + varName + " Learn TO COUNT. LINE: " + context.Start.Line.ToString());
-                }
+               throw new Exception("GRUND SAYS ERROR: " + " assignment died somewhere not sure. LINE: " + context.Start.Line.ToString());
             }
-            else if (GetVariablesInCurrentStackFrame()[varName] is List<object?> list)
-            {
-                // same thing as above but it adds it to the current scope instead
-                try
-                {
-                    list[int.Parse(indexToFind.ToString())] = toReplaceValue;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + varName + " Learn TO COUNT. LINE: " + context.Start.Line.ToString());
-                }
-            }
-        }
-         else if(context.memberAssignment() != null)
-        {
-            var value = Visit(context.memberAssignment().expression());
-            var structInstanceName = context.memberAssignment().memberAccession().IDENTIFIER(0).GetText(); // todo remove this
-            // var structInstance = FindVariableInCurrentState(context.memberAssignment().memberAccession().IDENTIFIER(0).GetText());
-            var memberName = context.memberAssignment().memberAccession().IDENTIFIER(1)?.GetText() ?? context.memberAssignment().memberAccession().functionCall()?.IDENTIFIER()?.GetText();
-           
-            if (structInstanceName == null || memberName == null)
-            {
-                throw new Exception("Grund: how It's Impossible due to syntax");
-            }
-            memberAssignmentFunction(structInstanceName, memberName, value, context);
-        }
-        else if(context.CLASSPOINTER() != null)
-        {
-            var varName = context.IDENTIFIER().GetText();
-            var value = Visit(context.expression());
-            Dictionary<string, object?> newStuctMembers = new Dictionary<string, object?>();
-            foreach(KeyValuePair<string, object?> kvp in (Dictionary<string, object?>)value)
-            {
-                newStuctMembers.Add(kvp.Key, kvp.Value);
-            }
-            if (varName[0] == '_')
-            {
-                
-                Variables[varName] = newStuctMembers;
-            }
-            else
-            {
-                GetVariablesInCurrentStackFrame()[varName] = newStuctMembers;
-            }
-        }
-        else
-        {
+            // If its not a list do this for everything else that needs to be assigned as a variable
+            GrundDynamicTypeWrapper gLeft = (GrundDynamicTypeWrapper)Visit(context.expression(0));
+            GrundDynamicTypeWrapper gRight = (GrundDynamicTypeWrapper)Visit(context.expression(1));
+            gLeft.value = gRight.value;
+    
+        return null;
+    }
+
+    public override object VisitDeclarationsExpression([NotNull] GrundParser.DeclarationsExpressionContext context)
+    {
             // If its not a list do this for everything else that needs to be assigned as a variable
             var varName = context.IDENTIFIER().GetText();
-            var value = Visit(context.expression());
+            var value = new GrundDynamicTypeWrapper(null);
             if (varName[0] == '_')
             {
                 Variables[varName] = value;
@@ -236,39 +185,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             {
                 GetVariablesInCurrentStackFrame()[varName] = value;
             }
-        }
-        return null;
     }
-    public object? memberAssignmentFunction(string? StructInstanceName, string? MemberName, object? Reassignment, GrundParser.AssignmentContext context)
-    {
-        if(GetVariablesInCurrentStackFrame().ContainsKey(StructInstanceName) && GetVariablesInCurrentStackFrame()[StructInstanceName] is Dictionary<string, object?> scopeStruct)
-        {   
-            if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
-            {
-                StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][MemberName] = Reassignment;
-            }
-            else if(scopeStruct.ContainsKey(MemberName) != null)
-            {
-                scopeStruct[MemberName] = Reassignment;
-            }                  
-        }
-        else if(Variables.ContainsKey(StructInstanceName) && Variables[StructInstanceName] is Dictionary<string, object?> Struct)
-        {
-            if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
-            {
-                StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][MemberName] = Reassignment;
-            }
-            else if(Struct.ContainsKey(MemberName) != null)
-            {
-                Struct[MemberName] = Reassignment;
-            }
-        }
-        else
-        {
-            throw new Exception("Could not find either (" + MemberName + ") in struct or StructInstance (" + StructInstanceName + ") Grund says! " + "LINE: " + context.Start.Line.ToString());
-        }
-        return null;
-    }
+    
     // Helper function to reduce boilerplate. Sends all variables from current scope for evaluation.
     public Dictionary<string, object?> GetVariablesInCurrentStackFrame()
     {
@@ -281,20 +199,20 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var gList = Visit(context.expression(0));
         var gInt = Visit(context.expression(1));
         //Checks if variable is in current scope and is a list.
-            if (gList is List<object?> list)
+        if (gList is List<object?> list)
+        {
+            //If it is then we return the value at the lists index
+            try
             {
-                //If it is then we return the value at the lists index
-                try
-                {
-                    return list.ElementAt(int.Parse(gInt.ToString()));
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + " Learn TO COUNT. LINE: " + context.Start.Line.ToString());
-                }
+                return list.ElementAt(int.Parse(gInt.ToString()));
             }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw new Exception("GRUND SAYS OUT OF RANGE ERROR: " + " Learn TO COUNT. LINE: " + context.Start.Line.ToString());
+            }
+        }
 
-            throw new Exception("GRUND SAYS ERROR: " + " IS NOT LIST. LINE: " + context.Start.Line.ToString());
+        throw new Exception("GRUND SAYS ERROR: " + " IS NOT LIST. LINE: " + context.Start.Line.ToString());
     }
 
     public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext context)
@@ -309,7 +227,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var structName = context.IDENTIFIER(0).GetText();
         var structMembers = new Dictionary<string, object?>();
         var staticMembers = new Dictionary<string, object?>();
-        if(context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
+        if (context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
         {
             var parentStructName = context.IDENTIFIER(1).GetText();
             Dictionary<string, object?> parentStruct = (Dictionary<string, object?>)Variables[parentStructName];
@@ -324,27 +242,27 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                     structMembers.Add(kvp.Key, kvp.Value);
                 }
             }
-            staticMembers.Add("STRUK_PARENT_POINTER_PLEASE_DON'T_USE" , parentStructName);
+            staticMembers.Add("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", parentStructName);
         }
         //Overrides Parent Static Struct pointers Its pointer is THE PARENT_POINTER 
         //GF_STRUCT_POINTER is a pointer name  
         structMembers["GF_STRUK_POINTER_PLEASE_DON'T_USE"] = structName;
         foreach (var line in lines)
         {
-            if(line.functionDefinition() != null)
+            if (line.functionDefinition() != null)
             {
                 // Process function definitions
                 var methodName = line.functionDefinition().IDENTIFIER().GetText();
                 var methodValue = line.functionDefinition();
                 structMembers.Add(methodName, methodValue);
             }
-            else if(line.statement().blockScopeAssignment() != null)
+            else if (line.statement().blockScopeAssignment() != null)
             {
                 var assignmentCount = line.statement().blockScopeAssignment().assignment();
                 foreach (var assignment in assignmentCount)
                 {
-                    var staticFieldName = assignment.IDENTIFIER().GetText();
-                    var staticFieldValue = Visit(assignment.expression());
+                    var staticFieldName = assignment.expression(0).GetText();
+                    var staticFieldValue = Visit(assignment.expression(1));
                     staticMembers.Add(staticFieldName, staticFieldValue);
                 }
             }
@@ -358,18 +276,18 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         // Add the struct members to the global Variables dictionary
         StaticStructMembers.Add(structName, staticMembers);
-        Variables.Add(structName,structMembers);
+        Variables.Add(structName, structMembers);
         return null;
     }
 
     public object? FindVariableInCurrentState(string identifier)
     {
-        if(GetVariablesInCurrentStackFrame().ContainsKey(identifier)) return GetVariablesInCurrentStackFrame()[identifier];
-        if(Variables.ContainsKey(identifier)) return Variables[identifier];
+        if (GetVariablesInCurrentStackFrame().ContainsKey(identifier)) return GetVariablesInCurrentStackFrame()[identifier];
+        if (Variables.ContainsKey(identifier)) return Variables[identifier];
         return null;
     }
 
-    public object? LookupStructMember(Dictionary<string, object?> structMembers, string memberName, out bool memberIsStatic, out bool success) 
+    public object? LookupStructMember(Dictionary<string, object?> structMembers, string memberName, out bool memberIsStatic, out bool success)
     {
         // We need to return whether or not the member that we find is static (using the "out" keyword in the parameter declaration rather
         // than returning it directly). We don't know if it's static or not yet, so for now we assume true.
@@ -382,27 +300,27 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         // instance member string containing the struct name that we automatically inserted during instance construction.
         string? structPointerString = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
         // Lookup the static members for this struct, and return a value if one is found for this member name.
-        if (structPointerString != null && StaticStructMembers.ContainsKey(structPointerString) && (StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null) != null)) 
+        if (structPointerString != null && StaticStructMembers.ContainsKey(structPointerString) && (StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null) != null))
         {
             return StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault(memberName, null);
         }
         // If we didn't find a match in our own static members, try looking in our parent struct (the one that we are declared to extend from), and then its
         // parent struct, and then its parent struct, etc. Similarly to the magic "GF_STRUK_POINTER_PLEASE_DON'T_USE" instance member used before, each struct
         // contains a magic static member "STRUK_PARENT_POINTER_PLEASE_DON'T_USE" to retrieve the name of its parent struct for this purpose.
-        if((StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null)) is string parentKey && parentKey != null)
+        if ((StaticStructMembers.GetValueOrDefault(structPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null)) is string parentKey && parentKey != null)
         {
             // Check immediate parent struct
-            if(StaticStructMembers.GetValueOrDefault(parentKey, null).ContainsKey(memberName))
+            if (StaticStructMembers.GetValueOrDefault(parentKey, null).ContainsKey(memberName))
             {
                 return StaticStructMembers.GetValueOrDefault(parentKey, null)?.GetValueOrDefault(memberName, null);
             }
             // Recursively check parents of parent
-            return RecursiveParentStructLookUp(StaticStructMembers.GetValueOrDefault(parentKey, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null).ToString(), memberName);   
+            return RecursiveParentStructLookUp(StaticStructMembers.GetValueOrDefault(parentKey, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null).ToString(), memberName);
         }
         // If we've made it to this point, then no match was found for static members.
         // Now we check if it's an instance variable, flag it as such, and return its value.
-        memberIsStatic = false;       
-        if(structMembers.ContainsKey(memberName))
+        memberIsStatic = false;
+        if (structMembers.ContainsKey(memberName))
         {
             return structMembers.GetValueOrDefault(memberName, null);
         }
@@ -410,22 +328,21 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         success = false;
         return null;
     }
-    
+
     public object? RecursiveParentStructLookUp(string structParentPointerString, string memberName)
     {
         //If we can find the parent struct pointer and the value it pulls is real then we return the value else we check the grandparents pointer and value!!!
-        if(StaticStructMembers.ContainsKey(structParentPointerString) && StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault(memberName, null) != null)
+        if (StaticStructMembers.ContainsKey(structParentPointerString) && StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault(memberName, null) != null)
         {
             return StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault(memberName, null);
         }
-        else if((StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null)) != null)
+        else if ((StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null)) != null)
         {
-             RecursiveParentStructLookUp(StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null).ToString() , memberName);
+            RecursiveParentStructLookUp(StaticStructMembers.GetValueOrDefault(structParentPointerString, null)?.GetValueOrDefault("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", null).ToString(), memberName);
         }
         return null;
     }
-
-    public override object? VisitMemberAccession([NotNull] GrundParser.MemberAccessionContext context)
+    public override object VisitDotExpression([NotNull] GrundParser.DotExpressionContext context)
     {
         var structInstanceName = context.IDENTIFIER(0).GetText();
         var memberName = context.IDENTIFIER(1)?.GetText() ?? context.functionCall()?.IDENTIFIER()?.GetText();
@@ -433,12 +350,12 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         {
             throw new Exception("Grund: how It's Impossible due to syntax");
         }
-        if(FindVariableInCurrentState(structInstanceName) is Dictionary<string, object?> structMembers)
+        if (FindVariableInCurrentState(structInstanceName) is Dictionary<string, object?> structMembers)
         {
             bool memberIsStatic = false;
             bool success = false;
             object? value = LookupStructMember(structMembers, memberName, out memberIsStatic, out success);
-            if(!success)
+            if (!success)
             {
                 string? structName = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
                 throw new Exception("GRUND Says theres no value for " + structInstanceName + "." + memberName + " in that class " + (structName == null ? "UNKNOWN" : structName) + " there jimbo?" + "LINE: " + context.Start.Line.ToString());
@@ -447,7 +364,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             {
                 return ExecuteUserDefinedFunction(context.functionCall(), functionDefinition, memberIsStatic ? null : structMembers);
             }
-            else if(!(value is Antlr4.Runtime.Tree.IParseTree))
+            else if (!(value is Antlr4.Runtime.Tree.IParseTree))
             {
                 return value;
             }
@@ -455,7 +372,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         else
         {
-            throw new Exception("GRUND Says that class instance doesn't exist there jimbo? "+ "LINE: " + context.Start.Line.ToString());
+            throw new Exception("GRUND Says that class instance doesn't exist there jimbo? " + "LINE: " + context.Start.Line.ToString());
         }
     }
 
@@ -473,7 +390,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         else if (Variables.ContainsKey(varName))
         {
             return Variables[varName];
-        }else
+        }
+        else
         {
             while (!(parentContext is GrundParser.StrucDefinitionContext))
             {
@@ -487,8 +405,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                     throw new Exception("GRUNDS SPITS: No maide- ? I mean class definition? OR  GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
                 }
             }
-            if(parentContext is GrundParser.StrucDefinitionContext structDef){
-                if(StaticStructMembers.ContainsKey(structDef.IDENTIFIER(0).GetText()))
+            if (parentContext is GrundParser.StrucDefinitionContext structDef)
+            {
+                if (StaticStructMembers.ContainsKey(structDef.IDENTIFIER(0).GetText()))
                 {
                     return StaticStructMembers[structDef.IDENTIFIER(0).GetText()][varName];
                 }
@@ -496,16 +415,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
 
-    } 
- 
-    public override object VisitCollections([NotNull] GrundParser.CollectionsContext context)
-    {
-        if (context.list() is { } l)
-        {
-            return l.expression().Select(Visit).ToList();
-        }
-        throw new Exception("GRUND SLAMS FIST NOT VALID COLLECTIONS LINE: " + context.Start.Line.ToString());
     }
+
+
 
     public override object VisitMultiplicativeExpression([NotNull] GrundParser.MultiplicativeExpressionContext context)
     {
@@ -589,7 +501,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         if (!Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
             Variables.Add(context.IDENTIFIER().GetText(), context);
-        }else if(Variables.ContainsKey(context.IDENTIFIER().GetText()))
+        }
+        else if (Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
             Variables[context.IDENTIFIER().GetText()] = context;
         }
@@ -602,7 +515,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         ? IsTrue
         : IsFalse
         ;
-        
+
         if (condition(Visit(context.expression())))
         {
             do
@@ -673,7 +586,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var left = Visit(context.expression(0));
         var right = Visit(context.expression(1));
         var op = context.boolOP().GetText();
-        return SlanderLibrary.boolOperators(left, right, op); 
+        return SlanderLibrary.boolOperators(left, right, op);
     }
     private bool IsTrue(object? value)
     {

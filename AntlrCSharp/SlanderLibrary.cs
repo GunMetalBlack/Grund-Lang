@@ -1,4 +1,7 @@
-namespace Grund{
+using Grund;
+using static Grund.GrundTypeWrapper;
+namespace Grund
+{
     public class SlanderLibrary
     {
 
@@ -9,11 +12,12 @@ namespace Grund{
         // The GF_WRITE_INLINE function takes a variable number of arguments, which can be any combination of strings, numbers,
         // booleans, null values, or lists. It prints each argument to the console on the same line, separated by spaces,
         // and then prints a newline character at the end.
-        public static object?[] GF_WRITE_INLINE(object?[] args)
+        public static object?[] GF_WRITE_INLINE(GrundDynamicTypeWrapper[] args)
         {
+        
             foreach (var arg in args)
             {
-                if (arg is List<object?> list)
+                if (arg.value is List<object?> list)
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
@@ -29,18 +33,18 @@ namespace Grund{
                 }
                 else
                 {
-                    Console.Write(arg);
+                    Console.Write(arg.value);
                 }
             }
             Console.WriteLine();
             return null;
         }
         // The GF_WRITE function is similar to GF_WRITE_INLINE, but it does not print a newline character at the end.
-        public static object?[] GF_WRITE(object?[] args)
+        public static object?[] GF_WRITE(GrundDynamicTypeWrapper[] args)
         {
             foreach (var arg in args)
             {
-                if (arg is List<object?> list)
+                if (arg.value is List<object?> list)
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
@@ -56,41 +60,42 @@ namespace Grund{
                 }
                 else
                 {
-                    Console.Write(arg);
+                    Console.Write(arg.value);
                 }
             }
             return null;
         }
         // Moves Console Cursors position
-        public static object?[] GF_CURSOR_MOVE(object?[] args)
+        public static object?[] GF_CURSOR_MOVE(GrundDynamicTypeWrapper[] args)
         {
-            if(args.Length == 2)
+            if (args.Length == 2)
             {
-                if(args[0] is int x && args[1] is int y)
+                if (args[0].value is int x && args[1].value is int y)
                 {
-                    Console.SetCursorPosition(x,y);
+                    Console.SetCursorPosition(x, y);
                 }
                 else
                 {
                     throw new Exception("Grund Screams: USE INT'S YOU MORON! CURSOR CAN'T MOVE!");
                 }
-            }else
+            }
+            else
             {
                 throw new Exception("Grund: DUDE REALLY YOUR MISSING ARGS! FOR CURSOR");
             }
             return null;
         }
         //Standard Input
-        public static object? GF_WRITE_INPUT(object?[] args)
+        public static object? GF_WRITE_INPUT(GrundDynamicTypeWrapper[] args)
         {
             object toReturn = Console.ReadLine();
             if (args != null && args.Length != 0)
             {
-                if (args[0].ToString() == "INT")
+                if (args[0].value.ToString() == "INT")
                 {
                     return int.Parse(toReturn.ToString());
                 }
-                else if (args[0].ToString() == "FLOAT")
+                else if (args[0].value.ToString() == "FLOAT")
                 {
                     return float.Parse(toReturn.ToString());
                 }
@@ -102,19 +107,20 @@ namespace Grund{
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
         }
         // Clear Screen
-        public static object?[] GF_CLS(object?[] args)
+        public static object?[] GF_CLS(GrundDynamicTypeWrapper[] args)
         {
             Console.Clear();
             return null;
         }
         //Get key without stopping execution
-        public static object? GF_GET_KEY(object?[] args)
+        public static object? GF_GET_KEY(GrundDynamicTypeWrapper?[] args)
         {
             if (Console.KeyAvailable) // Non-blocking peek
             {
                 object toReturn = Console.ReadKey(true).KeyChar;
                 return toReturn.ToString();
-            }else
+            }
+            else
             {
                 return null;
             }
@@ -122,11 +128,11 @@ namespace Grund{
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
         }
         //Random Value
-        public static object? GF_RAND(object?[] args)
+        public static object? GF_RAND(GrundDynamicTypeWrapper[] args)
         {
-            if ((args[0] != null && args[1] != null)&& (args[0] is int low && args[1] is int high))
+            if ((args[0].value != null && args[1].value != null) && (args[0].value is int low && args[1].value is int high))
             {
-                if(low >= 0)
+                if (low >= 0)
                 {
                     var random = new Random();
                     var rNum = random.Next(low, high);
@@ -136,18 +142,19 @@ namespace Grund{
                 {
                     throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED YOU CANNOT USE NEGATIVE NUMBERS FOR LOW IN RAND FUNCTION");
                 }
-            }else
+            }
+            else
             {
                 throw new Exception("GRUND PUNCHES YOU IN THE FACE YOU'RE MISSING ARGUMENTS SIR");
             }
             return null;
         }
-        public static object? GF_INDEX_CHAR(object?[] args)
+        public static object? GF_INDEX_CHAR(GrundDynamicTypeWrapper[] args)
         {
-            if (args[0] != null && args[1] != null)
+            if (args[0].value != null && args[1].value != null)
             {
-                string stringToSearch = args[0].ToString();
-                int indexToReturn = int.Parse(args[1].ToString());
+                string stringToSearch = args[0].value.ToString();
+                int indexToReturn = int.Parse(args[1].value.ToString());
                 if (indexToReturn >= 0 && indexToReturn < stringToSearch.Length)
                 {
                     return stringToSearch[indexToReturn].ToString();
@@ -162,12 +169,12 @@ namespace Grund{
                 throw new Exception("GRUND SAYS ERROR IN ARGUMENTS NULL REFERENCE *SPITS IN FACE*");
             }
         }
-        public static object? GF_PARSER(object?[] args)
+        public static object? GF_PARSER(GrundDynamicTypeWrapper[] args)
         {
-            if (args[0] != null && args[1] != null)
+            if (args[0].value != null && args[1].value != null)
             {
-                string ParseType = args[0].ToString();
-                object toReturn = args[1];
+                string ParseType = args[0].value.ToString();
+                object toReturn = args[1].value;
                 if (ParseType == "INT")
                 {
                     toReturn = int.Parse(toReturn.ToString());
@@ -193,24 +200,24 @@ namespace Grund{
                 throw new Exception("GRUND SAYS ERROR IN ARGUMENTS NULL REFERENCE *SPITS IN FACE*");
             }
         }
-        public static object?[] GF_SLEEP(object[]? args)
+        public static object?[] GF_SLEEP(GrundDynamicTypeWrapper[]? args)
         {
-            object timeToSleep = args[0];
-            if(timeToSleep is int time)
+            object timeToSleep = args[0].value;
+            if (timeToSleep is int time)
             {
                 Thread.Sleep(time);
             }
             return null;
         }
-        public static object?[] GF_LIST_APPEND(object?[] args)
+        public static object?[] GF_LIST_APPEND(GrundDynamicTypeWrapper[] args)
         {
             //Grabs the first list and the second value as arguments to the function 
-            if (args[0] != null && args[1] != null)
+            if (args[0].value != null && args[1].value != null)
             {
                 //Store the first as value 
-                var typeToStore = args[1];
+                var typeToStore = args[1].value;
                 //save the second as list 
-                List<object?> keyLookUp = args[0] as List<object?>;
+                List<object?> keyLookUp = args[0].value as List<object?>;
                 keyLookUp.Add(typeToStore);
             }
             else
@@ -219,17 +226,17 @@ namespace Grund{
             }
             return null;
         }
-        public static object? GF_LENGTH(object?[] args, Dictionary<string, object?> Variables)
+        public static object? GF_LENGTH(GrundDynamicTypeWrapper[] args, Dictionary<string, object?> Variables)
         {
-            if (args.Length == 1 && !(args[0] is List<object?>))
+            if (args.Length == 1 && !(args[0].value is List<object?>))
             {
-                var lengthProp = args[0].GetType().GetProperty("Length");
+                var lengthProp = args[0].value.GetType().GetProperty("Length");
                 if (lengthProp != null)
                 {
-                    return lengthProp.GetValue(args[0], null);
+                    return lengthProp.GetValue(args[0].value, null);
                 }
             }
-            else if (args.Length == 1 && args[0] is List<object?> list)
+            else if (args.Length == 1 && args[0].value is List<object?> list)
             {
                 return list.Count;
             }
@@ -239,9 +246,9 @@ namespace Grund{
             }
             return null;
         }
-        public static object?[] GF_LIST_REMOVE(object?[] args)
+        public static object?[] GF_LIST_REMOVE(GrundDynamicTypeWrapper[] args)
         {
-            if (args.Length == 2 && args[0] is List<object?> gList && args[1] is object gValue)
+            if (args.Length == 2 && args[0].value is List<object?> gList && args[1].value is object gValue)
             {
                 gList.Remove(gValue);
             }
@@ -251,16 +258,16 @@ namespace Grund{
             }
             return null;
         }
-        public static object? GF_CONTAINS(object?[] args)
+        public static object? GF_CONTAINS(GrundDynamicTypeWrapper[] args)
         {
-            if (args.Length == 2 && args[0] is Object gObject && args[1] is object gValue)
+            if (args.Length == 2 && args[0].value is Object gObject && args[1].value is object gValue)
             {
                 //Yup this is clean 
-                if(gObject is List<object?> glist)
+                if (gObject is List<object?> glist)
                 {
                     return glist.Contains(gValue);
                 }
-                else if(gObject is string gstring && gValue is string gChar)
+                else if (gObject is string gstring && gValue is string gChar)
                 {
                     return gstring.Contains(gChar);
                 }
@@ -290,117 +297,117 @@ namespace Grund{
 
         //** Bools
 
-        public static bool boolOperators(object? left, object? right, string op)
+        public static GrundDynamicTypeWrapper boolOperators(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right, string op)
         {
-            if (left is bool l && right is bool r)
+            if (left.value is bool l && right.value is bool r)
             {
                 if (op.Equals("AND"))
                 {
-                    return l && r;
+                    return new GrundDynamicTypeWrapper (l && r);
                 }
                 if (op.Equals("OR"))
                 {
-                    return l || r;
+                    return new GrundDynamicTypeWrapper (l || r);
                 }
             }
             throw new Exception("GRUND *HACKS AND VOMITS* IDFK HOW WE GOT HERE NOT A BOOL OPERATION");
         }
 
-        public static bool GreaterThan(object? left, object? right)
+        public static GrundDynamicTypeWrapper GreaterThan(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left == null || right == null)
+            if (left.value == null || right.value == null)
             {
-                return left == right;
+                throw new Exception("GRUND *HACKS AND VOMITS* IDFK NULL FOR GREATER THAN");
             }
-            if (left is int l && right is int r)
+            if (left.value is int l && right.value is int r)
             {
-                return l > r;
+                return new GrundDynamicTypeWrapper(l > r);
             }
-            if (left is float lf && right is float rf)
+            if (left.value is float lf && right.value is float rf)
             {
-                return lf > rf;
+                return new GrundDynamicTypeWrapper(lf > rf);
             }
-            if (left is int lInt && right is float rFloat)
+            if (left.value is int lInt && right.value is float rFloat)
             {
-                return lInt > rFloat;
+                return new GrundDynamicTypeWrapper(lInt > rFloat);
             }
-            if (left is float lfFloat && right is int rInt)
+            if (left.value is float lfFloat && right.value is int rInt)
             {
-                return lfFloat > rInt;
+                return new GrundDynamicTypeWrapper(lfFloat > rInt);
+            }
+            throw new Exception("GRUND STUPID CANNOT compare." + left.value.GetType() + right.value.GetType());
+        }
+        public static GrundDynamicTypeWrapper GreaterThanOrEqual(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
+        {
+            if (left.value == null || right.value == null)
+            {
+                 throw new Exception("GRUND *HACKS AND VOMITS* IDFK NULL FOR GREATER THAN OR EQUAL");
+            }
+            if (left.value is int l && right.value is int r)
+            {
+                return new GrundDynamicTypeWrapper(l >= r);
+            }
+            if (left.value is float lf && right.value is float rf)
+            {
+                return  new GrundDynamicTypeWrapper(lf >= rf);
+            }
+            if (left.value is int lInt && right.value is float rFloat)
+            {
+                return new GrundDynamicTypeWrapper(lInt >= rFloat);
+            }
+            if (left.value is float lfFloat && right.value is int rInt)
+            {
+                return new GrundDynamicTypeWrapper(lfFloat >= rInt);
+            }
+            throw new Exception("GRUND STUPID CANNOT compare." + left.value.GetType() + right.value.GetType());
+        }
+        public static GrundDynamicTypeWrapper LessThan(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
+        {
+            if (left.value == null || right.value == null)
+            {
+                 throw new Exception("GRUND *HACKS AND VOMITS* IDFK NULL FOR GREATER THAN OR EQUAL");
+            }
+            if (left.value is int l && right.value is int r)
+            {
+                return new GrundDynamicTypeWrapper(l < r);
+            }
+            if (left.value is float lf && right.value is float rf)
+            {
+                return  new GrundDynamicTypeWrapper(lf < rf);
+            }
+            if (left.value is int lInt && right.value is float rFloat)
+            {
+                return new GrundDynamicTypeWrapper(lInt < rFloat);
+            }
+            if (left.value is float lfFloat && right.value is int rInt)
+            {
+                return  new GrundDynamicTypeWrapper(lfFloat < rInt);
             }
             throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
         }
-        public static bool GreaterThanOrEqual(object? left, object? right)
+        public static GrundDynamicTypeWrapper LessThanOrEqual(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left == null || right == null)
+            if (left.value == null || right.value == null)
             {
-                return false;
+                return new GrundDynamicTypeWrapper(left.value == right.value);
             }
-            if (left is int l && right is int r)
+            if (left.value is int l && right.value is int r)
             {
-                return l >= r;
+                return new GrundDynamicTypeWrapper(l <= r);
             }
-            if (left is float lf && right is float rf)
+            if (left.value is float lf && right.value is float rf)
             {
-                return lf >= rf;
+                return new GrundDynamicTypeWrapper(lf <= rf);
             }
-            if (left is int lInt && right is float rFloat)
+            if (left.value is int lInt && right.value is float rFloat)
             {
-                return lInt >= rFloat;
+                return new GrundDynamicTypeWrapper(lInt <= rFloat);
             }
-            if (left is float lfFloat && right is int rInt)
+            if (left.value is float lfFloat && right.value is int rInt)
             {
-                return lfFloat >= rInt;
+                return new GrundDynamicTypeWrapper(lfFloat <= rInt);
             }
-            throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
-        }
-        public static bool LessThan(object? left, object? right)
-        {
-            if (left == null || right == null)
-            {
-                return false;
-            }
-            if (left is int l && right is int r)
-            {
-                return l < r;
-            }
-            if (left is float lf && right is float rf)
-            {
-                return lf < rf;
-            }
-            if (left is int lInt && right is float rFloat)
-            {
-                return lInt < rFloat;
-            }
-            if (left is float lfFloat && right is int rInt)
-            {
-                return lfFloat < rInt;
-            }
-            throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
-        }
-        public static bool LessThanOrEqual(object? left, object? right)
-        {
-            if (left == null || right == null)
-            {
-                return left == right;
-            }
-            if (left is int l && right is int r)
-            {
-                return l <= r;
-            }
-            if (left is float lf && right is float rf)
-            {
-                return lf <= rf;
-            }
-            if (left is int lInt && right is float rFloat)
-            {
-                return lInt <= rFloat;
-            }
-            if (left is float lfFloat && right is int rInt)
-            {
-                return lfFloat <= rInt;
-            }
-            throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+            throw new Exception("GRUND STUPID CANNOT compare." + left.value.GetType() + right.value.GetType());
         }
         public static bool IsEqual(object? left, object? right)
         {
@@ -408,11 +415,11 @@ namespace Grund{
             {
                 return left == right;
             }
-            if(left != null && right == null)
+            if (left != null && right == null)
             {
                 return false;
             }
-            if(left == null && right != null)
+            if (left == null && right != null)
             {
                 return false;
             }

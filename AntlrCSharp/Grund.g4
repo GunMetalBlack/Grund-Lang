@@ -22,7 +22,8 @@ EXTENDS: 'EXTENDS';
 
 blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
-assignment: expression '='  expression (';')?; 
+assignment: expression '='  expression (';')? ;
+declaration: 'VAR' IDENTIFIER (';')?; 
 
 //memberAssignment: memberAccession '=' expression;
 
@@ -45,6 +46,7 @@ expression
     | collections           #collectionsExpression
     | expression '[' expression ']' #listAccessionExpression
     | IDENTIFIER            #identifierExpression
+    | declaration           #declarationsExpression
     | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
     | expression '.' expression #dotExpression

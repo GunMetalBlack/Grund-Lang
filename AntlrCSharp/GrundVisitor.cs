@@ -80,6 +80,12 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitAssignment([NotNull] GrundParser.AssignmentContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="GrundParser.declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclaration([NotNull] GrundParser.DeclarationContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.functionCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -200,6 +206,13 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>declarationsExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDeclarationsExpression([NotNull] GrundParser.DeclarationsExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.multOP"/>.
 	/// </summary>
