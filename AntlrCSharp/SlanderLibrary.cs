@@ -365,7 +365,7 @@ namespace Grund
         {
             if (left.value == null || right.value == null)
             {
-                 throw new Exception("GRUND *HACKS AND VOMITS* IDFK NULL FOR GREATER THAN OR EQUAL");
+                 throw new Exception("GRUND *HACKS AND VOMITS* IDFK NULL FOR LESS THAN");
             }
             if (left.value is int l && right.value is int r)
             {
@@ -389,7 +389,7 @@ namespace Grund
         {
             if (left.value == null || right.value == null)
             {
-                return new GrundDynamicTypeWrapper(left.value == right.value);
+                throw new Exception("GRUND *HACKS AND VOMITS* IDFK NULL FOR LESS THAN OR EQUAL");
             }
             if (left.value is int l && right.value is int r)
             {
@@ -409,75 +409,75 @@ namespace Grund
             }
             throw new Exception("GRUND STUPID CANNOT compare." + left.value.GetType() + right.value.GetType());
         }
-        public static bool IsEqual(object? left, object? right)
+        public static GrundDynamicTypeWrapper IsEqual(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left == null || right == null)
+            if (left.value != null && right.value == null)
             {
-                return left == right;
+                return new GrundDynamicTypeWrapper(false);
             }
-            if (left != null && right == null)
+            if (left.value == null && right.value != null)
             {
-                return false;
+                return new GrundDynamicTypeWrapper(false);
             }
-            if (left == null && right != null)
+            if (left.value == null && right.value == null)
             {
-                return false;
+                return new GrundDynamicTypeWrapper(true);
             }
-            if (left is int l && right is int r)
+            if (left.value is int l && right.value is int r)
             {
-                return l == r;
+                return new GrundDynamicTypeWrapper(l == r);
             }
-            if (left is float lf && right is float rf)
+            if (left.value is float lf && right.value is float rf)
             {
-                return lf == rf;
+                return new GrundDynamicTypeWrapper(lf == rf);
             }
-            if (left is int lInt && right is float rFloat)
+            if (left.value is int lInt && right.value is float rFloat)
             {
-                return lInt == rFloat;
+                return new GrundDynamicTypeWrapper(lInt == rFloat);
             }
-            if (left is float lfFloat && right is int rInt)
+            if (left.value is float lfFloat && right.value is int rInt)
             {
-                return lfFloat == rInt;
+                return new GrundDynamicTypeWrapper(lfFloat == rInt);
             }
-            if (left is string lfString && right is string rString)
+            if (left.value is string lfString && right.value is string rString)
             {
-                return lfString == rString;
+                return new GrundDynamicTypeWrapper(lfString == rString);
             }
-            if (left is bool lfBool && right is bool rBool)
+            if (left.value is bool lfBool && right.value is bool rBool)
             {
-                return lfBool.Equals(rBool);
+                return new GrundDynamicTypeWrapper(lfBool.Equals(rBool));
             }
             throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
         }
-        public static bool IsNotEqual(object? left, object? right)
+        public static GrundDynamicTypeWrapper IsNotEqual(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left == null && right != null)
+            if (left.value == null && right.value != null)
             {
-                return left != right;
+                return new GrundDynamicTypeWrapper(true);
             }
-            if (left != null && right == null)
+            if (left.value != null && right.value == null)
             {
-                return left != right;
+                return new GrundDynamicTypeWrapper(true);
             }
-            if (left is int l && right is int r)
+            if (left.value  is int l && right.value  is int r)
             {
-                return l != r;
+                return new GrundDynamicTypeWrapper(l != r);
             }
-            if (left is float lf && right is float rf)
+            if (left.value  is float lf && right.value  is float rf)
             {
-                return lf != rf;
+                return new GrundDynamicTypeWrapper(lf != rf);
             }
-            if (left is int lInt && right is float rFloat)
+            if (left.value  is int lInt && right.value  is float rFloat)
             {
-                return lInt != rFloat;
+                return new GrundDynamicTypeWrapper(lInt != rFloat);
             }
-            if (left is float lfFloat && right is int rInt)
+            if (left.value  is float lfFloat && right.value  is int rInt)
             {
-                return lfFloat != rInt;
+                return new GrundDynamicTypeWrapper(lfFloat != rInt);
             }
-            if (left is string lfString && right is string rString)
+            if (left.value  is string lfString && right.value  is string rString)
             {
-                return lfString != rString;
+                return new GrundDynamicTypeWrapper(lfString != rString);
             }
             throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
         }
