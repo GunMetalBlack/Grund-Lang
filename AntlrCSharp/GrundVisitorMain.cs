@@ -59,20 +59,20 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         Variables[ID_E] = Math.E;
 
         //** FunctionCall Creation
-        Variables[FUNC_ID_WRITE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE);
-        Variables[FUNC_ID_WRITE_INLINE] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INLINE);
-        Variables[FUNC_ID_GF_SLEEP] = new Func<object?[], object?>(SlanderLibrary.GF_SLEEP);
-        Variables[FUNC_ID_GL_LIST_ADD] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_APPEND(listname));
-        Variables[FUNC_ID_GL_REMOVE] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LIST_REMOVE(listname));
-        Variables[FUNC_ID_GF_LENGTH] = new Func<object?[], object?>(listname => SlanderLibrary.GF_LENGTH(listname, Variables));
-        Variables[FUNC_ID_GF_CONTAINS] = new Func<object?[], object?>(listname => SlanderLibrary.GF_CONTAINS(listname));
-        Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<object?[], object?>(SlanderLibrary.GF_WRITE_INPUT);
-        Variables[FUNC_ID_GF_GET_KEY] = new Func<object?[], object?>(SlanderLibrary.GF_GET_KEY);
-        Variables[FUNC_ID_GF_PARSER] = new Func<object?[], object?>(SlanderLibrary.GF_PARSER);
-        Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<object?[], object?>(SlanderLibrary.GF_INDEX_CHAR);
-        Variables[FUNC_ID_GF_CLS] = new Func<object?[], object?>(SlanderLibrary.GF_CLS);
-        Variables[FUNC_ID_GF_CURSOR_MOVE] = new Func<object?[], object?>(SlanderLibrary.GF_CURSOR_MOVE);
-        Variables[FUNC_ID_GF_RAND] = new Func<object?[], object?>(SlanderLibrary.GF_RAND);
+        Variables[FUNC_ID_WRITE] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_WRITE);
+        Variables[FUNC_ID_WRITE_INLINE] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_WRITE_INLINE);
+        Variables[FUNC_ID_GF_SLEEP] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_SLEEP);
+        Variables[FUNC_ID_GL_LIST_ADD] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_LIST_APPEND);
+        Variables[FUNC_ID_GL_REMOVE] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_LIST_REMOVE);
+        Variables[FUNC_ID_GF_LENGTH] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_LENGTH);
+        Variables[FUNC_ID_GF_CONTAINS] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_CONTAINS);
+        Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_WRITE_INPUT);
+        Variables[FUNC_ID_GF_GET_KEY] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_GET_KEY);
+        Variables[FUNC_ID_GF_PARSER] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_PARSER);
+        Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_INDEX_CHAR);
+        Variables[FUNC_ID_GF_CLS] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_CLS);
+        Variables[FUNC_ID_GF_CURSOR_MOVE] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_CURSOR_MOVE);
+        Variables[FUNC_ID_GF_RAND] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_RAND);
     }
 
     public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, object? structInstance = null)
@@ -175,7 +175,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     public override object VisitDeclarationsExpression([NotNull] GrundParser.DeclarationsExpressionContext context)
     {
             // If its not a list do this for everything else that needs to be assigned as a variable
-            var varName = context.IDENTIFIER().GetText();
+            var varName = context.declaration().GetText();
             var value = new GrundDynamicTypeWrapper(null);
             if (varName[0] == '_')
             {
@@ -185,6 +185,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             {
                 GetVariablesInCurrentStackFrame()[varName] = value;
             }
+            throw new Exception("GRUND ERROR: Um TESTING? DECLARATIONS");
     }
     
     // Helper function to reduce boilerplate. Sends all variables from current scope for evaluation.

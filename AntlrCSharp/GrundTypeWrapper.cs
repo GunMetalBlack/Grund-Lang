@@ -11,7 +11,6 @@ namespace Grund
                 this.value = Value;
             }
         }
-            
         //**Converts variable string to variable type 
         public override object? VisitConstant([NotNull] GrundParser.ConstantContext context)
         {

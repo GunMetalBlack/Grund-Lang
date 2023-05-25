@@ -113,7 +113,7 @@ namespace Grund
             return null;
         }
         //Get key without stopping execution
-        public static object? GF_GET_KEY(GrundDynamicTypeWrapper?[] args)
+        public static object? GF_GET_KEY(GrundDynamicTypeWrapper[] args)
         {
             if (Console.KeyAvailable) // Non-blocking peek
             {
@@ -226,7 +226,7 @@ namespace Grund
             }
             return null;
         }
-        public static object? GF_LENGTH(GrundDynamicTypeWrapper[] args, Dictionary<string, object?> Variables)
+        public static object? GF_LENGTH(GrundDynamicTypeWrapper[] args)
         {
             if (args.Length == 1 && !(args[0].value is List<object?>))
             {
@@ -479,130 +479,130 @@ namespace Grund
             {
                 return new GrundDynamicTypeWrapper(lfString != rString);
             }
-            throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+            throw new Exception("GRUND STUPID CANNOT compare." + left.value.GetType() + right.value.GetType());
         }
         //** Adding and Subtract
         //* Adding for variables 
-        public static object? Add(object? left, object? right)
+        public static GrundDynamicTypeWrapper Add(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left is int l && right is int r)
+            if (left.value is int l && right.value is int r)
             {
-                return l + r;
+                return new GrundDynamicTypeWrapper(l + r);
             }
-            else if (left is float lf && right is float rf)
+            else if (left.value is float lf && right.value is float rf)
             {
-                return lf + rf;
+                return new GrundDynamicTypeWrapper(lf + rf);
             }
-            else if (left is int lInt && right is float rFloat)
+            else if (left.value is int lInt && right.value is float rFloat)
             {
-                return lInt + rFloat;
+                return new GrundDynamicTypeWrapper(lInt + rFloat);
             }
-            else if (left is float lfFloat && right is int rInt)
+            else if (left.value is float lfFloat && right.value is int rInt)
             {
-                return lfFloat + rInt;
+                return new GrundDynamicTypeWrapper (lfFloat + rInt);
             }
-            else if (left is string)
+            else if (left.value is string)
             {
-                return $"{left}{right}";
+                return new GrundDynamicTypeWrapper ($"{left}{right}");
             }
-            else if (right is string || right is string)
+            else if (right.value is string || right.value is string)
             {
-                return $"{left}{right}";
+                return new GrundDynamicTypeWrapper ($"{left}{right}");
             }
-            else if (left is List<object?> Llist && right is List<object?> Rlist)
+            else if (left.value is List<object?> Llist && right.value is List<object?> Rlist)
             {
                 List<object?> result = Llist;
                 foreach (object? o in Rlist)
                 {
                     result.Add(o);
                 }
-                return result;
+                return new GrundDynamicTypeWrapper(result);
             }
-            throw new Exception("GRUND STUPID CANNOT ADD}." + left.GetType() + " " + right.GetType());
+            throw new Exception("GRUND STUPID CANNOT ADD " + left.value.GetType() + " " + right.value.GetType());
         }
 
         //*Subtracting from the left and right arguments
-        public static object? Sub(object? left, object? right)
+        public static GrundDynamicTypeWrapper Sub(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
 
         {
-            if (left is int l && right is int r)
+            if (left.value is int l && right.value is int r)
             {
-                return l - r;
+                return new GrundDynamicTypeWrapper(l - r);
             }
-            if (left is float lf && right is float rf)
+            if (left.value is float lf && right.value is float rf)
             {
-                return lf - rf;
+                return new GrundDynamicTypeWrapper(lf - rf);
             }
-            if (left is int lInt && right is float rFloat)
+            if (left.value is int lInt && right.value is float rFloat)
             {
-                return lInt - rFloat;
+                return new GrundDynamicTypeWrapper(lInt - rFloat);
             }
-            if (left is float lfFloat && right is int rInt)
+            if (left.value is float lfFloat && right.value is int rInt)
             {
-                return lfFloat - rInt;
+                return new GrundDynamicTypeWrapper(lfFloat - rInt);
             }
-            throw new Exception("GRUND STUPID CANNOT Subtract}." + left.GetType() + " " + right.GetType());
+            throw new Exception("GRUND STUPID CANNOT Subtract " + left.value.GetType() + " " + right.value.GetType());
         }
         //**Multiply the left and right arguments
-        public static object? Mul(object? left, object? right)
+        public static GrundDynamicTypeWrapper Mul(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left is int l && right is int r)
+            if (left.value is int l && right.value is int r)
             {
-                return l * r;
+                return new GrundDynamicTypeWrapper(l * r);
             }
-            if (left is float lf && right is float rf)
+            if (left.value is float lf && right.value is float rf)
             {
-                return lf * rf;
+                return new GrundDynamicTypeWrapper(lf * rf);
             }
-            if (left is int lInt && right is float rFloat)
+            if (left.value is int lInt && right.value is float rFloat)
             {
-                return lInt * rFloat;
+                return new GrundDynamicTypeWrapper(lInt * rFloat);
             }
-            if (left is float lfFloat && right is int rInt)
+            if (left.value is float lfFloat && right.value is int rInt)
             {
-                return lfFloat * rInt;
+                return new GrundDynamicTypeWrapper(lfFloat * rInt);
             }
-            throw new Exception("GRUND STUPID CANNOT Multiply}." + left.GetType() + " " + right.GetType());
+            throw new Exception("GRUND STUPID CANNOT Multiply " + left.value.GetType() + " " + right.value.GetType());
         }
-        public static object? Div(object? left, object? right)
+        public static GrundDynamicTypeWrapper Div(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left is int l && right is int r)
+            if (left.value is int l && right.value is int r)
             {
-                return l / r;
+                return new GrundDynamicTypeWrapper(l / r);
             }
-            if (left is float lf && right is float rf)
+            if (left.value is float lf && right.value is float rf)
             {
-                return lf / rf;
+                return new GrundDynamicTypeWrapper(lf / rf);
             }
-            if (left is int lInt && right is float rFloat)
+            if (left.value is int lInt && right.value is float rFloat)
             {
-                return lInt / rFloat;
+                return new GrundDynamicTypeWrapper(lInt / rFloat);
             }
-            if (left is float lfFloat && right is int rInt)
+            if (left.value is float lfFloat && right.value is int rInt)
             {
-                return lfFloat / rInt;
+                return new GrundDynamicTypeWrapper(lfFloat / rInt);
             }
-            throw new Exception("GRUND STUPID CANNOT Divide}." + left.GetType() + " " + right.GetType());
+            throw new Exception("GRUND STUPID CANNOT Divide " + left.value.GetType() + " " + right.value.GetType());
         }
-        public static object? Mod(object? left, object? right)
+        public static GrundDynamicTypeWrapper Mod(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left is int l && right is int r)
+            if (left.value is int l && right.value is int r)
             {
-                return l % r;
+                return new GrundDynamicTypeWrapper(l % r);
             }
-            if (left is float lf && right is float rf)
+            if (left.value is float lf && right.value is float rf)
             {
-                return lf % rf;
+                return new GrundDynamicTypeWrapper(lf % rf);
             }
-            if (left is int lInt && right is float rFloat)
+            if (left.value is int lInt && right.value is float rFloat)
             {
-                return lInt % rFloat;
+                return new GrundDynamicTypeWrapper(lInt % rFloat);
             }
-            if (left is float lfFloat && right is int rInt)
+            if (left.value is float lfFloat && right.value is int rInt)
             {
-                return lfFloat % rInt;
+                return new GrundDynamicTypeWrapper(lfFloat % rInt);
             }
-            throw new Exception("GRUND STUPID CANNOT Find Mod}." + left.GetType() + " " + right.GetType());
+            throw new Exception("GRUND STUPID CANNOT Find Mod " + left.value.GetType() + " " + right.value.GetType());
         }
     }
 }
