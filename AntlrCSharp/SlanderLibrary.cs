@@ -63,7 +63,7 @@ namespace Grund
                     Console.Write(arg.value);
                 }
             }
-            
+            return new GrundDynamicTypeWrapper(null);
         }
         // Moves Console Cursors position
         public static GrundDynamicTypeWrapper GF_CURSOR_MOVE(GrundDynamicTypeWrapper[] args)
@@ -168,7 +168,7 @@ namespace Grund
                 throw new Exception("GRUND SAYS ERROR IN ARGUMENTS NULL REFERENCE *SPITS IN FACE*");
             }
         }
-        public static object? GF_PARSER(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_PARSER(GrundDynamicTypeWrapper[] args)
         {
             if (args[0].value != null && args[1].value != null)
             {
@@ -177,17 +177,17 @@ namespace Grund
                 if (ParseType == "INT")
                 {
                     toReturn = int.Parse(toReturn.ToString());
-                    return toReturn;
+                    return new GrundDynamicTypeWrapper(toReturn);
                 }
                 else if (ParseType == "FLOAT")
                 {
                     toReturn = float.Parse(toReturn.ToString());
-                    return toReturn;
+                    return new GrundDynamicTypeWrapper(toReturn);
                 }
                 else if (ParseType == "STRING")
                 {
                     toReturn = toReturn.ToString();
-                    return toReturn;
+                    return new GrundDynamicTypeWrapper(toReturn);
                 }
                 else
                 {
@@ -199,16 +199,16 @@ namespace Grund
                 throw new Exception("GRUND SAYS ERROR IN ARGUMENTS NULL REFERENCE *SPITS IN FACE*");
             }
         }
-        public static object?[] GF_SLEEP(GrundDynamicTypeWrapper[]? args)
+        public static GrundDynamicTypeWrapper GF_SLEEP(GrundDynamicTypeWrapper[]? args)
         {
             object timeToSleep = args[0].value;
             if (timeToSleep is int time)
             {
                 Thread.Sleep(time);
             }
-            return null;
+           return new GrundDynamicTypeWrapper(null);
         }
-        public static object?[] GF_LIST_APPEND(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_LIST_APPEND(GrundDynamicTypeWrapper[] args)
         {
             //Grabs the first list and the second value as arguments to the function 
             if (args[0].value != null && args[1].value != null)
@@ -218,57 +218,59 @@ namespace Grund
                 //save the second as list 
                 List<object?> keyLookUp = args[0].value as List<object?>;
                 keyLookUp.Add(typeToStore);
+                args[0].value = keyLookUp;
             }
             else
             {
                 throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR LIST");
             }
-            return null;
+             return new GrundDynamicTypeWrapper(null);
         }
-        public static object? GF_LENGTH(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_LENGTH(GrundDynamicTypeWrapper[] args)
         {
             if (args.Length == 1 && !(args[0].value is List<object?>))
             {
                 var lengthProp = args[0].value.GetType().GetProperty("Length");
                 if (lengthProp != null)
                 {
-                    return lengthProp.GetValue(args[0].value, null);
+                    return new GrundDynamicTypeWrapper(lengthProp.GetValue(args[0].value, null));
                 }
             }
             else if (args.Length == 1 && args[0].value is List<object?> list)
             {
-                return list.Count;
+                return new GrundDynamicTypeWrapper(list.Count);
             }
             else
             {
                 throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR THRID ARGUMENT IS NOT INT");
             }
-            return null;
+             return new GrundDynamicTypeWrapper(null);
         }
-        public static object?[] GF_LIST_REMOVE(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_LIST_REMOVE(GrundDynamicTypeWrapper[] args)
         {
             if (args.Length == 2 && args[0].value is List<object?> gList && args[1].value is object gValue)
             {
                 gList.Remove(gValue);
+                args[0].value = gList;
             }
             else
             {
                 throw new Exception("GRUND SAYS ERROR IN ARGUMENTS FIRST ARGUMENT IS NOT STRING OR SECOND ARGUMENT IS NOT INT");
             }
-            return null;
+            return new GrundDynamicTypeWrapper(null);
         }
-        public static object? GF_CONTAINS(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_CONTAINS(GrundDynamicTypeWrapper[] args)
         {
             if (args.Length == 2 && args[0].value is Object gObject && args[1].value is object gValue)
             {
                 //Yup this is clean 
                 if (gObject is List<object?> glist)
                 {
-                    return glist.Contains(gValue);
+                    return  new GrundDynamicTypeWrapper(glist.Contains(gValue));
                 }
                 else if (gObject is string gstring && gValue is string gChar)
                 {
-                    return gstring.Contains(gChar);
+                    return new GrundDynamicTypeWrapper(gstring.Contains(gChar));
                 }
                 else
                 {
