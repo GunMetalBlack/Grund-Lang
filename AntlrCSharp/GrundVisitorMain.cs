@@ -55,24 +55,24 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
         //** Important Create Variables for FunctionCallContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("base"));
-        Variables[ID_PI] = Math.PI;
-        Variables[ID_E] = Math.E;
+        Variables[ID_PI] = new GrundDynamicTypeWrapper(Math.PI);
+        Variables[ID_E] = new GrundDynamicTypeWrapper(Math.E);
 
         //** FunctionCall Creation
-        Variables[FUNC_ID_WRITE] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_WRITE);
-        Variables[FUNC_ID_WRITE_INLINE] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_WRITE_INLINE);
-        Variables[FUNC_ID_GF_SLEEP] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_SLEEP);
-        Variables[FUNC_ID_GL_LIST_ADD] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_LIST_APPEND);
-        Variables[FUNC_ID_GL_REMOVE] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_LIST_REMOVE);
-        Variables[FUNC_ID_GF_LENGTH] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_LENGTH);
-        Variables[FUNC_ID_GF_CONTAINS] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_CONTAINS);
-        Variables[FUNC_ID_GF_WRITE_INPUT] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_WRITE_INPUT);
-        Variables[FUNC_ID_GF_GET_KEY] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_GET_KEY);
-        Variables[FUNC_ID_GF_PARSER] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_PARSER);
-        Variables[FUNC_ID_GF_INDEX_CHAR] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_INDEX_CHAR);
-        Variables[FUNC_ID_GF_CLS] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_CLS);
-        Variables[FUNC_ID_GF_CURSOR_MOVE] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_CURSOR_MOVE);
-        Variables[FUNC_ID_GF_RAND] = new Func<GrundDynamicTypeWrapper[], object?>(SlanderLibrary.GF_RAND);
+        Variables[FUNC_ID_WRITE] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_WRITE));
+        Variables[FUNC_ID_WRITE_INLINE] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_WRITE_INLINE));
+        Variables[FUNC_ID_GF_SLEEP] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_SLEEP));
+        Variables[FUNC_ID_GL_LIST_ADD] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_LIST_APPEND));
+        Variables[FUNC_ID_GL_REMOVE] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_LIST_REMOVE));
+        Variables[FUNC_ID_GF_LENGTH] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_LENGTH));
+        Variables[FUNC_ID_GF_CONTAINS] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_CONTAINS));
+        Variables[FUNC_ID_GF_WRITE_INPUT] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_WRITE_INPUT));
+        Variables[FUNC_ID_GF_GET_KEY] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_GET_KEY));
+        Variables[FUNC_ID_GF_PARSER] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_PARSER));
+        Variables[FUNC_ID_GF_INDEX_CHAR] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_INDEX_CHAR));
+        Variables[FUNC_ID_GF_CLS] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_CLS));
+        Variables[FUNC_ID_GF_CURSOR_MOVE] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_CURSOR_MOVE));
+        Variables[FUNC_ID_GF_RAND] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_RAND));
     }
 
     public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, object? structInstance = null)

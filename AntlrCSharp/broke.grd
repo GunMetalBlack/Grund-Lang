@@ -1,4 +1,23 @@
-IF 3<4:
+STRUK sus:
+  STATIC:
+    x = 3 
+  END
+  //NO x in existance
+  METH sus():
 
-
+    GF_WRITE(x);
+    
+  END
 END
+
+
+STRUK sus3:
+
+  //NO x in existance
+  METH sus():
+  
+  END
+END
+
+
+

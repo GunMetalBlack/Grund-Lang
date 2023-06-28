@@ -12,7 +12,7 @@ namespace Grund
         // The GF_WRITE_INLINE function takes a variable number of arguments, which can be any combination of strings, numbers,
         // booleans, null values, or lists. It prints each argument to the console on the same line, separated by spaces,
         // and then prints a newline character at the end.
-        public static object?[] GF_WRITE_INLINE(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_WRITE_INLINE(GrundDynamicTypeWrapper[] args)
         {
         
             foreach (var arg in args)
@@ -37,10 +37,10 @@ namespace Grund
                 }
             }
             Console.WriteLine();
-            return null;
+            return new GrundDynamicTypeWrapper(null);
         }
         // The GF_WRITE function is similar to GF_WRITE_INLINE, but it does not print a newline character at the end.
-        public static object?[] GF_WRITE(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_WRITE(GrundDynamicTypeWrapper[] args)
         {
             foreach (var arg in args)
             {
@@ -63,10 +63,10 @@ namespace Grund
                     Console.Write(arg.value);
                 }
             }
-            return null;
+            
         }
         // Moves Console Cursors position
-        public static object?[] GF_CURSOR_MOVE(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_CURSOR_MOVE(GrundDynamicTypeWrapper[] args)
         {
             if (args.Length == 2)
             {
@@ -83,46 +83,46 @@ namespace Grund
             {
                 throw new Exception("Grund: DUDE REALLY YOUR MISSING ARGS! FOR CURSOR");
             }
-            return null;
+            return new GrundDynamicTypeWrapper(null);
         }
         //Standard Input
-        public static object? GF_WRITE_INPUT(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_WRITE_INPUT(GrundDynamicTypeWrapper[] args)
         {
             object toReturn = Console.ReadLine();
             if (args != null && args.Length != 0)
             {
                 if (args[0].value.ToString() == "INT")
                 {
-                    return int.Parse(toReturn.ToString());
+                    return new GrundDynamicTypeWrapper(int.Parse(toReturn.ToString()));
                 }
                 else if (args[0].value.ToString() == "FLOAT")
                 {
-                    return float.Parse(toReturn.ToString());
+                    return new GrundDynamicTypeWrapper(float.Parse(toReturn.ToString()));
                 }
             }
             else
             {
-                return toReturn.ToString();
+                return new GrundDynamicTypeWrapper(toReturn.ToString());
             }
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
         }
         // Clear Screen
-        public static object?[] GF_CLS(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_CLS(GrundDynamicTypeWrapper[] args)
         {
             Console.Clear();
-            return null;
+            return new GrundDynamicTypeWrapper(null);
         }
         //Get key without stopping execution
-        public static object? GF_GET_KEY(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_GET_KEY(GrundDynamicTypeWrapper[] args)
         {
             if (Console.KeyAvailable) // Non-blocking peek
             {
                 object toReturn = Console.ReadKey(true).KeyChar;
-                return toReturn.ToString();
+                return new GrundDynamicTypeWrapper(toReturn.ToString());
             }
             else
             {
-                return null;
+                 return new GrundDynamicTypeWrapper(null);
             }
 
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
