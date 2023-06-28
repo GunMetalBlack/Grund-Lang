@@ -535,11 +535,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     public override object? VisitIfBlock([NotNull] GrundParser.IfBlockContext context)
     {
 
-        Func<GrundTypeWrapper, GrundDynamicTypeWrapper> condition = context.IFBLOCK().GetText() == "IF"
-         ? IsTrue
-         : IsFalse
-         ;
-        if (condition(Visit(context.expression())))
+        Func<GrundDynamicTypeWrapper, GrundDynamicTypeWrapper> condition = context.IFBLOCK().GetText() == "IF" ? IsTrue : IsFalse;
+        
+        if ((bool)condition((GrundDynamicTypeWrapper)Visit(context.expression())).value)
         {
             Visit(context.block());
         }
