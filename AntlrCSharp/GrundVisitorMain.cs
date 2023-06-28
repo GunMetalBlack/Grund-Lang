@@ -8,7 +8,7 @@ public struct GrundStackFrame
 {
     public string name;
     // This dictionary contains all the global variables
-    public Dictionary<string, object?> variables { get; }
+    public Dictionary<string, GrundDynamicTypeWrapper> variables { get; }
 
     public bool inherit = false;
     // This stack frame dictates  the inheritance and scope for the language
@@ -91,10 +91,10 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         if (functionLookup.parameter() != null && context.expression() != null)
         {
             //Exception for if the expression count and function args don't match.
-            if (functionLookup.parameter().Count() != args.Count()) { throw new Exception("GRUND SCREAMS, EXPECTED " + ((GrundParser.FunctionDefinitionContext)(Variables[name])).parameter().Count().ToString() + " PARAMETERS BUT HAD " + args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString()); }
+            if (functionLookup.parameter().Count() != args.Count()) { throw new Exception("GRUND SCREAMS, EXPECTED " + ((GrundParser.FunctionDefinitionContext)(Variables[name].value)).parameter().Count().ToString() + " PARAMETERS BUT HAD " + args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString()); }
             for (int i = 0; i < functionLookup.parameter().Count(); i++)
             {
-                GetVariablesInCurrentStackFrame()[(functionLookup.parameter(i).GetText())] = args[i];
+                GetVariablesInCurrentStackFrame()[(functionLookup.parameter(i).GetText())] = (GrundDynamicTypeWrapper)args[i];
             }
         }
         //If we do have a function call then we visit the stuff in the function!
@@ -116,20 +116,20 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     {
         // Grab the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
-        var args = context.expression().Select(Visit).ToArray();
+        var args = context.expression().Select(Visit).OfType<GrundDynamicTypeWrapper>().ToArray();
 
         // Handle scoped functions
         if (GetVariablesInCurrentStackFrame().ContainsKey(name))
         {
             // Handle user-defined functions
             {
-                if (GetVariablesInCurrentStackFrame()[name] is GrundParser.FunctionDefinitionContext functionLookup)
+                if (GetVariablesInCurrentStackFrame()[name].value is GrundParser.FunctionDefinitionContext functionLookup)
                 {
                     return ExecuteUserDefinedFunction(context, functionLookup);
                 }
             }
             // Handle build-in Grund functions
-            if (GetVariablesInCurrentStackFrame()[name] is Func<object?[], object?> func)
+            if (GetVariablesInCurrentStackFrame()[name].value is Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper> func)
             {
                 return func(args);
             }
@@ -140,13 +140,13 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         {
             // Handle user-defined functions
             {
-                if (Variables[name] is GrundParser.FunctionDefinitionContext functionLookup)
+                if (Variables[name].value is GrundParser.FunctionDefinitionContext functionLookup)
                 {
                     return ExecuteUserDefinedFunction(context, functionLookup);
                 }
             }
             // Handle build-in Grund functions
-            if (Variables[name] is Func<object?[], object?> func)
+            if (Variables[name].value is Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper> func)
             {
                 return func(args);
             }
