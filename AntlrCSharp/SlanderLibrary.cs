@@ -128,7 +128,7 @@ namespace Grund
             throw new Exception("GRUND CRIES WHAT THE HELL HAPPENED INPUT STATEMENT DIED");
         }
         //Random Value
-        public static object? GF_RAND(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_RAND(GrundDynamicTypeWrapper[] args)
         {
             if ((args[0].value != null && args[1].value != null) && (args[0].value is int low && args[1].value is int high))
             {
@@ -136,7 +136,7 @@ namespace Grund
                 {
                     var random = new Random();
                     var rNum = random.Next(low, high);
-                    return rNum;
+                    return new GrundDynamicTypeWrapper(rNum);
                 }
                 else
                 {
@@ -147,9 +147,8 @@ namespace Grund
             {
                 throw new Exception("GRUND PUNCHES YOU IN THE FACE YOU'RE MISSING ARGUMENTS SIR");
             }
-            return null;
         }
-        public static object? GF_INDEX_CHAR(GrundDynamicTypeWrapper[] args)
+        public static GrundDynamicTypeWrapper GF_INDEX_CHAR(GrundDynamicTypeWrapper[] args)
         {
             if (args[0].value != null && args[1].value != null)
             {
@@ -157,7 +156,7 @@ namespace Grund
                 int indexToReturn = int.Parse(args[1].value.ToString());
                 if (indexToReturn >= 0 && indexToReturn < stringToSearch.Length)
                 {
-                    return stringToSearch[indexToReturn].ToString();
+                    return  new GrundDynamicTypeWrapper(stringToSearch[indexToReturn].ToString());
                 }
                 else
                 {
