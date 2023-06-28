@@ -226,8 +226,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
 
         var structName = context.IDENTIFIER(0).GetText();
-        var structMembers = new Dictionary<string, object?>();
-        var staticMembers = new Dictionary<string, object?>();
+        var structMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
+        var staticMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
         if (context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
         {
             var parentStructName = context.IDENTIFIER(1).GetText();
