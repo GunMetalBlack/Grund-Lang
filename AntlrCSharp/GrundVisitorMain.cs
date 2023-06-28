@@ -422,8 +422,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
     public override object VisitMultiplicativeExpression([NotNull] GrundParser.MultiplicativeExpressionContext context)
     {
-        var left = Visit(context.expression(0));
-        var right = Visit(context.expression(1));
+        var left = new GrundDynamicTypeWrapper(Visit(context.expression(0)));
+        var right = new GrundDynamicTypeWrapper(Visit(context.expression(1)));
 
         var op = context.multOP().GetText();
         if (op == "*")
@@ -479,8 +479,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
     public override object? VisitAdditiveExpression(GrundParser.AdditiveExpressionContext context)
     {
-        var left = Visit(context.expression(0));
-        var right = Visit(context.expression(1));
+        var left = new GrundDynamicTypeWrapper(Visit(context.expression(0)));
+        var right = new GrundDynamicTypeWrapper(Visit(context.expression(1)));
 
         var op = context.addOP().GetText();
         if (op == "+")
@@ -535,7 +535,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     public override object? VisitIfBlock([NotNull] GrundParser.IfBlockContext context)
     {
 
-        Func<object?, bool> condition = context.IFBLOCK().GetText() == "IF"
+        Func<GrundTypeWrapper, GrundDynamicTypeWrapper> condition = context.IFBLOCK().GetText() == "IF"
          ? IsTrue
          : IsFalse
          ;
@@ -551,8 +551,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     }
     public override object? VisitComparisonExpression([NotNull] GrundParser.ComparisonExpressionContext context)
     {
-        var left = Visit(context.expression(0));
-        var right = Visit(context.expression(1));
+        var left = new GrundDynamicTypeWrapper(Visit(context.expression(0)));
+        var right = new GrundDynamicTypeWrapper(Visit(context.expression(1)));
 
         var op = context.compareOP().GetText();
 
@@ -584,18 +584,23 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     }
     public override object VisitBooleanExpression([NotNull] GrundParser.BooleanExpressionContext context)
     {
-        var left = Visit(context.expression(0));
-        var right = Visit(context.expression(1));
+        var left = new GrundDynamicTypeWrapper(Visit(context.expression(0)));
+        var right = new GrundDynamicTypeWrapper(Visit(context.expression(1)));
         var op = context.boolOP().GetText();
         return SlanderLibrary.boolOperators(left, right, op);
     }
-    private bool IsTrue(object? value)
+    private GrundDynamicTypeWrapper IsTrue(GrundDynamicTypeWrapper wrapper)
     {
-        if (value is bool b)
+        if (wrapper.value is bool b)
         {
-            return b;
+            return new GrundDynamicTypeWrapper(b);
         }
         throw new Exception("GRUND STUPID THINKS THIS IS BOOL BUT IS NOT");
     }
-    public bool IsFalse(object? value) => !IsTrue(value);
+    public GrundDynamicTypeWrapper IsFalse(GrundDynamicTypeWrapper wrapper)
+    {
+        GrundDynamicTypeWrapper opposite = IsTrue(wrapper);
+        opposite.value = !(bool)opposite.value;
+        return opposite;
+    }
 }
