@@ -31,7 +31,7 @@ declaration: 'VAR' IDENTIFIER (';')?;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
-inLineIncrement: IDENTIFIER inLineOP (';')? | IDENTIFIER inLineOP (';')?;
+inLineIncrement: expression inLineOP (';')?;
 
 FUNC: 'FUNK' | 'METH';
 parameter: IDENTIFIER;

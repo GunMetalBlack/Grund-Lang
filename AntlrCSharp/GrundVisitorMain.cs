@@ -24,8 +24,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 {
 
     private Stack<GrundStackFrame> StackFrames { get; } = new();
-    private Dictionary<string, object?> Variables { get; } = new();
-    private Dictionary<string, Dictionary<string, object?>> StaticStructMembers { get; } = new();
+    private Dictionary<string, GrundDynamicTypeWrapper> Variables { get; } = new();
+    private Dictionary<string, Dictionary<string, GrundDynamicTypeWrapper>> StaticStructMembers { get; } = new();
     public GrundVisitorMain()
     {
         // These are all the global static variables that are defined for the language
@@ -160,36 +160,36 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     //** Below is the implementation if Parsing Variables
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {
-            if(!(Visit(context.expression(0)) is GrundDynamicTypeWrapper) || !(Visit(context.expression(1)) is GrundDynamicTypeWrapper))
-            {
-               throw new Exception("GRUND SAYS ERROR: " + " assignment died somewhere not sure. LINE: " + context.Start.Line.ToString());
-            }
-            // If its not a list do this for everything else that needs to be assigned as a variable
-            GrundDynamicTypeWrapper gLeft = (GrundDynamicTypeWrapper)Visit(context.expression(0));
-            GrundDynamicTypeWrapper gRight = (GrundDynamicTypeWrapper)Visit(context.expression(1));
-            gLeft.value = gRight.value;
-    
+        if (!(Visit(context.expression(0)) is GrundDynamicTypeWrapper) || !(Visit(context.expression(1)) is GrundDynamicTypeWrapper))
+        {
+            throw new Exception("GRUND SAYS ERROR: " + " assignment died somewhere not sure. LINE: " + context.Start.Line.ToString());
+        }
+        // If its not a list do this for everything else that needs to be assigned as a variable
+        GrundDynamicTypeWrapper gLeft = (GrundDynamicTypeWrapper)Visit(context.expression(0));
+        GrundDynamicTypeWrapper gRight = (GrundDynamicTypeWrapper)Visit(context.expression(1));
+        gLeft.value = gRight.value;
+
         return null;
     }
 
     public override object VisitDeclarationsExpression([NotNull] GrundParser.DeclarationsExpressionContext context)
     {
-            // If its not a list do this for everything else that needs to be assigned as a variable
-            var varName = context.declaration().GetText();
-            var value = new GrundDynamicTypeWrapper(null);
-            if (varName[0] == '_')
-            {
-                Variables[varName] = value;
-            }
-            else
-            {
-                GetVariablesInCurrentStackFrame()[varName] = value;
-            }
-            throw new Exception("GRUND ERROR: Um TESTING? DECLARATIONS");
+        // If its not a list do this for everything else that needs to be assigned as a variable
+        var varName = context.declaration().GetText();
+        var value = new GrundDynamicTypeWrapper(null);
+        if (varName[0] == '_')
+        {
+            Variables[varName] = value;
+        }
+        else
+        {
+            GetVariablesInCurrentStackFrame()[varName] = value;
+        }
+        throw new Exception("GRUND ERROR: Um TESTING? DECLARATIONS");
     }
-    
+
     // Helper function to reduce boilerplate. Sends all variables from current scope for evaluation.
-    public Dictionary<string, object?> GetVariablesInCurrentStackFrame()
+    public Dictionary<string, GrundDynamicTypeWrapper> GetVariablesInCurrentStackFrame()
     {
         return StackFrames.First().variables;
     }
@@ -447,31 +447,27 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     public override object? VisitInLineIncrement(GrundParser.InLineIncrementContext context)
     {
         string op = context.inLineOP().GetText();
-        var toIncrement = context.IDENTIFIER().GetText();
+        GrundDynamicTypeWrapper toIncrement = (GrundDynamicTypeWrapper)Visit(context.expression());
         if (op == "++")
         {
-            if (GetVariablesInCurrentStackFrame().ContainsKey(toIncrement) && GetVariablesInCurrentStackFrame()[toIncrement] is int intR)
+            if (toIncrement.value is int gInt)
             {
-                GetVariablesInCurrentStackFrame()[toIncrement] = intR += 1;
-                return GetVariablesInCurrentStackFrame()[toIncrement];
+                toIncrement.value = gInt + 1;
             }
-            else if (Variables.ContainsKey(toIncrement) && Variables[toIncrement] is float floatR)
+            else if (toIncrement.value is float gFloat)
             {
-                Variables[toIncrement] = floatR += 1;
-                return Variables[toIncrement];
+                toIncrement.value = gFloat + 1;
             }
         }
         else if (op == "--")
         {
-            if (GetVariablesInCurrentStackFrame().ContainsKey(toIncrement) && GetVariablesInCurrentStackFrame()[toIncrement] is int intR)
+            if (toIncrement.value is int gInt)
             {
-                GetVariablesInCurrentStackFrame()[toIncrement] = intR -= 1;
-                return GetVariablesInCurrentStackFrame()[toIncrement];
+                toIncrement.value = gInt - 1;
             }
-            else if (Variables.ContainsKey(toIncrement) && Variables[toIncrement] is float floatR)
+            else if (toIncrement.value is float gFloat)
             {
-                Variables[toIncrement] = floatR -= 1;
-                return Variables[toIncrement];
+                toIncrement.value = gFloat - 1;
             }
         }
         throw new Exception("GRUND *HACKS AND BLOOD VOMITS* YOU'RE TRYING TO INCREASE SOMETHING OTHER THAN INT OR FLOAT!" + context.Start.Line.ToString() + "Value: " + toIncrement);
@@ -501,28 +497,28 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     {
         if (!Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
-            Variables.Add(context.IDENTIFIER().GetText(), context);
+            Variables.Add(context.IDENTIFIER().GetText(), new GrundDynamicTypeWrapper(context));
         }
         else if (Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
-            Variables[context.IDENTIFIER().GetText()] = context;
+            Variables[context.IDENTIFIER().GetText()] = new GrundDynamicTypeWrapper(context);
         }
         return null;
     }
     //* Function Logic calls Like If Statements and while loops
     public override object? VisitWhileBlock([NotNull] GrundParser.WhileBlockContext context)
     {
-        Func<object?, bool> condition = context.WHILE().GetText() == "WHILE"
+        Func<GrundDynamicTypeWrapper, GrundDynamicTypeWrapper> condition = context.WHILE().GetText() == "WHILE"
         ? IsTrue
         : IsFalse
         ;
 
-        if (condition(Visit(context.expression())))
+        if (condition((GrundDynamicTypeWrapper)Visit(context.expression())))
         {
             do
             {
                 Visit(context.block());
-            } while (condition(Visit(context.expression())));
+            } while (condition((GrundDynamicTypeWrapper)Visit(context.expression())));
         }
         else if (context.elseIfBlock() != null)
         {
@@ -536,8 +532,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     {
 
         Func<GrundDynamicTypeWrapper, GrundDynamicTypeWrapper> condition = context.IFBLOCK().GetText() == "IF" ? IsTrue : IsFalse;
-        
-        if ((bool)condition((GrundDynamicTypeWrapper)Visit(context.expression())).value)
+
+        if (condition((GrundDynamicTypeWrapper)Visit(context.expression())))
         {
             Visit(context.block());
         }

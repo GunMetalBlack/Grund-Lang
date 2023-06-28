@@ -10,6 +10,11 @@ namespace Grund
             {
                 this.value = Value;
             }
+            //C# wizard methods for If statements because Im Lazy
+            public static implicit operator bool(GrundDynamicTypeWrapper instance)
+            {
+                return (bool)instance.value;
+            }
         }
         //**Converts variable string to variable type 
         public override object? VisitConstant([NotNull] GrundParser.ConstantContext context)
@@ -37,6 +42,8 @@ namespace Grund
 
             throw new NotImplementedException();
         }
+
+
         public override object VisitCollections([NotNull] GrundParser.CollectionsContext context)
         {
             if (context.list() is { } l)
