@@ -1,23 +1,5 @@
-STRUK sus:
-  STATIC:
-    x = 3 
-  END
-  //NO x in existance
-  METH sus():
-
-    GF_WRITE(x);
-    
-  END
+VAR x = 4;
+IF x < 6:
+    GF_WRITE_LN("Wame")
 END
-
-
-STRUK sus3:
-
-  //NO x in existance
-  METH sus():
-  
-  END
-END
-
-
-
+GF_WRITE_LN(x)

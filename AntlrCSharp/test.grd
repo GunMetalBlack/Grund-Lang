@@ -1,1 +1,3 @@
-GF_WRITE_LN("Test")
+VAR x = 4;
+
+GF_WRITE_LN(x)

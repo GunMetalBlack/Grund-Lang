@@ -3,9 +3,9 @@ namespace Grund
 {
     public class GrundTypeWrapper : GrundBaseVisitor<object?>
     {
-        public struct GrundDynamicTypeWrapper
+        public class GrundDynamicTypeWrapper
         {
-            public object? value { get; set; }
+            public object? value;
             public GrundDynamicTypeWrapper(object? Value)
             {
                 this.value = Value;
@@ -16,33 +16,6 @@ namespace Grund
                 return (bool)instance.value;
             }
         }
-        //**Converts variable string to variable type 
-        public override object? VisitConstant([NotNull] GrundParser.ConstantContext context)
-        {
-            if (context.INTEGER() is { } i)
-            {
-                return new GrundDynamicTypeWrapper(int.Parse(i.GetText()));
-            }
-            if (context.FLOAT() is { } f)
-            {
-                return new GrundDynamicTypeWrapper(float.Parse(f.GetText()));
-            }
-            if (context.STRING() is { } s)
-            {
-                return new GrundDynamicTypeWrapper(s.GetText()[1..^1]);
-            }
-            if (context.BOOL() is { } b)
-            {
-                return new GrundDynamicTypeWrapper(b.GetText() == "true");
-            }
-            if (context.NULL() is { })
-            {
-                return new GrundDynamicTypeWrapper(null);
-            }
-
-            throw new NotImplementedException();
-        }
-
 
         public override object VisitCollections([NotNull] GrundParser.CollectionsContext context)
         {

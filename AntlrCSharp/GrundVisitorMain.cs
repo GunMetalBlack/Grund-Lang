@@ -160,34 +160,45 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     //** Below is the implementation if Parsing Variables
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {
-        if (!(Visit(context.expression(0)) is GrundDynamicTypeWrapper) || !(Visit(context.expression(1)) is GrundDynamicTypeWrapper))
+        //Here for Debug Purposes Don't Judge please
+        var ExpressionLeft = Visit(context.expression(0));
+        var ExpressionRight = Visit(context.expression(1));
+
+        if ((ExpressionLeft is not GrundDynamicTypeWrapper) || (ExpressionRight is not GrundDynamicTypeWrapper))
         {
             throw new Exception("GRUND SAYS ERROR: " + " assignment died somewhere not sure. LINE: " + context.Start.Line.ToString());
         }
         // If its not a list do this for everything else that needs to be assigned as a variable
-        GrundDynamicTypeWrapper gLeft = (GrundDynamicTypeWrapper)Visit(context.expression(0));
-        GrundDynamicTypeWrapper gRight = (GrundDynamicTypeWrapper)Visit(context.expression(1));
+        GrundDynamicTypeWrapper gLeft = (GrundDynamicTypeWrapper)ExpressionLeft;
+        GrundDynamicTypeWrapper gRight = (GrundDynamicTypeWrapper)ExpressionRight;
         gLeft.value = gRight.value;
 
         return null;
     }
 
+
     public override object VisitDeclarationsExpression([NotNull] GrundParser.DeclarationsExpressionContext context)
     {
         // If its not a list do this for everything else that needs to be assigned as a variable
-        var varName = context.declaration().GetText();
+        // This should INIT the Var idk why I was trying to override here
+        //TODO: Make Sure to Update The Documentation You Stupid Ape
+        var varName = context.declaration().IDENTIFIER().GetText();
         var value = new GrundDynamicTypeWrapper(null);
         if (varName[0] == '_')
         {
-            Variables[varName] = value;
+            Variables.TryAdd(varName, value);
+            return Variables[varName];
         }
         else
         {
-            GetVariablesInCurrentStackFrame()[varName] = value;
+            GetVariablesInCurrentStackFrame().TryAdd(varName, value);
+            return GetVariablesInCurrentStackFrame()[varName];
         }
-        throw new Exception("GRUND ERROR: Um TESTING? DECLARATIONS");
+        //TODO: IDK when it should crash here maybe do some Type Checks at some Point
+        //throw new Exception("GRUND ERROR: Um TESTING? DECLARATIONS");
+        return value;
+    
     }
-
     // Helper function to reduce boilerplate. Sends all variables from current scope for evaluation.
     public Dictionary<string, GrundDynamicTypeWrapper> GetVariablesInCurrentStackFrame()
     {
@@ -218,7 +229,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
     public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext context)
     {
-        //TODO Fix Structs for future versions
+        //FIXME: Fix Structs for future versions
         // // Return early if there are no lines in the struct definition
         // var lines = context.block().line();
         // if (lines == null || !lines.Any())
@@ -548,10 +559,37 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         return null;
     }
+
+            //**Converts variable string to variable type 
+        public override object? VisitConstant([NotNull] GrundParser.ConstantContext context)
+        {
+            if (context.INTEGER() is { } i)
+            {
+                return new GrundDynamicTypeWrapper(int.Parse(i.GetText()));
+            }
+            if (context.FLOAT() is { } f)
+            {
+                return new GrundDynamicTypeWrapper(float.Parse(f.GetText()));
+            }
+            if (context.STRING() is { } s)
+            {
+                return new GrundDynamicTypeWrapper(s.GetText()[1..^1]);
+            }
+            if (context.BOOL() is { } b)
+            {
+                return new GrundDynamicTypeWrapper(b.GetText() == "true");
+            }
+            if (context.NULL() is { })
+            {
+                return new GrundDynamicTypeWrapper(null);
+            }
+
+            throw new NotImplementedException();
+        }
     public override object? VisitComparisonExpression([NotNull] GrundParser.ComparisonExpressionContext context)
     {
-        var left = new GrundDynamicTypeWrapper(Visit(context.expression(0)));
-        var right = new GrundDynamicTypeWrapper(Visit(context.expression(1)));
+        GrundDynamicTypeWrapper left = (GrundDynamicTypeWrapper)new GrundDynamicTypeWrapper(Visit(context.expression(0))).value;
+        GrundDynamicTypeWrapper right = (GrundDynamicTypeWrapper)new GrundDynamicTypeWrapper(Visit(context.expression(1))).value;
 
         var op = context.compareOP().GetText();
 

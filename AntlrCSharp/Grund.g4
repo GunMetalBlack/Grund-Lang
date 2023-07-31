@@ -2,9 +2,9 @@ grammar Grund;
 
 program: line* EOF;
 
-line: statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | inLineIncrement | strucDefinition;  
+line:  statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | inLineIncrement | strucDefinition;  
 
-statement: (assignment | functionCall | blockScopeAssignment)(';')?;
+statement: ( assignment | functionCall | blockScopeAssignment)(';')?;
 
 ifBlock: IFBLOCK ('(')? expression (')')? block | IFBLOCK ('(')? expression (')')? block ('ELSE' elseIfBlock);
 
