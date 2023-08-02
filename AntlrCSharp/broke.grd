@@ -1,6 +1,6 @@
-
-FUNK add(x, y):  // Define a function named "add" that takes two parameters, x and y.
-    VAR result = x + y  // Perform the addition and store the result in a local variable.
-    GF_WRITE_LN("NUM:",result)  // Print the result.
+VAR x = 1;
+GF_WRITE_LN(x - 1)
+x = 0
+IF x == 0:
+    GF_WRITE_LN("Piss")
 END
-add(1, 2) 

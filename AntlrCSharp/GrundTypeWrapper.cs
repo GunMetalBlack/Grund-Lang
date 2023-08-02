@@ -15,11 +15,6 @@ namespace Grund
             {
                 return (bool)instance.value;
             }
-            //Used in checks for type mainly to save line space because Im lazy
-            public object Type()
-            {
-                return this.value.GetType();
-            }
         }
 
         public override object VisitCollections([NotNull] GrundParser.CollectionsContext context)

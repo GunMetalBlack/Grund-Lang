@@ -182,8 +182,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var varName = context.declaration().IDENTIFIER().GetText();
         if (varName[0] == '_')
         {
-           // Variables.TryAdd(varName, value);
-            //return Variables[varName];
+           Variables[varName] = new GrundDynamicTypeWrapper(null);
+           return Variables[varName];
         }
         else
         {
