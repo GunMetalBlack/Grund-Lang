@@ -204,15 +204,15 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     public override object VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context)
     {
         // This is how we return a value at an index for example if(x[2] < 0). x[2] should return a value
-        var gList = Visit(context.expression(0));
-        var gInt = Visit(context.expression(1));
+        var gList = (GrundDynamicTypeWrapper)new GrundDynamicTypeWrapper(Visit(context.expression(0))).value;
+        var gInt = (GrundDynamicTypeWrapper)new GrundDynamicTypeWrapper(Visit(context.expression(1))).value;
         //Checks if variable is in current scope and is a list.
-        if (gList is List<object?> list)
+        if (gList.value is List<object?> list)
         {
             //If it is then we return the value at the lists index
             try
             {
-                return list.ElementAt(int.Parse(gInt.ToString()));
+                return list.ElementAt(int.Parse(gInt.value.ToString()));
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -618,6 +618,14 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             return SlanderLibrary.LessThanOrEqual(left, right);
         }
         throw new NotImplementedException();
+    }
+    public override object VisitCollections([NotNull] GrundParser.CollectionsContext context)
+    {
+        if (context.list() is { } l)
+        {
+            return new GrundDynamicTypeWrapper(l.expression().Select(Visit).ToList());
+        }
+        throw new Exception("GRUND SLAMS FIST NOT VALID COLLECTIONS LINE: " + context.Start.Line.ToString());
     }
     public override object VisitBooleanExpression([NotNull] GrundParser.BooleanExpressionContext context)
     {
