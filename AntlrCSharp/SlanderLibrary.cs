@@ -484,11 +484,13 @@ namespace Grund
         }
         //** Adding and Subtract
         //* Adding for variables 
-        public static GrundDynamicTypeWrapper Add(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
+        public static GrundDynamicTypeWrapper Add(GrundDynamicTypeWrapper leftWrapped, GrundDynamicTypeWrapper rightWrapped)
         {
-            if (left.value is int l && right.value is int r)
+            GrundDynamicTypeWrapper left = (GrundDynamicTypeWrapper)leftWrapped.value;
+            GrundDynamicTypeWrapper right = (GrundDynamicTypeWrapper)rightWrapped.value;
+            if (left.value is int v && right.value is int v1)
             {
-                return new GrundDynamicTypeWrapper(l + r);
+                return new GrundDynamicTypeWrapper(v + v1);
             }
             else if (left.value is float lf && right.value is float rf)
             {
@@ -524,7 +526,6 @@ namespace Grund
 
         //*Subtracting from the left and right arguments
         public static GrundDynamicTypeWrapper Sub(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
-
         {
             if (left.value is int l && right.value is int r)
             {

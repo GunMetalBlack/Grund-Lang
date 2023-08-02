@@ -160,17 +160,14 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     //** Below is the implementation if Parsing Variables
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {
-        //Here for Debug Purposes Don't Judge please
-        var ExpressionLeft = Visit(context.expression(0));
-        var ExpressionRight = Visit(context.expression(1));
+        var gLeft = (GrundDynamicTypeWrapper)  Visit(context.expression(0));
+        var gRight = (GrundDynamicTypeWrapper) Visit(context.expression(1));
 
-        if ((ExpressionLeft is not GrundDynamicTypeWrapper) || (ExpressionRight is not GrundDynamicTypeWrapper))
+        if ((gLeft is not GrundDynamicTypeWrapper) || (gRight is not GrundDynamicTypeWrapper))
         {
             throw new Exception("GRUND SAYS ERROR: " + " assignment died somewhere not sure. LINE: " + context.Start.Line.ToString());
         }
         // If its not a list do this for everything else that needs to be assigned as a variable
-        GrundDynamicTypeWrapper gLeft = (GrundDynamicTypeWrapper)ExpressionLeft;
-        GrundDynamicTypeWrapper gRight = (GrundDynamicTypeWrapper)ExpressionRight;
         gLeft.value = gRight.value;
 
         return null;
@@ -183,20 +180,19 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         // This should INIT the Var idk why I was trying to override here
         //TODO: Make Sure to Update The Documentation You Stupid Ape
         var varName = context.declaration().IDENTIFIER().GetText();
-        var value = new GrundDynamicTypeWrapper(null);
         if (varName[0] == '_')
         {
-            Variables.TryAdd(varName, value);
-            return Variables[varName];
+           // Variables.TryAdd(varName, value);
+            //return Variables[varName];
         }
         else
         {
-            GetVariablesInCurrentStackFrame().TryAdd(varName, value);
+            GetVariablesInCurrentStackFrame()[varName] = new GrundDynamicTypeWrapper(null);
             return GetVariablesInCurrentStackFrame()[varName];
         }
         //TODO: IDK when it should crash here maybe do some Type Checks at some Point
         //throw new Exception("GRUND ERROR: Um TESTING? DECLARATIONS");
-        return value;
+        throw new Exception("GRUND SAYS WHAT THE ACTUAL FUCK: " + " DECLARATION FAILED. LINE: " + context.Start.Line.ToString());
     
     }
     // Helper function to reduce boilerplate. Sends all variables from current scope for evaluation.
