@@ -484,10 +484,8 @@ namespace Grund
         }
         //** Adding and Subtract
         //* Adding for variables 
-        public static GrundDynamicTypeWrapper Add(GrundDynamicTypeWrapper leftWrapped, GrundDynamicTypeWrapper rightWrapped)
+        public static GrundDynamicTypeWrapper Add(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            GrundDynamicTypeWrapper left = (GrundDynamicTypeWrapper)leftWrapped.value;
-            GrundDynamicTypeWrapper right = (GrundDynamicTypeWrapper)rightWrapped.value;
             if (left.value is int v && right.value is int v1)
             {
                 return new GrundDynamicTypeWrapper(v + v1);
@@ -525,10 +523,8 @@ namespace Grund
         }
 
         //*Subtracting from the left and right arguments
-        public static GrundDynamicTypeWrapper Sub(GrundDynamicTypeWrapper leftWrapped, GrundDynamicTypeWrapper rightWrapped)
+        public static GrundDynamicTypeWrapper Sub(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            GrundDynamicTypeWrapper left = (GrundDynamicTypeWrapper)leftWrapped.value;
-            GrundDynamicTypeWrapper right = (GrundDynamicTypeWrapper)rightWrapped.value;
             if (left.value is int l && right.value is int r)
             {
                 return new GrundDynamicTypeWrapper(l - r);
@@ -548,10 +544,8 @@ namespace Grund
             throw new Exception("GRUND STUPID CANNOT Subtract " + left.value.GetType() + " " + right.value.GetType());
         }
         //**Multiply the left and right arguments
-        public static GrundDynamicTypeWrapper Mul(GrundDynamicTypeWrapper leftWrapped, GrundDynamicTypeWrapper rightWrapped)
+        public static GrundDynamicTypeWrapper Mul(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            GrundDynamicTypeWrapper left = (GrundDynamicTypeWrapper)leftWrapped.value;
-            GrundDynamicTypeWrapper right = (GrundDynamicTypeWrapper)rightWrapped.value;
             if (left.value is int l && right.value is int r)
             {
                 return new GrundDynamicTypeWrapper(l * r);
@@ -570,10 +564,8 @@ namespace Grund
             }
             throw new Exception("GRUND STUPID CANNOT Multiply " + left.value.GetType() + " " + right.value.GetType());
         }
-        public static GrundDynamicTypeWrapper Div(GrundDynamicTypeWrapper leftWrapped, GrundDynamicTypeWrapper rightWrapped)
+        public static GrundDynamicTypeWrapper Div(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            GrundDynamicTypeWrapper left = (GrundDynamicTypeWrapper)leftWrapped.value;
-            GrundDynamicTypeWrapper right = (GrundDynamicTypeWrapper)rightWrapped.value;
             if (left.value is int l && right.value is int r)
             {
                 return new GrundDynamicTypeWrapper(l / r);
@@ -592,10 +584,8 @@ namespace Grund
             }
             throw new Exception("GRUND STUPID CANNOT Divide " + left.value.GetType() + " " + right.value.GetType());
         }
-        public static GrundDynamicTypeWrapper Mod(GrundDynamicTypeWrapper leftWrapped, GrundDynamicTypeWrapper rightWrapped)
+        public static GrundDynamicTypeWrapper Mod(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            GrundDynamicTypeWrapper left = (GrundDynamicTypeWrapper)leftWrapped.value;
-            GrundDynamicTypeWrapper right = (GrundDynamicTypeWrapper)rightWrapped.value;
             if (left.value is int l && right.value is int r)
             {
                 return new GrundDynamicTypeWrapper(l % r);

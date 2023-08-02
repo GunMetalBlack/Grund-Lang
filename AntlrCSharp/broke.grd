@@ -1,6 +1,6 @@
-VAR x = 1;
-GF_WRITE_LN(x - 1)
-x = 0
-IF x == 0:
-    GF_WRITE_LN("Piss")
-END
+// This example shows how to declare and access a list in Grund.
+
+numbers = [1, 2, 3, 4, 5]  // Declare a list named "numbers" and assign some values to it.
+GF_WRITE(numbers[0])  // Print the first element of the list.
+GF_WRITE(numbers[2])  // Print the third element of the list.
+GF_WRITE(numbers[4])  // Print the fifth element of the list.
