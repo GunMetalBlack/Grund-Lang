@@ -1,4 +1,4 @@
-// Generated from /workspaces/Grund-Lang/AntlrCSharp/Grund.g4 by ANTLR 4.9.2
+// Generated from /home/noah/Desktop/Codeing/Grund-Lang/AntlrCSharp/Grund.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

@@ -1,3 +1,2 @@
-VAR x = 4;
-
-GF_WRITE_LN(x)
+VAR x = [1,2,["d","a"]]
+GF_WRITE_LN(x[2][1])

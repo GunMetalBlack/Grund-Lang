@@ -12,9 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.0" />
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.3" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="E:\coding\test\AntlrCSharp\Grund.g4"/>
+    <Content Include="E:\coding\test\AntlrCSharp\Grund.g4" />
   </ItemGroup>
 </Project>

@@ -25,7 +25,7 @@ blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}
 assignment: expression '='  expression (';')? ;
 declaration: 'VAR' IDENTIFIER (';')?; 
 
-//memberAssignment: memberAccession '=' expression;
+//memberAssignment: memberAccession '=' expression; 
 
 //memberAccession: IDENTIFIER '.' IDENTIFIER (';')? | IDENTIFIER '.' functionCall(';')?;
 
