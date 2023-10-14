@@ -407,7 +407,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             }
             if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.expression(1).functionCall() != null)
             {
-                return ExecuteUserDefinedFunction((GrundParser.FunctionCallContext)context.expression(1), functionDefinition, memberIsStatic ? null : structMembers);
+                return ExecuteUserDefinedFunction(context.expression(1), functionDefinition, memberIsStatic ? null : structMembers);
             }
             else if (!(value is Antlr4.Runtime.Tree.IParseTree))
             {
