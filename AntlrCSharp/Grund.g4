@@ -49,6 +49,7 @@ expression
     | declaration           #declarationsExpression
     | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
+    | strucDefinition       #strucDefinitionExpression
     | expression '.' expression #dotExpression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression

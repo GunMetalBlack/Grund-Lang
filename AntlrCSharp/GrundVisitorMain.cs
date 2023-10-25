@@ -3,6 +3,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
 using Grund;
 using static Grund.GrundTypeWrapper;
+using Microsoft.VisualBasic;
 
 public struct GrundStackFrame
 {
@@ -16,6 +17,20 @@ public struct GrundStackFrame
     {
         this.name = name;
         variables = new();
+    }
+
+}
+public class GrundStruk
+{
+    public GrundStruk? parent;
+    public Dictionary<string, GrundDynamicTypeWrapper> structMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
+    public Dictionary<string, GrundDynamicTypeWrapper> staticMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
+    public string name;
+
+    public GrundStruk(GrundStruk? parent, string name)
+    {
+        this.parent = parent;
+        this.name = name;
     }
 
 }
@@ -169,10 +184,10 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         // If its not a list do this for everything else that needs to be assigned as a variable
         gLeft.value = gRight.value;
-        
+
         return null;
     }
-    
+
 
     public override object VisitDeclarationsExpression([NotNull] GrundParser.DeclarationsExpressionContext context)
     {
@@ -223,19 +238,19 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         throw new Exception("GRUND SAYS ERROR: " + " IS NOT LIST. LINE: " + context.Start.Line.ToString());
     }
 
-    public override object? VisitStrucDefinition(GrundParser.StrucDefinitionContext context)
+    public override object VisitStrucDefinitionExpression([NotNull] GrundParser.StrucDefinitionExpressionContext context)
     {
         //FIXME: Fix Structs for future versions
         // Return early if there are no lines in the struct definition
-        var lines = context.block().line();
+        var lines = context.strucDefinition().block().line();
         if (lines == null || !lines.Any())
         {
             return null;
         }
         //Struct name
-        var structName = context.IDENTIFIER(0).GetText();
-        var structMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
-        var staticMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
+        var structName = context.strucDefinition().IDENTIFIER(0).GetText();
+        //Create A struct class that encapsulates all the stuff
+        var strukInstance = new GrundStruk(null, structName);
         //TODO: At some point we should have EXTENSIONS for structs again that is not today
         // if (context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
         // {
@@ -245,11 +260,11 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         //     {
         //         if (structMembers.ContainsKey(kvp.Key))
         //         {
-        //             structMembers[kvp.Key] = kvp.Value;
+        //               strukInstance.structMembers[kvp.Key] = kvp.Value;
         //         }
         //         else
         //         {
-        //             structMembers.Add(kvp.Key, kvp.Value);
+        //              strukInstance. structMembers.Add(kvp.Key, kvp.Value);
         //         }
         //     }
         //     staticMembers.Add("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", parentStructName);
@@ -257,15 +272,15 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
         //Overrides Parent Static Struct pointers Its pointer is THE PARENT_POINTER 
         //GF_STRUCT_POINTER is a pointer name  
-        structMembers["GF_STRUK_POINTER_PLEASE_DON'T_USE"].value = structName;
+        strukInstance.structMembers["GF_STRUK_POINTER_PLEASE_DON'T_USE"].value = structName;
         foreach (var line in lines)
         {
             if (line.functionDefinition() != null)
             {
                 // Process function definitions
                 var methodName = line.functionDefinition().IDENTIFIER().GetText();
-                GrundDynamicTypeWrapper  methodValue = new GrundDynamicTypeWrapper(line.functionDefinition());
-                structMembers.Add(methodName, methodValue);
+                GrundDynamicTypeWrapper methodValue = new GrundDynamicTypeWrapper(line.functionDefinition());
+                strukInstance.structMembers.Add(methodName, methodValue);
             }
             else if (line.statement().blockScopeAssignment() != null)
             {
@@ -274,29 +289,29 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                 {
                     var staticFieldName = assignment.expression(0).GetText();
                     GrundDynamicTypeWrapper staticFieldValue = new GrundDynamicTypeWrapper(Visit(assignment.expression(1)));
-                    staticMembers.Add(staticFieldName, staticFieldValue);
+                    strukInstance.staticMembers.Add(staticFieldName, staticFieldValue);
                 }
             }
         }
 
         // Check if the struct contains a constructor
-        if (!(structMembers.ContainsKey(structName) && structMembers[structName].value is GrundParser.FunctionDefinitionContext))
+        if (!(strukInstance.structMembers.ContainsKey(structName) && strukInstance.structMembers[structName].value is GrundParser.FunctionDefinitionContext))
         {
             // Log a warning message if the struct does not contain a constructor
             throw new Exception("Grund sighs: STRUK " + structName + " is missing constructor definition " + "Make sure the constructor has the same name as the STRUK");
         }
-        // Add the struct members to the global Variables dictionary
-        StaticStructMembers.Add(structName, staticMembers);
-        Variables.Add(structName, new GrundDynamicTypeWrapper(structMembers));
-        return null;
-       // throw new NotImplementedException();
+        //! This is important as we create the deffinition of the struct and initialize it at the same time
+        //! for example var x = STRUK z: some stuff   END, so the right side of the assignment evaluates to a struk instance 
+        return new GrundDynamicTypeWrapper(strukInstance);
+        // throw new NotImplementedException();
     }
+
 
     public GrundDynamicTypeWrapper FindVariableInCurrentState(string identifier)
     {
         if (GetVariablesInCurrentStackFrame().ContainsKey(identifier)) return GetVariablesInCurrentStackFrame()[identifier];
         if (Variables.ContainsKey(identifier)) return Variables[identifier];
-        return null; 
+        return null;
     }
 
     public object? LookupStructMember(Dictionary<string, GrundDynamicTypeWrapper> structMembers, string memberName, out bool memberIsStatic, out bool success)
@@ -358,24 +373,24 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     }
     public object? memberAssignmentFunction(string? StructInstanceName, string? MemberName, object? Reassignment, GrundParser.AssignmentContext context)
     {
-        if(GetVariablesInCurrentStackFrame().ContainsKey(StructInstanceName) && GetVariablesInCurrentStackFrame()[StructInstanceName].value is Dictionary<string, object?> scopeStruct)
+        if (GetVariablesInCurrentStackFrame().ContainsKey(StructInstanceName) && GetVariablesInCurrentStackFrame()[StructInstanceName].value is Dictionary<string, object?> scopeStruct)
         {
-            if(scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+            if (scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE") && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
             {
                 StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][MemberName] = Reassignment;
             }
-            else if(scopeStruct.ContainsKey(MemberName) != null)
+            else if (scopeStruct.ContainsKey(MemberName) != null)
             {
                 scopeStruct[MemberName] = Reassignment;
             }
         }
-        else if(Variables.ContainsKey(StructInstanceName) && Variables[StructInstanceName] is Dictionary<string, object?> Struct)
+        else if (Variables.ContainsKey(StructInstanceName) && Variables[StructInstanceName] is Dictionary<string, object?> Struct)
         {
-            if(Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE")  && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
+            if (Struct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE") && StaticStructMembers.ContainsKey(Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
             {
                 StaticStructMembers[Struct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][MemberName] = Reassignment;
             }
-            else if(Struct.ContainsKey(MemberName) != null)
+            else if (Struct.ContainsKey(MemberName) != null)
             {
                 Struct[MemberName] = Reassignment;
             }
@@ -421,7 +436,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         throw new NotImplementedException();
     }
-    
+
 
     public override object VisitIdentifierExpression([NotNull] GrundParser.IdentifierExpressionContext context)
     {

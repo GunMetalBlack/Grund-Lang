@@ -118,12 +118,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_program; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitProgram(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -193,12 +187,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_line; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitLine(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -293,12 +281,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_statement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitStatement(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -370,12 +352,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_ifBlock; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitIfBlock(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -480,12 +456,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_elseIfBlock; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitElseIfBlock(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -542,12 +512,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_whileBlock; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitWhileBlock(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -612,12 +576,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_blockScopeAssignment; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBlockScopeAssignment(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -704,12 +662,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_assignment; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAssignment(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -755,12 +707,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_declaration; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDeclaration(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -810,12 +756,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_functionCall; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFunctionCall(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -883,12 +823,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_inLineIncrement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitInLineIncrement(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -933,12 +867,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_parameter; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitParameter(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -978,12 +906,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_strucDefinition; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitStrucDefinition(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1050,12 +972,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_functionDefinition; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFunctionDefinition(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1135,24 +1051,12 @@ public partial class GrundParser : Parser {
 			return GetRuleContext<ExpressionContext>(i);
 		}
 		public DotExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDotExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class ConstantExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ConstantContext constant() {
 			return GetRuleContext<ConstantContext>(0);
 		}
 		public ConstantExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitConstantExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class AdditiveExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
@@ -1165,46 +1069,22 @@ public partial class GrundParser : Parser {
 			return GetRuleContext<AddOPContext>(0);
 		}
 		public AdditiveExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAdditiveExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class IdentifierExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode IDENTIFIER() { return GetToken(GrundParser.IDENTIFIER, 0); }
 		public IdentifierExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitIdentifierExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class FunctionDefinitionExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public FunctionDefinitionContext functionDefinition() {
 			return GetRuleContext<FunctionDefinitionContext>(0);
 		}
 		public FunctionDefinitionExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFunctionDefinitionExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class NotExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
 		public NotExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitNotExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class ComparisonExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
@@ -1217,12 +1097,6 @@ public partial class GrundParser : Parser {
 			return GetRuleContext<CompareOPContext>(0);
 		}
 		public ComparisonExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitComparisonExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class MultiplicativeExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
@@ -1235,24 +1109,12 @@ public partial class GrundParser : Parser {
 			return GetRuleContext<MultOPContext>(0);
 		}
 		public MultiplicativeExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitMultiplicativeExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class StrucDefinitionExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public StrucDefinitionContext strucDefinition() {
 			return GetRuleContext<StrucDefinitionContext>(0);
 		}
 		public StrucDefinitionExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitStrucDefinitionExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class BooleanExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
@@ -1265,48 +1127,24 @@ public partial class GrundParser : Parser {
 			return GetRuleContext<BoolOPContext>(0);
 		}
 		public BooleanExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBooleanExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class CollectionsExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public CollectionsContext collections() {
 			return GetRuleContext<CollectionsContext>(0);
 		}
 		public CollectionsExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCollectionsExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class ParenthesizedExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
 		}
 		public ParenthesizedExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitParenthesizedExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class FunctionCallExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public FunctionCallContext functionCall() {
 			return GetRuleContext<FunctionCallContext>(0);
 		}
 		public FunctionCallExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFunctionCallExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class ListAccessionExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
@@ -1316,24 +1154,12 @@ public partial class GrundParser : Parser {
 			return GetRuleContext<ExpressionContext>(i);
 		}
 		public ListAccessionExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitListAccessionExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 	public partial class DeclarationsExpressionContext : ExpressionContext {
 		[System.Diagnostics.DebuggerNonUserCode] public DeclarationContext declaration() {
 			return GetRuleContext<DeclarationContext>(0);
 		}
 		public DeclarationsExpressionContext(ExpressionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDeclarationsExpression(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1557,12 +1383,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_multOP; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitMultOP(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1601,12 +1421,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_addOP; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitAddOP(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1645,12 +1459,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_compareOP; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCompareOP(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1689,12 +1497,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_inLineOP; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitInLineOP(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1734,12 +1536,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_boolOP; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBoolOP(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1775,12 +1571,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_constant; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitConstant(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1825,12 +1615,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_collections; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCollections(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1882,12 +1666,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_list; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitList(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -1957,12 +1735,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_dictionary; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitDictionary(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
@@ -2041,12 +1813,6 @@ public partial class GrundParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_block; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IGrundVisitor<TResult> typedVisitor = visitor as IGrundVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBlock(this);
-			else return visitor.VisitChildren(this);
-		}
 	}
 
 	[RuleVersion(0)]
