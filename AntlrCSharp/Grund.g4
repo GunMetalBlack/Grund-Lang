@@ -17,8 +17,7 @@ whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock)
 WHILE: 'WHILE' | 'UNLESS';
 THIS: 'THIS:';
 STATIC: 'STATIC';
-CLASSPOINTER: '=>';
-EXTENDS: IDENTIFIER;
+//EXTENDS: IDENTIFIER;
 
 blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
@@ -36,7 +35,8 @@ inLineIncrement: expression inLineOP (';')?;
 FUNC: 'FUNK' | 'METH';
 parameter: IDENTIFIER;
 STRUCT:  '>';
-strucDefinition: STRUCT block | STRUCT EXTENDS  block;
+strucDefinition: STRUCT block;
+//| STRUCT EXTENDS  block
 functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
 
 
