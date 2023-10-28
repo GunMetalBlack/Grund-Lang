@@ -1,2 +1,9 @@
-VAR x = [1,2,["d","a"]]
-GF_WRITE_LN(x[2][1])
+var List =>
+{
+
+}
+
+var Ent => List 
+{
+
+}
