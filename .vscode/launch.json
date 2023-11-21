@@ -1,6 +1,17 @@
 {
     "version": "0.2.0",
     "configurations": [
+
+        {
+            "name": "Debug ANTLR4 grammar",
+            "type": "antlr-debug",
+            "request": "launch",
+            "input": "/home/noah/Desktop/Codeing/Grund-Lang/AntlrCSharp/test.grd",
+            "grammar": "AntlrCSharp/Grund.g4",
+            "startRule": "program",
+            "printParseTree": true,
+            "visualParseTree": true
+        },
         {
             "name": "Debug ANTLR4 grammar",
             "type": "antlr-debug",
@@ -20,7 +31,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/AntlrCSharp/bin/Debug/net7.0/grund.dll",
+            "program": "${workspaceFolder}/AntlrCSharp/bin/Debug/net7.0/linux-x64/grund",
             "args": ["broke.grd"],
             "cwd": "${workspaceFolder}/AntlrCSharp",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

@@ -8,9 +8,9 @@ FUNK render(x,y,r,m)
 }
 
 //GF_WRITE_LN(render(2.01,0,2,1.1))
-GF_WRITE("y")VAR s_y = GF_INPUT("INT")
-GF_WRITE("x")VAR s_x = GF_INPUT("INT")
-GF_WRITE("r")VAR s_r = GF_INPUT("INT")
+GF_WRITE("y")VAR s_y = 10
+GF_WRITE("x")VAR s_x = 10
+GF_WRITE("r")VAR s_r = 4
 
 VAR i = 0
 

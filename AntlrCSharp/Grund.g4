@@ -4,7 +4,7 @@ program: line* EOF;
 
 line:  statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | inLineIncrement | strucDefinition;  
 
-statement: ( assignment | functionCall | blockScopeAssignment)(';')?;
+statement: ( assignment | functionCall | blockScopeAssignment)(';')? | expression;
 
 ifBlock: IFBLOCK ('(')? expression (')')? block | IFBLOCK ('(')? expression (')')? block ('ELSE' elseIfBlock);
 
@@ -40,7 +40,6 @@ strucDefinition: STRUCT block;
 functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
 
 
-
 expression
     : constant              #constantExpression
     | collections           #collectionsExpression
@@ -59,7 +58,7 @@ expression
     | expression boolOP expression #booleanExpression
     ;
 multOP: '*'|'/'|'%';
-addOP:'+'|'-' |'++'|'--';
+addOP:'+'|'-';
 compareOP:'=='|'!='|'>'|'<'|'>='|'<=';
 inLineOP: '++'| '--';
 boolOP: BOOL_OPERATOR;

@@ -384,7 +384,7 @@ namespace Grund
             {
                 return  new GrundDynamicTypeWrapper(lfFloat < rInt);
             }
-            throw new Exception("GRUND STUPID CANNOT compare." + left.GetType() + right.GetType());
+            throw new Exception("GRUND STUPID CANNOT compare." + left.value.GetType() + right.value.GetType());
         }
         public static GrundDynamicTypeWrapper LessThanOrEqual(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
