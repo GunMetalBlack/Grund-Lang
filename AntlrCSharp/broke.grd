@@ -12,5 +12,5 @@ FUNK work()
 {
    var _return = "hello world"
 }
-sus = work()
+var sus = work()
 GF_WRITE_LN(sus)

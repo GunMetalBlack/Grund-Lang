@@ -4,7 +4,7 @@ program: line* EOF;
 
 line:  statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | inLineIncrement;  
 
-statement: ( assignment | functionCall | blockScopeAssignment)(';')? | expression;
+statement: ( assignment | functionCall | blockScopeAssignment)(';')?;
 
 ifBlock: IFBLOCK ('(')? expression (')')? block | IFBLOCK ('(')? expression (')')? block ('ELSE' elseIfBlock);
 
@@ -46,7 +46,7 @@ expression
     | expression '[' expression ']' #listAccessionExpression
     | declaration           #declarationsExpression
     | functionDefinition    #functionDefinitionExpression
-    | functionCall          #functionCallExpression
+    | timmy=functionCall          #functionCallExpression
     | strucDefinition       #strucDefinitionExpression
     | expression '.' expression #dotExpression
     | '(' expression ')'    #parenthesizedExpression

@@ -173,12 +173,12 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             return null;
         }
     }
-    public override object? VisitFunctionCall(GrundParser.FunctionCallContext context)
+    public override object VisitFunctionCall([NotNull] GrundParser.FunctionCallContext context)
     {
+       //! var context = contextExpression.functionCall();
         // Grab the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
         var args = context.expression().Select(Visit).OfType<GrundDynamicTypeWrapper>().ToArray();
-
         // Handle scoped functions
         if (GetVariablesInCurrentStackFrame().ContainsKey(name))
         {
@@ -230,7 +230,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
     //** Below is the implementation if Parsing Variables
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
-    {
+    {   
         var gLeft = (GrundDynamicTypeWrapper)Visit(context.expression(0));
         var gRight = (GrundDynamicTypeWrapper)Visit(context.expression(1));
 
@@ -612,8 +612,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
     }
     //* Creating FUNCTION Definitions
-
-    public override object VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
+    
+    public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
         if (!Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
