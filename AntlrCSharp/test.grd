@@ -1,9 +1,6 @@
-var world  => 
+FUNK work()
 {
-    FUNK init(self)
-    {
-        self.x = 1 
-    }
+   var _return = "hello world"
 }
-
-var jim = world()
+sus = work()
+GF_WRITE_LN(sus)

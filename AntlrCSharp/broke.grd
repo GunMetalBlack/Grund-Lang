@@ -1,34 +1,16 @@
-FUNK render(x,y,r,m)
+// var world  => 
+// {
+//     FUNK init(self)
+//     {
+//         self.x = 1 
+//     }
+// }
+
+// var jim = world()
+
+FUNK work()
 {
-    VAR c = r*r;
-    VAR b = y*y;
-    VAR a = x*x;
-    VAR l = a + b
-    VAR _return = l >= c-m AND l <= c + m
+   var _return = "hello world"
 }
-
-//GF_WRITE_LN(render(2.01,0,2,1.1))
-GF_WRITE("y")VAR s_y = 10
-GF_WRITE("x")VAR s_x = 10
-GF_WRITE("r")VAR s_r = 4
-
-VAR i = 0
-
-WHILE i < s_y
-{ 
-    VAR j = 0
-    WHILE j < s_x 
-    {
-        IF render(-1 * s_x/2+j, -1 * s_y/2+i,s_r,3)
-        {
-            GF_WRITE("O")
-        }
-        ELSE
-        {
-            GF_WRITE(" ")
-        }
-        j++
-    }
-    i++
-    GF_WRITE_LN("")
-}
+sus = work()
+GF_WRITE_LN(sus)

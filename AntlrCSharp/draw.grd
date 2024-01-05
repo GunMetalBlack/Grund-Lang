@@ -2,8 +2,7 @@ var world  =>
 {
     FUNK init(self)
     {
-        self.x = 1 
+        self.x = 1
     }
 }
-
-var jim = new world()
+var jim =  world()

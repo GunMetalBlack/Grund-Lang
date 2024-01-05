@@ -1361,71 +1361,71 @@ public partial class GrundParser : Parser {
 				break;
 			case 3:
 				{
-				_localctx = new IdentifierExpressionContext(_localctx);
+				_localctx = new DeclarationsExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
 				State = 192;
-				Match(IDENTIFIER);
+				declaration();
 				}
 				break;
 			case 4:
 				{
-				_localctx = new DeclarationsExpressionContext(_localctx);
+				_localctx = new FunctionDefinitionExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
 				State = 193;
-				declaration();
+				functionDefinition();
 				}
 				break;
 			case 5:
 				{
-				_localctx = new FunctionDefinitionExpressionContext(_localctx);
+				_localctx = new FunctionCallExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
 				State = 194;
-				functionDefinition();
+				functionCall();
 				}
 				break;
 			case 6:
 				{
-				_localctx = new FunctionCallExpressionContext(_localctx);
+				_localctx = new StrucDefinitionExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
 				State = 195;
-				functionCall();
+				strucDefinition();
 				}
 				break;
 			case 7:
 				{
-				_localctx = new StrucDefinitionExpressionContext(_localctx);
+				_localctx = new ParenthesizedExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
 				State = 196;
-				strucDefinition();
+				Match(T__1);
+				State = 197;
+				expression(0);
+				State = 198;
+				Match(T__2);
 				}
 				break;
 			case 8:
 				{
-				_localctx = new ParenthesizedExpressionContext(_localctx);
+				_localctx = new NotExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 197;
-				Match(T__1);
-				State = 198;
-				expression(0);
-				State = 199;
-				Match(T__2);
+				State = 200;
+				Match(T__15);
+				State = 201;
+				expression(6);
 				}
 				break;
 			case 9:
 				{
-				_localctx = new NotExpressionContext(_localctx);
+				_localctx = new IdentifierExpressionContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 201;
-				Match(T__15);
 				State = 202;
-				expression(5);
+				Match(IDENTIFIER);
 				}
 				break;
 			}
@@ -1447,11 +1447,11 @@ public partial class GrundParser : Parser {
 						_localctx = new DotExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 205;
-						if (!(Precpred(Context, 7))) throw new FailedPredicateException(this, "Precpred(Context, 7)");
+						if (!(Precpred(Context, 8))) throw new FailedPredicateException(this, "Precpred(Context, 8)");
 						State = 206;
 						Match(T__14);
 						State = 207;
-						expression(8);
+						expression(9);
 						}
 						break;
 					case 2:
@@ -1459,11 +1459,11 @@ public partial class GrundParser : Parser {
 						_localctx = new MultiplicativeExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 208;
-						if (!(Precpred(Context, 4))) throw new FailedPredicateException(this, "Precpred(Context, 4)");
+						if (!(Precpred(Context, 5))) throw new FailedPredicateException(this, "Precpred(Context, 5)");
 						State = 209;
 						multOP();
 						State = 210;
-						expression(5);
+						expression(6);
 						}
 						break;
 					case 3:
@@ -1471,11 +1471,11 @@ public partial class GrundParser : Parser {
 						_localctx = new AdditiveExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 212;
-						if (!(Precpred(Context, 3))) throw new FailedPredicateException(this, "Precpred(Context, 3)");
+						if (!(Precpred(Context, 4))) throw new FailedPredicateException(this, "Precpred(Context, 4)");
 						State = 213;
 						addOP();
 						State = 214;
-						expression(4);
+						expression(5);
 						}
 						break;
 					case 4:
@@ -1483,11 +1483,11 @@ public partial class GrundParser : Parser {
 						_localctx = new ComparisonExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 216;
-						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
+						if (!(Precpred(Context, 3))) throw new FailedPredicateException(this, "Precpred(Context, 3)");
 						State = 217;
 						compareOP();
 						State = 218;
-						expression(3);
+						expression(4);
 						}
 						break;
 					case 5:
@@ -1495,11 +1495,11 @@ public partial class GrundParser : Parser {
 						_localctx = new BooleanExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expression);
 						State = 220;
-						if (!(Precpred(Context, 1))) throw new FailedPredicateException(this, "Precpred(Context, 1)");
+						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
 						State = 221;
 						boolOP();
 						State = 222;
-						expression(2);
+						expression(3);
 						}
 						break;
 					case 6:
@@ -2113,11 +2113,11 @@ public partial class GrundParser : Parser {
 	}
 	private bool expression_sempred(ExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 0: return Precpred(Context, 7);
-		case 1: return Precpred(Context, 4);
-		case 2: return Precpred(Context, 3);
-		case 3: return Precpred(Context, 2);
-		case 4: return Precpred(Context, 1);
+		case 0: return Precpred(Context, 8);
+		case 1: return Precpred(Context, 5);
+		case 2: return Precpred(Context, 4);
+		case 3: return Precpred(Context, 3);
+		case 4: return Precpred(Context, 2);
 		case 5: return Precpred(Context, 13);
 		}
 		return true;
@@ -2190,16 +2190,16 @@ public partial class GrundParser : Parser {
 		22,11,0,179,177,1,0,0,0,180,183,1,0,0,0,181,179,1,0,0,0,181,182,1,0,0,
 		0,182,185,1,0,0,0,183,181,1,0,0,0,184,176,1,0,0,0,184,185,1,0,0,0,185,
 		186,1,0,0,0,186,187,5,3,0,0,187,188,3,48,24,0,188,27,1,0,0,0,189,190,6,
-		14,-1,0,190,204,3,40,20,0,191,204,3,42,21,0,192,204,5,43,0,0,193,204,3,
-		16,8,0,194,204,3,26,13,0,195,204,3,18,9,0,196,204,3,24,12,0,197,198,5,
-		2,0,0,198,199,3,28,14,0,199,200,5,3,0,0,200,204,1,0,0,0,201,202,5,16,0,
-		0,202,204,3,28,14,5,203,189,1,0,0,0,203,191,1,0,0,0,203,192,1,0,0,0,203,
-		193,1,0,0,0,203,194,1,0,0,0,203,195,1,0,0,0,203,196,1,0,0,0,203,197,1,
-		0,0,0,203,201,1,0,0,0,204,231,1,0,0,0,205,206,10,7,0,0,206,207,5,15,0,
-		0,207,230,3,28,14,8,208,209,10,4,0,0,209,210,3,30,15,0,210,211,3,28,14,
-		5,211,230,1,0,0,0,212,213,10,3,0,0,213,214,3,32,16,0,214,215,3,28,14,4,
-		215,230,1,0,0,0,216,217,10,2,0,0,217,218,3,34,17,0,218,219,3,28,14,3,219,
-		230,1,0,0,0,220,221,10,1,0,0,221,222,3,38,19,0,222,223,3,28,14,2,223,230,
+		14,-1,0,190,204,3,40,20,0,191,204,3,42,21,0,192,204,3,16,8,0,193,204,3,
+		26,13,0,194,204,3,18,9,0,195,204,3,24,12,0,196,197,5,2,0,0,197,198,3,28,
+		14,0,198,199,5,3,0,0,199,204,1,0,0,0,200,201,5,16,0,0,201,204,3,28,14,
+		6,202,204,5,43,0,0,203,189,1,0,0,0,203,191,1,0,0,0,203,192,1,0,0,0,203,
+		193,1,0,0,0,203,194,1,0,0,0,203,195,1,0,0,0,203,196,1,0,0,0,203,200,1,
+		0,0,0,203,202,1,0,0,0,204,231,1,0,0,0,205,206,10,8,0,0,206,207,5,15,0,
+		0,207,230,3,28,14,9,208,209,10,5,0,0,209,210,3,30,15,0,210,211,3,28,14,
+		6,211,230,1,0,0,0,212,213,10,4,0,0,213,214,3,32,16,0,214,215,3,28,14,5,
+		215,230,1,0,0,0,216,217,10,3,0,0,217,218,3,34,17,0,218,219,3,28,14,4,219,
+		230,1,0,0,0,220,221,10,2,0,0,221,222,3,38,19,0,222,223,3,28,14,3,223,230,
 		1,0,0,0,224,225,10,13,0,0,225,226,5,13,0,0,226,227,3,28,14,0,227,228,5,
 		14,0,0,228,230,1,0,0,0,229,205,1,0,0,0,229,208,1,0,0,0,229,212,1,0,0,0,
 		229,216,1,0,0,0,229,220,1,0,0,0,229,224,1,0,0,0,230,233,1,0,0,0,231,229,

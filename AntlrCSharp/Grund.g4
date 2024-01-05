@@ -44,7 +44,6 @@ expression
     : constant              #constantExpression
     | collections           #collectionsExpression
     | expression '[' expression ']' #listAccessionExpression
-    | IDENTIFIER            #identifierExpression
     | declaration           #declarationsExpression
     | functionDefinition    #functionDefinitionExpression
     | functionCall          #functionCallExpression
@@ -56,6 +55,7 @@ expression
     | expression addOP expression  #additiveExpression
     | expression compareOP expression #comparisonExpression
     | expression boolOP expression #booleanExpression
+    | IDENTIFIER            #identifierExpression
     ;
 multOP: '*'|'/'|'%';
 addOP:'+'|'-';

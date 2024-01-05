@@ -20,17 +20,63 @@ public struct GrundStackFrame
     }
 
 }
-public class GrundStruk
+
+public interface IGrundStruklike
+{
+    object? getMember(string name);
+    string getStrukName();
+}
+
+public class GrundStrukInstance : IGrundStruklike
+{
+    public GrundStruk typeStruk;
+    public Dictionary<string, GrundDynamicTypeWrapper> instanceMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
+    
+    public object? getMember(string name)
+    {
+        if (instanceMembers.ContainsKey(name))return instanceMembers[name];
+        else return typeStruk.getMember(name);
+    }
+
+    public string getStrukName()
+    {
+        return typeStruk.getStrukName();
+    }
+
+}
+
+public class GrundStruk : IGrundStruklike
 {
     public GrundStruk? parent;
-    public Dictionary<string, GrundDynamicTypeWrapper> structMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
-    public Dictionary<string, GrundDynamicTypeWrapper> staticMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
+    public Dictionary<string, GrundDynamicTypeWrapper> strukMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
     public string name;
 
     public GrundStruk(GrundStruk? parent, string name)
     {
         this.parent = parent;
         this.name = name;
+    }
+
+    public GrundDynamicTypeWrapper instantiate(GrundVisitorMain gvm, GrundParser.FunctionCallContext context)
+    {
+        GrundStrukInstance instance = new GrundStrukInstance();
+        instance.typeStruk = this;
+        GrundDynamicTypeWrapper instanceWrapped = new GrundDynamicTypeWrapper(instance);
+        GrundParser.FunctionDefinitionContext constructor = (GrundParser.FunctionDefinitionContext)(strukMembers["init"].value);
+        gvm.ExecuteUserDefinedFunction(context, constructor, instanceWrapped);
+        return instanceWrapped;
+    }
+
+    public object? getMember(string name)
+    {
+        if (strukMembers.ContainsKey(name)) return strukMembers[name];
+        else if (parent != null) return parent.getMember(name);
+        else return null;
+    }
+
+    public string getStrukName()
+    {
+        return this.name;
     }
 
 }
@@ -90,13 +136,14 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         Variables[FUNC_ID_GF_RAND] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_RAND));
     }
 
-    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, object? structInstance = null)
+
+    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, GrundDynamicTypeWrapper struklike = null)
     {
 
         // Grab the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
         object?[] args = context.expression().Select(Visit).ToArray();
-        if (structInstance != null) args = args.Prepend(structInstance).ToArray();
+        if (struklike != null) args = args.Prepend(struklike).ToArray();
         if (functionLookup == null)
         {
             return null;
@@ -126,7 +173,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             return null;
         }
     }
-
     public override object? VisitFunctionCall(GrundParser.FunctionCallContext context)
     {
         // Grab the function name and any expressions it has and turns into an array 
@@ -136,15 +182,20 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         // Handle scoped functions
         if (GetVariablesInCurrentStackFrame().ContainsKey(name))
         {
+            object? thingBeingInvoked = GetVariablesInCurrentStackFrame()[name].value;
             // Handle user-defined functions
             {
-                if (GetVariablesInCurrentStackFrame()[name].value is GrundParser.FunctionDefinitionContext functionLookup)
+                if (thingBeingInvoked is GrundParser.FunctionDefinitionContext functionLookup)
                 {
                     return ExecuteUserDefinedFunction(context, functionLookup);
                 }
+                else if (thingBeingInvoked is GrundStruk strukToInstantiate)
+                {
+                    return strukToInstantiate.instantiate(this, context);
+                }
             }
             // Handle build-in Grund functions
-            if (GetVariablesInCurrentStackFrame()[name].value is Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper> func)
+            if (thingBeingInvoked is Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper> func)
             {
                 return func(args);
             }
@@ -153,15 +204,20 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         // Handle global functions
         if (Variables.ContainsKey(name))
         {
+            object? thingBeingInvoked = Variables[name].value;
             // Handle user-defined functions
             {
-                if (Variables[name].value is GrundParser.FunctionDefinitionContext functionLookup)
+                if (thingBeingInvoked is GrundParser.FunctionDefinitionContext functionLookup)
                 {
                     return ExecuteUserDefinedFunction(context, functionLookup);
                 }
+                else if (thingBeingInvoked is GrundStruk strukToInstantiate)
+                {
+                    return strukToInstantiate.instantiate(this, context);
+                }
             }
             // Handle build-in Grund functions
-            if (Variables[name].value is Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper> func)
+            if (thingBeingInvoked is Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper> func)
             {
                 return func(args);
             }
@@ -248,9 +304,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             return null;
         }
         //Struct name
-        var structName = "In Progress";
+        var structName = context.strucDefinition().Parent.Parent.GetChild(0).GetChild(0).GetChild(1).GetText();
         //Create A struct class that encapsulates all the stuff
-        var strukInstance = new GrundStruk(null, structName);
+        var struk = new GrundStruk(null, structName);
         //TODO: At some point we should have EXTENSIONS for structs again that is not today
         // if (context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
         // {
@@ -281,7 +337,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                 // Process function definitions
                 var methodName = line.functionDefinition().IDENTIFIER().GetText();
                 GrundDynamicTypeWrapper methodValue = new GrundDynamicTypeWrapper(line.functionDefinition());
-                strukInstance.structMembers.Add(methodName, methodValue);
+                struk.strukMembers.Add(methodName, methodValue);
             }
             else if (line.statement().blockScopeAssignment() != null)
             {
@@ -290,20 +346,20 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
                 {
                     var staticFieldName = assignment.expression(0).GetText();
                     GrundDynamicTypeWrapper staticFieldValue = new GrundDynamicTypeWrapper(Visit(assignment.expression(1)));
-                    strukInstance.staticMembers.Add(staticFieldName, staticFieldValue);
+                    struk.strukMembers.Add(staticFieldName, staticFieldValue);
                 }
             }
         }
 
         // Check if the struct contains a constructor
-        if (!(strukInstance.structMembers.ContainsKey(structName) && strukInstance.structMembers[structName].value is GrundParser.FunctionDefinitionContext))
+        if (struk.getMember("init") == null)
         {
             // Log a warning message if the struct does not contain a constructor
-            throw new Exception("Grund sighs: STRUK " + structName + " is missing constructor definition " + "Make sure the constructor has the same name as the STRUK");
+            throw new Exception("Grund sighs: STRUK " + " is missing constructor definition " + "Make sure the constructor has the same name as the INIT");
         }
         //! This is important as we create the deffinition of the struct and initialize it at the same time
         //! for example var x = STRUK z: some stuff   END, so the right side of the assignment evaluates to a struk instance 
-        return strukInstance;
+        return struk;
         // throw new NotImplementedException();
     }
 
@@ -377,10 +433,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     //     if (GetVariablesInCurrentStackFrame().ContainsKey(StructInstanceName) && GetVariablesInCurrentStackFrame()[StructInstanceName].value is Dictionary<string, object?> scopeStruct)
     //     {
     //         if (scopeStruct.ContainsKey("GF_STRUK_POINTER_PLEASE_DON'T_USE") && StaticStructMembers.ContainsKey(scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()))
-    //         {
-    //             StaticStructMembers[scopeStruct["GF_STRUK_POINTER_PLEASE_DON'T_USE"].ToString()][MemberName] = Reassignment;
-    //         }
-    //         else if (scopeStruct.ContainsKey(MemberName) != null)
+    //         {FunctionDefinitionExpressionContextontainsKey(MemberName) != null)
     //         {
     //             scopeStruct[MemberName] = Reassignment;
     //         }
@@ -402,44 +455,40 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     //     }
     //     return null;
     // }
-    public override object VisitDotExpression([NotNull] GrundParser.DotExpressionContext context)
+    public override object? VisitDotExpression([NotNull] GrundParser.DotExpressionContext context)
     {
-        var structInstanceName = context.expression(0)?.GetText();
-        var memberName = context.expression(1)?.GetText();
-        bool isFunctionCall = context.expression(1).GetChild(0) is GrundParser.FunctionCallContext;
-        var function = context.expression(1).GetChild(0) as GrundParser.FunctionCallContext;
-        if (structInstanceName == null || memberName == null)
+
+        // a.b().c()
+        // Visit LHS, make sure that it's a GrundStruk or a GrundStrukInstance
+        var leftSide = context.expression(0);
+        var struklikeWrapped = Visit(leftSide) as GrundDynamicTypeWrapper;
+        var struklike = struklikeWrapped.value as IGrundStruklike;
+        if (!(struklike is IGrundStruklike))
         {
-            throw new Exception("Grund: how It's Impossible due to syntax");
+            throw new Exception("GRUND: SCREAMS YOU FUCKED UP AND TRIED TO ACCESS THE MEMBERS OF SOMETHING THAT ISN'T A STRUK OR AN OBJECT");
         }
-        Console.WriteLine(function.GetText());
-        // if (FindVariableInCurrentState(structInstanceName).value is Dictionary<string, GrundDynamicTypeWrapper> structMembers)
-        // {
-        //     bool memberIsStatic = false;
-        //     bool success = false;
-        //     object? value = LookupStructMember(structMembers, memberName, out memberIsStatic, out success);
-        //     if (!success)
-        //     {
-        //         string? structName = structMembers.GetValueOrDefault("GF_STRUK_POINTER_PLEASE_DON'T_USE", null)?.ToString();
-        //         throw new Exception("GRUND Says theres no value for " + structInstanceName + "." + memberName + " in that class " + (structName == null ? "UNKNOWN" : structName) + " there jimbo?" + "LINE: " + context.Start.Line.ToString());
-        //     }
-        //     if (value is GrundParser.FunctionDefinitionContext functionDefinition && context.expression(1).functionCall() != null)
-        //     {
-        //         //* Instead return the function definition we Visit the object grab from object return function call
-        //         return ExecuteUserDefinedFunction(context.expression(1), functionDefinition, memberIsStatic ? null : structMembers);
-        //     }
-        //     else if (!(value is Antlr4.Runtime.Tree.IParseTree))
-        //     {
-        //         return value;
-        //     }
-        //     return Visit((Antlr4.Runtime.Tree.IParseTree)value);
-        // }
-        // else
-        // {
-        //     throw new Exception("GRUND Says that class instance doesn't exist there jimbo? " + "LINE: " + context.Start.Line.ToString());
-        // }
-        // throw new NotImplementedException();
-        return null;
+
+        // Get the RHS - it's either an identifier (member that we need to look up and return) OR it's a function call
+        // that we need to invoke/visit.
+        var rightSide = context.expression(1).children[0];
+        // If it's an identifier, then lookup member and return it
+        if (rightSide is GrundParser.IdentifierExpressionContext)
+        {
+            object? member = struklike.getMember(rightSide.GetText());
+            if (member == null) throw new Exception("GRUND: YO DAWG THAT MEMBER \"" + rightSide.GetText() + "\" DOESN'T EXIST IN \"" + struklike.getStrukName() + "\" STRUKLIKE, BUD!");
+        }
+        // If it's a function call, then lookup member, execute it, and return its result
+        else if (rightSide is GrundParser.FunctionCallContext functionCall)
+        {
+            string functionName = functionCall.IDENTIFIER().GetText();
+            object? member = struklike.getMember(functionName);
+            if (!(member is GrundParser.FunctionDefinitionExpressionContext)) throw new Exception("GRUND: REEEEEEEEEEEE METHOD \"" + functionName + "\" DOES NOT EXIST FOR \"" + struklike.getStrukName() + "\" STRUKLIKE!");
+            return ExecuteUserDefinedFunction((GrundParser.FunctionCallContext)rightSide, (GrundParser.FunctionDefinitionContext)member, struklikeWrapped);
+        }
+        else {
+            throw new Exception("GRUND: YOU MESSED UP THERE BUDDY THE RIGHT HAND SIDE OF A DOT EXPRESSION HAS TO BE AN IDENTIFIER OR A FUNCTION CALL WHAT'D YA DO");
+        }
+         return null;
     }
 
 
@@ -563,7 +612,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
     }
     //* Creating FUNCTION Definitions
-    public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
+
+    public override object VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
         if (!Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
