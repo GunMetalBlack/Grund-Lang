@@ -1,2 +1,9 @@
-VAR x = 4
-GF_WRITE_LN(x)
+var world  => 
+{
+    FUNK init(self)
+    {
+        self.x = 1 
+    }
+}
+
+var jim = new world()

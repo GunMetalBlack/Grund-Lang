@@ -2,7 +2,7 @@ grammar Grund;
 
 program: line* EOF;
 
-line:  statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | inLineIncrement | strucDefinition;  
+line:  statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | inLineIncrement;  
 
 statement: ( assignment | functionCall | blockScopeAssignment)(';')? | expression;
 
@@ -22,7 +22,7 @@ STATIC: 'STATIC';
 blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
 assignment: expression '='  expression (';')? ;
-declaration: 'VAR' IDENTIFIER (';')?; 
+declaration: ('VAR' | 'var') IDENTIFIER (';')?; 
 
 //memberAssignment: memberAccession '=' expression; 
 
