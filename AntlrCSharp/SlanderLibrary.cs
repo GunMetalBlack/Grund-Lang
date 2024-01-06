@@ -17,18 +17,11 @@ namespace Grund
         
             foreach (var arg in args)
             {
-                if (arg.value is List<object?> list)
+                if (arg.value is List<GrundDynamicTypeWrapper> list)
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
-                        if (!(i == list.Count - 1))
-                        {
-                            Console.Write(list.ElementAt(i));
-                        }
-                        else
-                        {
-                            Console.Write(list.ElementAt(i));
-                        }
+                        Console.Write(list.ElementAt(i).value);
                     }
                 }
                 else

@@ -1,42 +1,5 @@
-var world  => 
-{
-    FUNK init(self, myass)
-    {
-       self.myass = myass
-    }
-}
+var map =  ["a", "b", "c", "d", "e"]
 
-var entity =>
-{
-    FUNK init(self, x, y, z, name)
-    {
-        self.setCoordinates(x, y, z, false)
-        self.name = name;
-    }
-    FUNK setCoordinates(self, x, y, z, crash)
-    {
-        IF crash
-        {
-            self.variable_that_shouldnt_exist = true
-        }
-        self.x = x;
-        self.y = y;
-        self.z = z;
-    }
-    FUNK printInfo(self)
-    {
-        GF_WRITE_LN("Entity '", self.name, "' is at (", self.x, ", ", self.y, ", ", self.z, ")")
-    }
-}
+map[0] = map[1] + "s"
 
-var cow =>
-{
-
-}
-
-var myWorld = world(entity(4, 20, 69, "little timmy"))
-myWorld.myass.printInfo()
-myWorld.myass.setCoordinates(1, 2, 3, false)
-myWorld.myass.printInfo()
-myWorld.myass.setCoordinates(1, 2, 3, true)
-myWorld.myass.printInfo()
+GF_WRITE_LN(map[0])

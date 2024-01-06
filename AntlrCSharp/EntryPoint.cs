@@ -7,6 +7,7 @@ namespace Grund
         static void Main(string[] args)
         {
             
+            // Read and concatonate sources
             string combineFileContents = "";
             foreach(string arg in args)  
             {  
@@ -16,15 +17,21 @@ namespace Grund
                 combineFileContents += fileContent;
             }
             var inputStream = new AntlrInputStream(combineFileContents);
+
+            // Lexer
             var grundLexer = new GrundLexer(inputStream);
             CommonTokenStream commonTokenStream = new CommonTokenStream(grundLexer);
+
+            // Parser
             var grundParser = new GrundParser(commonTokenStream);
             grundParser.RemoveErrorListeners();
             grundParser.AddErrorListener(ThrowingErrorListener.INSTANCE);
+            
+            // Visitor
+            var visitor = new GrundVisitorMain();
             var grundContext = grundParser.program();
-            var visitor = new GrundVisitorMain();        
-
             visitor.Visit(grundContext);
+
         }
     }
     public class ThrowingErrorListener : BaseErrorListener {
