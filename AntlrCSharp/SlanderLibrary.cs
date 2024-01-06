@@ -37,7 +37,7 @@ namespace Grund
         {
             foreach (var arg in args)
             {
-                if (arg.value is List<object?> list)
+                if (arg.value is List<GrundDynamicTypeWrapper> list)
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
@@ -207,9 +207,9 @@ namespace Grund
             if (args[0].value != null && args[1].value != null)
             {
                 //Store the first as value 
-                var typeToStore = args[1].value;
+                var typeToStore = args[1];
                 //save the second as list 
-                List<object?> keyLookUp = args[0].value as List<object?>;
+                List<GrundDynamicTypeWrapper> keyLookUp = args[0].value as List<GrundDynamicTypeWrapper>;
                 keyLookUp.Add(typeToStore);
                 args[0].value = keyLookUp;
             }
@@ -221,7 +221,7 @@ namespace Grund
         }
         public static GrundDynamicTypeWrapper GF_LENGTH(GrundDynamicTypeWrapper[] args)
         {
-            if (args.Length == 1 && !(args[0].value is List<object?>))
+            if (args.Length == 1 && !(args[0].value is List<GrundDynamicTypeWrapper>))
             {
                 var lengthProp = args[0].value.GetType().GetProperty("Length");
                 if (lengthProp != null)
@@ -229,7 +229,7 @@ namespace Grund
                     return new GrundDynamicTypeWrapper(lengthProp.GetValue(args[0].value, null));
                 }
             }
-            else if (args.Length == 1 && args[0].value is List<object?> list)
+            else if (args.Length == 1 && args[0].value is List<GrundDynamicTypeWrapper> list)
             {
                 return new GrundDynamicTypeWrapper(list.Count);
             }
@@ -241,9 +241,9 @@ namespace Grund
         }
         public static GrundDynamicTypeWrapper GF_LIST_REMOVE(GrundDynamicTypeWrapper[] args)
         {
-            if (args.Length == 2 && args[0].value is List<object?> gList && args[1].value is object gValue)
+            if (args.Length == 2 && args[0].value is List<GrundDynamicTypeWrapper> gList && args[1].value is object)
             {
-                gList.Remove(gValue);
+                gList.Remove(args[1]);
                 args[0].value = gList;
             }
             else
@@ -257,7 +257,7 @@ namespace Grund
             if (args.Length == 2 && args[0].value is Object gObject && args[1].value is object gValue)
             {
                 //Yup this is clean 
-                if (gObject is List<object?> glist)
+                if (gObject is List<GrundDynamicTypeWrapper> glist)
                 {
                     return  new GrundDynamicTypeWrapper(glist.Contains(gValue));
                 }
@@ -495,20 +495,16 @@ namespace Grund
             {
                 return new GrundDynamicTypeWrapper (lfFloat + rInt);
             }
-            else if (left.value is string)
+            else if (left.value is string || right.value is string)
             {
-                return new GrundDynamicTypeWrapper ($"{left}{right}");
+                return new GrundDynamicTypeWrapper ($"{left.value}{right.value}");
             }
-            else if (right.value is string || right.value is string)
+            else if (left.value is List<GrundDynamicTypeWrapper> Llist && right.value is List<GrundDynamicTypeWrapper> Rlist)
             {
-                return new GrundDynamicTypeWrapper ($"{left}{right}");
-            }
-            else if (left.value is List<object?> Llist && right.value is List<object?> Rlist)
-            {
-                List<object?> result = Llist;
-                foreach (object? o in Rlist)
+                List<GrundDynamicTypeWrapper> result = Llist;
+                foreach (GrundDynamicTypeWrapper gdtw in Rlist)
                 {
-                    result.Add(o);
+                    result.Add(gdtw);
                 }
                 return new GrundDynamicTypeWrapper(result);
             }

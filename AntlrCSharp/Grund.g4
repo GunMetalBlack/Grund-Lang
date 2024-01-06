@@ -42,6 +42,7 @@ expression
     | expression compareOP expression #comparisonExpression
     | expression boolOP expression #booleanExpression
     | expression inlineOP #inlineIncrementExpression
+    | THROW #throwExpression
     | IDENTIFIER            #identifierExpression
     ;
 multOP: '*'|'/'|'%';
@@ -61,7 +62,7 @@ FLOAT:'-'?[0-9]+ '.' [0-9]+;
 STRING: ('"' ~'"'* '"')|('\'' ~'\''* '\'');
 BOOL: 'true' | 'false';
 NULL: 'NULL';
-
+THROW: 'THROW';
 
 block: ':' line* 'END' |'{' line* '}';
 

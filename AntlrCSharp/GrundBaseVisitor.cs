@@ -289,6 +289,17 @@ public partial class GrundBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>throwExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitThrowExpression([NotNull] GrundParser.ThrowExpressionContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>inlineIncrementExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// <para>

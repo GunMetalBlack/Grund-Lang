@@ -190,6 +190,13 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>throwExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitThrowExpression([NotNull] GrundParser.ThrowExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>inlineIncrementExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
