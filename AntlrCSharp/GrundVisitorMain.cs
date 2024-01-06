@@ -27,7 +27,7 @@ public struct GrundStackFrame
 
 public interface IGrundStruklike
 {
-    object? getMember(string name);
+    GrundDynamicTypeWrapper? getMember(string name);
     string getStrukName();
 }
 
@@ -38,12 +38,13 @@ public class GrundStrukInstance : IGrundStruklike
     public GrundStruk typeStruk;
     public Dictionary<string, GrundDynamicTypeWrapper> instanceMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
     
-    public object? getMember(string name)
+    public GrundDynamicTypeWrapper? getMember(string name)
     {
         if (instanceMembers.ContainsKey(name)) return instanceMembers[name];
         var staticMember = typeStruk.getMember(name);
         if (staticMember != null) return staticMember;
         if (GrundGlobals.allowImplicitDefintionOfStrukFields)
+        // if (true)
         {
             instanceMembers[name] = new GrundDynamicTypeWrapper(null);
             return instanceMembers[name];
@@ -70,7 +71,7 @@ public class GrundStruk : IGrundStruklike
         this.name = name;
     }
 
-    public GrundDynamicTypeWrapper instantiate(GrundVisitorMain gvm, GrundParser.FunctionCallContext context)
+    public GrundDynamicTypeWrapper instantiate(GrundVisitorMain gvm, GrundParser.FunctionCallExpressionContext context)
     {
         GrundStrukInstance instance = new GrundStrukInstance();
         instance.typeStruk = this;
@@ -82,7 +83,7 @@ public class GrundStruk : IGrundStruklike
         return instanceWrapped;
     }
 
-    public object? getMember(string name)
+    public GrundDynamicTypeWrapper? getMember(string name)
     {
         if (strukMembers.ContainsKey(name)) return strukMembers[name];
         else if (parent != null) return parent.getMember(name);
@@ -128,7 +129,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var FUNC_ID_GL_REMOVE = "GL_REMOVE";
         var FUNC_ID_GL_LIST_ADD = "GL_ADD";
 
-        //** Important Create Variables for FunctionCallContext and Built in Math Standards
+        //** Important Create Variables for FunctionCallExpressionContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("base"));
         Variables[ID_PI] = new GrundDynamicTypeWrapper(Math.PI);
         Variables[ID_E] = new GrundDynamicTypeWrapper(Math.E);
@@ -151,7 +152,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     }
 
 
-    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionExpressionContext functionLookup, GrundDynamicTypeWrapper? struklike = null)
+    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallExpressionContext context, GrundParser.FunctionDefinitionExpressionContext functionLookup, GrundDynamicTypeWrapper? struklike = null)
     {
 
         // Grab the function name and any expressions it has and turns into an array 
@@ -187,7 +188,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             return null;
         }
     }
-    public override object VisitFunctionCall([NotNull] GrundParser.FunctionCallContext context)
+    public override object VisitFunctionCallExpression([NotNull] GrundParser.FunctionCallExpressionContext context)
     {
         // Grab the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
@@ -215,7 +216,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
 
         // Handle global functions
-        if (Variables.ContainsKey(name))
+        else if (Variables.ContainsKey(name))
         {
             object? thingBeingInvoked = Variables[name].value;
             // Handle user-defined functions
@@ -465,15 +466,15 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         if (rightSide is GrundParser.IdentifierExpressionContext)
         {
             object? member = struklike.getMember(rightSide.GetText());
-            if (member == null) throw new Exception("GRUND: YO DAWG THAT MEMBER \"" + rightSide.GetText() + "\" DOESN'T EXIST IN \"" + struklike.getStrukName() + "\" STRUKLIKE, BUD!");
+            if (member == null) throw new Exception("GRUND: YO DAWG THAT MEMBER \"" + rightSide.GetText() + "\" DOESN'T EXIST IN \"" + struklike.getStrukName() + "\" " + (struklike is GrundStruk ? "STRUK" : "STRUKINSTANCE") +", BUD!");
             return member;
         }
         // If it's a function call, then lookup member, execute it, and return its result
         else if (rightSide is GrundParser.FunctionCallExpressionContext functionCallExpression)
         {
-            var functionCall = functionCallExpression.unexpr;
+            var functionCall = functionCallExpression;
             string functionName = functionCall.IDENTIFIER().GetText();
-            object? member = struklike.getMember(functionName);
+            object? member = struklike.getMember(functionName).value;
             if (!(member is GrundParser.FunctionDefinitionExpressionContext)) throw new Exception("GRUND: REEEEEEEEEEEE METHOD \"" + functionName + "\" DOES NOT EXIST FOR \"" + struklike.getStrukName() + "\" STRUKLIKE!");
             return ExecuteUserDefinedFunction(functionCall, (GrundParser.FunctionDefinitionExpressionContext)member, struklikeWrapped);
         }

@@ -15,24 +15,16 @@ whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock)
 WHILE: 'WHILE' | 'UNLESS';
 THIS: 'THIS:';
 STATIC: 'STATIC';
-//EXTENDS: IDENTIFIER;
 
 blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
 assignment: expression '='  expression (';')? ;
 declaration: ('VAR' | 'var') IDENTIFIER (';')?; 
 
-//memberAssignment: memberAccession '=' expression; 
-
-//memberAccession: IDENTIFIER '.' IDENTIFIER (';')? | IDENTIFIER '.' functionCall(';')?;
-
-functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
-
 FUNC: 'FUNK' | 'METH';
 parameter: IDENTIFIER;
 STRUCT:  '>';
 strucDefinition: STRUCT block;
-//| STRUCT EXTENDS  block
 
 expression
     : constant              #constantExpression
@@ -40,7 +32,7 @@ expression
     | expression '[' expression ']' #listAccessionExpression
     | declaration           #declarationsExpression
     | FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block #functionDefinitionExpression
-    | unexpr=functionCall          #functionCallExpression
+    | IDENTIFIER '(' (expression (',' expression)*)? ')' #functionCallExpression
     | strucDefinition       #strucDefinitionExpression
     | expression '.' expression #dotExpression
     | '(' expression ')'    #parenthesizedExpression
