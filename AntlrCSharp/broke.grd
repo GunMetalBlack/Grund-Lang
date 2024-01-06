@@ -1,16 +1,10 @@
-// var world  => 
-// {
-//     FUNK init(self)
-//     {
-//         self.x = 1 
-//     }
-// }
-
-// var jim = world()
-
-FUNK work()
+var world  => 
 {
-   var _return = "hello world"
+    FUNK init(self)
+    {
+       self.x = 1 
+    }
 }
-var sus = work()
-GF_WRITE_LN(sus)
+
+var jim = world()
+GF_WRITE_LN(jim.x)

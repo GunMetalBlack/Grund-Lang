@@ -3,7 +3,11 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime;
 using Grund;
 using static Grund.GrundTypeWrapper;
-using Microsoft.VisualBasic;
+
+public static class GrundGlobals
+{
+    public static bool allowImplicitDefintionOfStrukFields = false;
+}
 
 public struct GrundStackFrame
 {
@@ -29,13 +33,22 @@ public interface IGrundStruklike
 
 public class GrundStrukInstance : IGrundStruklike
 {
+  
+
     public GrundStruk typeStruk;
     public Dictionary<string, GrundDynamicTypeWrapper> instanceMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
     
     public object? getMember(string name)
     {
-        if (instanceMembers.ContainsKey(name))return instanceMembers[name];
-        else return typeStruk.getMember(name);
+        if (instanceMembers.ContainsKey(name)) return instanceMembers[name];
+        var staticMember = typeStruk.getMember(name);
+        if (staticMember != null) return staticMember;
+        if (GrundGlobals.allowImplicitDefintionOfStrukFields)
+        {
+            instanceMembers[name] = new GrundDynamicTypeWrapper(null);
+            return instanceMembers[name];
+        }
+        return null;
     }
 
     public string getStrukName()
@@ -63,7 +76,9 @@ public class GrundStruk : IGrundStruklike
         instance.typeStruk = this;
         GrundDynamicTypeWrapper instanceWrapped = new GrundDynamicTypeWrapper(instance);
         GrundParser.FunctionDefinitionContext constructor = (GrundParser.FunctionDefinitionContext)(strukMembers["init"].value);
+        GrundGlobals.allowImplicitDefintionOfStrukFields = true;
         gvm.ExecuteUserDefinedFunction(context, constructor, instanceWrapped);
+        GrundGlobals.allowImplicitDefintionOfStrukFields = false;
         return instanceWrapped;
     }
 
@@ -83,7 +98,6 @@ public class GrundStruk : IGrundStruklike
 
 public class GrundVisitorMain : GrundBaseVisitor<object?>
 {
-
     private Stack<GrundStackFrame> StackFrames { get; } = new();
     private Dictionary<string, GrundDynamicTypeWrapper> Variables { get; } = new();
     private Dictionary<string, Dictionary<string, GrundDynamicTypeWrapper>> StaticStructMembers { get; } = new();
@@ -137,7 +151,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     }
 
 
-    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, GrundDynamicTypeWrapper struklike = null)
+    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, GrundDynamicTypeWrapper? struklike = null)
     {
 
         // Grab the function name and any expressions it has and turns into an array 
@@ -175,7 +189,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     }
     public override object VisitFunctionCall([NotNull] GrundParser.FunctionCallContext context)
     {
-       //! var context = contextExpression.functionCall();
         // Grab the function name and any expressions it has and turns into an array 
         var name = context.IDENTIFIER().GetText();
         var args = context.expression().Select(Visit).OfType<GrundDynamicTypeWrapper>().ToArray();
@@ -359,7 +372,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         //! This is important as we create the deffinition of the struct and initialize it at the same time
         //! for example var x = STRUK z: some stuff   END, so the right side of the assignment evaluates to a struk instance 
-        return struk;
+        return new GrundDynamicTypeWrapper(struk);
         // throw new NotImplementedException();
     }
 
@@ -470,25 +483,26 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
         // Get the RHS - it's either an identifier (member that we need to look up and return) OR it's a function call
         // that we need to invoke/visit.
-        var rightSide = context.expression(1).children[0];
+        var rightSide = context.expression(1);
         // If it's an identifier, then lookup member and return it
         if (rightSide is GrundParser.IdentifierExpressionContext)
         {
             object? member = struklike.getMember(rightSide.GetText());
             if (member == null) throw new Exception("GRUND: YO DAWG THAT MEMBER \"" + rightSide.GetText() + "\" DOESN'T EXIST IN \"" + struklike.getStrukName() + "\" STRUKLIKE, BUD!");
+            return member;
         }
         // If it's a function call, then lookup member, execute it, and return its result
-        else if (rightSide is GrundParser.FunctionCallContext functionCall)
+        else if (rightSide is GrundParser.FunctionCallExpressionContext functionCallExpression)
         {
+            var functionCall = functionCallExpression.goldenBoy;
             string functionName = functionCall.IDENTIFIER().GetText();
             object? member = struklike.getMember(functionName);
             if (!(member is GrundParser.FunctionDefinitionExpressionContext)) throw new Exception("GRUND: REEEEEEEEEEEE METHOD \"" + functionName + "\" DOES NOT EXIST FOR \"" + struklike.getStrukName() + "\" STRUKLIKE!");
-            return ExecuteUserDefinedFunction((GrundParser.FunctionCallContext)rightSide, (GrundParser.FunctionDefinitionContext)member, struklikeWrapped);
+            return ExecuteUserDefinedFunction(functionCall, (GrundParser.FunctionDefinitionContext)member, struklikeWrapped);
         }
         else {
             throw new Exception("GRUND: YOU MESSED UP THERE BUDDY THE RIGHT HAND SIDE OF A DOT EXPRESSION HAS TO BE AN IDENTIFIER OR A FUNCTION CALL WHAT'D YA DO");
         }
-         return null;
     }
 
 

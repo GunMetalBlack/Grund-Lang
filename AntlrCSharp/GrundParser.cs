@@ -1266,7 +1266,7 @@ public partial class GrundParser : Parser {
 		}
 	}
 	public partial class FunctionCallExpressionContext : ExpressionContext {
-		public FunctionCallContext timmy;
+		public FunctionCallContext goldenBoy;
 		[System.Diagnostics.DebuggerNonUserCode] public FunctionCallContext functionCall() {
 			return GetRuleContext<FunctionCallContext>(0);
 		}
@@ -1368,7 +1368,7 @@ public partial class GrundParser : Parser {
 				Context = _localctx;
 				_prevctx = _localctx;
 				State = 191;
-				((FunctionCallExpressionContext)_localctx).timmy = functionCall();
+				((FunctionCallExpressionContext)_localctx).goldenBoy = functionCall();
 				}
 				break;
 			case 6:

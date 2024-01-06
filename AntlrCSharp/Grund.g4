@@ -46,7 +46,7 @@ expression
     | expression '[' expression ']' #listAccessionExpression
     | declaration           #declarationsExpression
     | functionDefinition    #functionDefinitionExpression
-    | timmy=functionCall          #functionCallExpression
+    | goldenBoy=functionCall          #functionCallExpression
     | strucDefinition       #strucDefinitionExpression
     | expression '.' expression #dotExpression
     | '(' expression ')'    #parenthesizedExpression
