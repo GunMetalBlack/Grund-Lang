@@ -75,7 +75,7 @@ public class GrundStruk : IGrundStruklike
         GrundStrukInstance instance = new GrundStrukInstance();
         instance.typeStruk = this;
         GrundDynamicTypeWrapper instanceWrapped = new GrundDynamicTypeWrapper(instance);
-        GrundParser.FunctionDefinitionContext constructor = (GrundParser.FunctionDefinitionContext)(strukMembers["init"].value);
+        GrundParser.FunctionDefinitionExpressionContext constructor = (GrundParser.FunctionDefinitionExpressionContext)(strukMembers["init"].value);
         GrundGlobals.allowImplicitDefintionOfStrukFields = true;
         gvm.ExecuteUserDefinedFunction(context, constructor, instanceWrapped);
         GrundGlobals.allowImplicitDefintionOfStrukFields = false;
@@ -151,7 +151,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     }
 
 
-    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionContext functionLookup, GrundDynamicTypeWrapper? struklike = null)
+    public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallContext context, GrundParser.FunctionDefinitionExpressionContext functionLookup, GrundDynamicTypeWrapper? struklike = null)
     {
 
         // Grab the function name and any expressions it has and turns into an array 
@@ -167,7 +167,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         if (functionLookup.parameter() != null && context.expression() != null)
         {
             //Exception for if the expression count and function args don't match.
-            if (functionLookup.parameter().Count() != args.Count()) { throw new Exception("GRUND SCREAMS, EXPECTED " + ((GrundParser.FunctionDefinitionContext)(Variables[name].value)).parameter().Count().ToString() + " PARAMETERS BUT HAD " + args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString()); }
+            if (functionLookup.parameter().Count() != args.Count()) { throw new Exception("GRUND SCREAMS, EXPECTED " + ((GrundParser.FunctionDefinitionExpressionContext)(Variables[name].value)).parameter().Count().ToString() + " PARAMETERS BUT HAD " + args.Count().ToString() + " VALUES STUPID! LINE: " + context.Start.Line.ToString()); }
             for (int i = 0; i < functionLookup.parameter().Count(); i++)
             {
                 GetVariablesInCurrentStackFrame()[(functionLookup.parameter(i).GetText())] = (GrundDynamicTypeWrapper)args[i];
@@ -198,7 +198,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             object? thingBeingInvoked = GetVariablesInCurrentStackFrame()[name].value;
             // Handle user-defined functions
             {
-                if (thingBeingInvoked is GrundParser.FunctionDefinitionContext functionLookup)
+                if (thingBeingInvoked is GrundParser.FunctionDefinitionExpressionContext functionLookup)
                 {
                     return ExecuteUserDefinedFunction(context, functionLookup);
                 }
@@ -220,7 +220,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             object? thingBeingInvoked = Variables[name].value;
             // Handle user-defined functions
             {
-                if (thingBeingInvoked is GrundParser.FunctionDefinitionContext functionLookup)
+                if (thingBeingInvoked is GrundParser.FunctionDefinitionExpressionContext functionLookup)
                 {
                     return ExecuteUserDefinedFunction(context, functionLookup);
                 }
@@ -325,8 +325,8 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             if (line.expression() is GrundParser.FunctionDefinitionExpressionContext functionDefinition)
             {
                 // Process function definitions
-                var methodName = functionDefinition.unexpr.IDENTIFIER().GetText();
-                GrundDynamicTypeWrapper methodValue = new GrundDynamicTypeWrapper(functionDefinition.unexpr);
+                var methodName = functionDefinition.IDENTIFIER().GetText();
+                GrundDynamicTypeWrapper methodValue = new GrundDynamicTypeWrapper(functionDefinition);
                 struk.strukMembers.Add(methodName, methodValue);
             }
             else if (line.blockScopeAssignment() != null)
@@ -475,7 +475,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
             string functionName = functionCall.IDENTIFIER().GetText();
             object? member = struklike.getMember(functionName);
             if (!(member is GrundParser.FunctionDefinitionExpressionContext)) throw new Exception("GRUND: REEEEEEEEEEEE METHOD \"" + functionName + "\" DOES NOT EXIST FOR \"" + struklike.getStrukName() + "\" STRUKLIKE!");
-            return ExecuteUserDefinedFunction(functionCall, (GrundParser.FunctionDefinitionContext)member, struklikeWrapped);
+            return ExecuteUserDefinedFunction(functionCall, (GrundParser.FunctionDefinitionExpressionContext)member, struklikeWrapped);
         }
         else {
             throw new Exception("GRUND: YOU MESSED UP THERE BUDDY THE RIGHT HAND SIDE OF A DOT EXPRESSION HAS TO BE AN IDENTIFIER OR A FUNCTION CALL WHAT'D YA DO");
@@ -606,11 +606,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
     public override object? VisitFunctionDefinitionExpression([NotNull] GrundParser.FunctionDefinitionExpressionContext context)
     {
-        return Visit(context.unexpr);
-    }
-
-    public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
-    {
         if (!Variables.ContainsKey(context.IDENTIFIER().GetText()))
         {
             Variables.Add(context.IDENTIFIER().GetText(), new GrundDynamicTypeWrapper(context));
@@ -621,6 +616,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         return null;
     }
+
     //* Function Logic calls Like If Statements and while loops
     public override object? VisitWhileBlock([NotNull] GrundParser.WhileBlockContext context)
     {

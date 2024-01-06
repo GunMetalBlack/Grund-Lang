@@ -33,14 +33,13 @@ parameter: IDENTIFIER;
 STRUCT:  '>';
 strucDefinition: STRUCT block;
 //| STRUCT EXTENDS  block
-functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
 
 expression
     : constant              #constantExpression
     | collections           #collectionsExpression
     | expression '[' expression ']' #listAccessionExpression
     | declaration           #declarationsExpression
-    | unexpr=functionDefinition    #functionDefinitionExpression
+    | FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block #functionDefinitionExpression
     | unexpr=functionCall          #functionCallExpression
     | strucDefinition       #strucDefinitionExpression
     | expression '.' expression #dotExpression

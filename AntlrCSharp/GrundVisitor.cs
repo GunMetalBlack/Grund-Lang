@@ -98,12 +98,6 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStrucDefinition([NotNull] GrundParser.StrucDefinitionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrundParser.functionDefinition"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>dotExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
