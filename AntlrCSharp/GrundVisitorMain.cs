@@ -392,7 +392,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     public override object? VisitDotExpression([NotNull] GrundParser.DotExpressionContext context)
     {
 
-        // a.b().c()
         // Visit LHS, make sure that it's a GrundStruk or a GrundStrukInstance
         var leftSide = context.expression(0);
         var struklikeWrapped = Visit(leftSide) as GrundDynamicTypeWrapper;
@@ -445,8 +444,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         throw new Exception(" GRUND OGGA No variable defined for " + varName + " LINE: " + context.Start.Line.ToString());
 
     }
-
-
 
     public override object VisitMultiplicativeExpression([NotNull] GrundParser.MultiplicativeExpressionContext context)
     {

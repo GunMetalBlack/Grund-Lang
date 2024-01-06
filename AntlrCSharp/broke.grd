@@ -104,10 +104,7 @@ FUNK input()
 {
    var playerInput = GF_KEY()
     // Error within the grund interp cant compaire with nulls or != needs to be fixed
-    IF playerInput == NULL:
-        // Do nothing if playerInput is NULL
-    END
-    ELSE:
+    IF playerInput != NULL:
         var actionBool = true
        // GF_WRITE_LN(playerInput)
         IF playerInput == "w" AND _player.y > 0

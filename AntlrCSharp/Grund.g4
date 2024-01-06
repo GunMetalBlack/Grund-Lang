@@ -9,7 +9,7 @@ ifBlock: IFBLOCK ('(')? expression (')')? block | IFBLOCK ('(')? expression (')'
 elseIfBlock: block | ifBlock;
 
 IFBLOCK: 'IF';
- 
+
 whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock);
 
 WHILE: 'WHILE' | 'UNLESS';

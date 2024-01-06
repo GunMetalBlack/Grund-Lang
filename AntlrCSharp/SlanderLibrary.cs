@@ -445,35 +445,7 @@ namespace Grund
         }
         public static GrundDynamicTypeWrapper IsNotEqual(GrundDynamicTypeWrapper left, GrundDynamicTypeWrapper right)
         {
-            if (left.value == null && right.value != null)
-            {
-                return new GrundDynamicTypeWrapper(true);
-            }
-            if (left.value != null && right.value == null)
-            {
-                return new GrundDynamicTypeWrapper(true);
-            }
-            if (left.value  is int l && right.value  is int r)
-            {
-                return new GrundDynamicTypeWrapper(l != r);
-            }
-            if (left.value  is float lf && right.value  is float rf)
-            {
-                return new GrundDynamicTypeWrapper(lf != rf);
-            }
-            if (left.value  is int lInt && right.value  is float rFloat)
-            {
-                return new GrundDynamicTypeWrapper(lInt != rFloat);
-            }
-            if (left.value  is float lfFloat && right.value  is int rInt)
-            {
-                return new GrundDynamicTypeWrapper(lfFloat != rInt);
-            }
-            if (left.value  is string lfString && right.value  is string rString)
-            {
-                return new GrundDynamicTypeWrapper(lfString != rString);
-            }
-            throw new Exception("GRUND STUPID CANNOT compare." + left.value.GetType() + right.value.GetType());
+            return new GrundDynamicTypeWrapper(!(bool)(IsEqual(left, right).value));
         }
         //** Adding and Subtract
         //* Adding for variables 
