@@ -6,7 +6,7 @@
             "name": "Debug ANTLR4 grammar",
             "type": "antlr-debug",
             "request": "launch",
-            "input": "/home/noah/Desktop/Codeing/Grund-Lang/AntlrCSharp/test.grd",
+            "input": "/home/noah/Desktop/Codeing/Grund-Lang/AntlrCSharp/broke.grd",
             "grammar": "AntlrCSharp/Grund.g4",
             "startRule": "program",
             "printParseTree": true,

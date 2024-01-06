@@ -44,12 +44,6 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitLine([NotNull] GrundParser.LineContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrundParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStatement([NotNull] GrundParser.StatementContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.ifBlock"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -91,12 +85,6 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFunctionCall([NotNull] GrundParser.FunctionCallContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrundParser.inLineIncrement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitInLineIncrement([NotNull] GrundParser.InLineIncrementContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.parameter"/>.
 	/// </summary>
@@ -214,6 +202,13 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>inlineIncrementExpression</c>
+	/// labeled alternative in <see cref="GrundParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInlineIncrementExpression([NotNull] GrundParser.InlineIncrementExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>declarationsExpression</c>
 	/// labeled alternative in <see cref="GrundParser.expression"/>.
 	/// </summary>
@@ -239,11 +234,11 @@ public interface IGrundVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCompareOP([NotNull] GrundParser.CompareOPContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="GrundParser.inLineOP"/>.
+	/// Visit a parse tree produced by <see cref="GrundParser.inlineOP"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitInLineOP([NotNull] GrundParser.InLineOPContext context);
+	Result VisitInlineOP([NotNull] GrundParser.InlineOPContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="GrundParser.boolOP"/>.
 	/// </summary>

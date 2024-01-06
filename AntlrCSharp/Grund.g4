@@ -2,9 +2,7 @@ grammar Grund;
 
 program: line* EOF;
 
-line:  statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | inLineIncrement;  
-
-statement: ( assignment | functionCall | blockScopeAssignment)(';')?;
+line: ifBlock | whileBlock | assignment | blockScopeAssignment | expression (';')?;  
 
 ifBlock: IFBLOCK ('(')? expression (')')? block | IFBLOCK ('(')? expression (')')? block ('ELSE' elseIfBlock);
 
@@ -30,8 +28,6 @@ declaration: ('VAR' | 'var') IDENTIFIER (';')?;
 
 functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
 
-inLineIncrement: expression inLineOP (';')?;
-
 FUNC: 'FUNK' | 'METH';
 parameter: IDENTIFIER;
 STRUCT:  '>';
@@ -39,14 +35,13 @@ strucDefinition: STRUCT block;
 //| STRUCT EXTENDS  block
 functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
 
-
 expression
     : constant              #constantExpression
     | collections           #collectionsExpression
     | expression '[' expression ']' #listAccessionExpression
     | declaration           #declarationsExpression
-    | functionDefinition    #functionDefinitionExpression
-    | goldenBoy=functionCall          #functionCallExpression
+    | unexpr=functionDefinition    #functionDefinitionExpression
+    | unexpr=functionCall          #functionCallExpression
     | strucDefinition       #strucDefinitionExpression
     | expression '.' expression #dotExpression
     | '(' expression ')'    #parenthesizedExpression
@@ -55,12 +50,13 @@ expression
     | expression addOP expression  #additiveExpression
     | expression compareOP expression #comparisonExpression
     | expression boolOP expression #booleanExpression
+    | expression inlineOP #inlineIncrementExpression
     | IDENTIFIER            #identifierExpression
     ;
 multOP: '*'|'/'|'%';
 addOP:'+'|'-';
 compareOP:'=='|'!='|'>'|'<'|'>='|'<=';
-inLineOP: '++'| '--';
+inlineOP: '++'| '--';
 boolOP: BOOL_OPERATOR;
 
 BOOL_OPERATOR:'AND'|'OR';

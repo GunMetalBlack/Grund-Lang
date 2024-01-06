@@ -1,9 +1,25 @@
 var world  => 
 {
-    FUNK init(self)
+    FUNK init(self, entity)
     {
-        self.x = 1 
+       self.entity = entity
     }
 }
 
-var jim = world()
+var entity =>
+{
+    FUNK init(self, x, y, z, name)
+    {
+        self.x = x;
+        self.y = y;
+        self.z = z;
+        self.name = name;
+    }
+    FUNK printInfo(self)
+    {
+        GF_WRITE_LN("Entity '", name, "' is at (", x, ", ", y, ", ", z, ")")
+    }
+}
+
+var myWorld = world(entity(4, 20, 69, "little timmy"))
+myWorld.entity.printInfo()

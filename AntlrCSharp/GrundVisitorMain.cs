@@ -316,45 +316,22 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         {
             return null;
         }
-        //Struct name
+        
         var structName = context.strucDefinition().Parent.Parent.GetChild(0).GetChild(0).GetChild(1).GetText();
-        //Create A struct class that encapsulates all the stuff
         var struk = new GrundStruk(null, structName);
-        //TODO: At some point we should have EXTENSIONS for structs again that is not today
-        // if (context.EXTENDS() != null && context.IDENTIFIER(1).GetText() != null)
-        // {
-        //     var parentStructName = context.IDENTIFIER(1).GetText();
-        //     Dictionary<string, object?> parentStruct = (Dictionary<string, object?>)Variables[parentStructName];
-        //     foreach (KeyValuePair<string, object> kvp in parentStruct)
-        //     {
-        //         if (structMembers.ContainsKey(kvp.Key))
-        //         {
-        //               strukInstance.structMembers[kvp.Key] = kvp.Value;
-        //         }
-        //         else
-        //         {
-        //              strukInstance. structMembers.Add(kvp.Key, kvp.Value);
-        //         }
-        //     }
-        //     staticMembers.Add("STRUK_PARENT_POINTER_PLEASE_DON'T_USE", parentStructName);
-        // }
 
-        //Overrides Parent Static Struct pointers Its pointer is THE PARENT_POINTER 
-        //GF_STRUCT_POINTER is a pointer name  
-        //TODO: do something about this pointer later
-        //strukInstance.structMembers["GF_STRUK_POINTER_PLEASE_DON'T_USE"].value = structName;
         foreach (var line in lines)
         {
-            if (line.functionDefinition() != null)
+            if (line.expression() is GrundParser.FunctionDefinitionExpressionContext functionDefinition)
             {
                 // Process function definitions
-                var methodName = line.functionDefinition().IDENTIFIER().GetText();
-                GrundDynamicTypeWrapper methodValue = new GrundDynamicTypeWrapper(line.functionDefinition());
+                var methodName = functionDefinition.unexpr.IDENTIFIER().GetText();
+                GrundDynamicTypeWrapper methodValue = new GrundDynamicTypeWrapper(functionDefinition.unexpr);
                 struk.strukMembers.Add(methodName, methodValue);
             }
-            else if (line.statement().blockScopeAssignment() != null)
+            else if (line.blockScopeAssignment() != null)
             {
-                var assignmentCount = line.statement().blockScopeAssignment().assignment();
+                var assignmentCount = line.blockScopeAssignment().assignment();
                 foreach (var assignment in assignmentCount)
                 {
                     var staticFieldName = assignment.expression(0).GetText();
@@ -494,7 +471,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         // If it's a function call, then lookup member, execute it, and return its result
         else if (rightSide is GrundParser.FunctionCallExpressionContext functionCallExpression)
         {
-            var functionCall = functionCallExpression.goldenBoy;
+            var functionCall = functionCallExpression.unexpr;
             string functionName = functionCall.IDENTIFIER().GetText();
             object? member = struklike.getMember(functionName);
             if (!(member is GrundParser.FunctionDefinitionExpressionContext)) throw new Exception("GRUND: REEEEEEEEEEEE METHOD \"" + functionName + "\" DOES NOT EXIST FOR \"" + struklike.getStrukName() + "\" STRUKLIKE!");
@@ -573,9 +550,9 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
     }
 
-    public override object? VisitInLineIncrement(GrundParser.InLineIncrementContext context)
+    public override object? VisitInlineIncrementExpression(GrundParser.InlineIncrementExpressionContext context)
     {
-        string op = context.inLineOP().GetText();
+        string op = context.inlineOP().GetText();
         GrundDynamicTypeWrapper toIncrement = (GrundDynamicTypeWrapper)new GrundDynamicTypeWrapper(Visit(context.expression())).value;
         if (op == "++")
         {
@@ -626,7 +603,12 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
     }
     //* Creating FUNCTION Definitions
-    
+
+    public override object? VisitFunctionDefinitionExpression([NotNull] GrundParser.FunctionDefinitionExpressionContext context)
+    {
+        return Visit(context.unexpr);
+    }
+
     public override object? VisitFunctionDefinition([NotNull] GrundParser.FunctionDefinitionContext context)
     {
         if (!Variables.ContainsKey(context.IDENTIFIER().GetText()))

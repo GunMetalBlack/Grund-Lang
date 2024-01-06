@@ -2,7 +2,7 @@ var world  =>
 {
     FUNK init(self)
     {
-       self.x = 1 
+       self.x = "hello world"
     }
 }
 
