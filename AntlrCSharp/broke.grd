@@ -10,10 +10,18 @@ var entity =>
 {
     FUNK init(self, x, y, z, name)
     {
+        self.setCoordinates(x, y, z, false)
+        self.name = name;
+    }
+    FUNK setCoordinates(self, x, y, z, crash)
+    {
+        IF crash
+        {
+            self.variable_that_shouldnt_exist = true
+        }
         self.x = x;
         self.y = y;
         self.z = z;
-        self.name = name;
     }
     FUNK printInfo(self)
     {
@@ -21,5 +29,14 @@ var entity =>
     }
 }
 
+var cow =>
+{
+
+}
+
 var myWorld = world(entity(4, 20, 69, "little timmy"))
+myWorld.myass.printInfo()
+myWorld.myass.setCoordinates(1, 2, 3, false)
+myWorld.myass.printInfo()
+myWorld.myass.setCoordinates(1, 2, 3, true)
 myWorld.myass.printInfo()

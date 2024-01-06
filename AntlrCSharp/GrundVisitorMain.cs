@@ -9,7 +9,7 @@ public class GrundStackFrame
     public string name;
     // This dictionary contains all the global variables
     public Dictionary<string, GrundDynamicTypeWrapper> variables { get; }
-    public bool allowImplicitDefintionOfStrukFields;
+    private bool allowImplicitDefintionOfStrukFields;
 
     public bool inherit = false;
     // This stack frame dictates  the inheritance and scope for the language
@@ -22,6 +22,10 @@ public class GrundStackFrame
 
     public void setAllowImplicitDefintionOfStrukFields(bool allowImplicitDefintionOfStrukFields) {
         this.allowImplicitDefintionOfStrukFields = allowImplicitDefintionOfStrukFields;
+    }
+
+    public bool getAllowImplicitDefintionOfStrukFields() {
+        return allowImplicitDefintionOfStrukFields;
     }
 
 }
@@ -44,7 +48,7 @@ public class GrundStrukInstance : IGrundStruklike
         if (instanceMembers.ContainsKey(name)) return instanceMembers[name];
         var staticMember = typeStruk.getMember(context, name);
         if (staticMember != null) return staticMember;
-        if (context.StackFrames.First().allowImplicitDefintionOfStrukFields)
+        if (context.GetAllowImplicitDefintionOfStrukFieldsInCurrentStackFrame())
         {
             instanceMembers[name] = new GrundDynamicTypeWrapper(null);
             return instanceMembers[name];
@@ -283,6 +287,15 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
     public Dictionary<string, GrundDynamicTypeWrapper> GetVariablesInCurrentStackFrame()
     {
         return StackFrames.First().variables;
+    }
+
+    public bool GetAllowImplicitDefintionOfStrukFieldsInCurrentStackFrame()
+    {
+        foreach(GrundStackFrame frame in StackFrames)
+        {
+            if(frame.getAllowImplicitDefintionOfStrukFields()) return true;
+        }
+        return false;
     }
 
     public override object VisitListAccessionExpression([NotNull] GrundParser.ListAccessionExpressionContext context)
