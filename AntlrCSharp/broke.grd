@@ -21,6 +21,5 @@ var entity =>
     }
 }
 
-var myEntity = entity(4, 20, 69, "little timmy")
-var myWorld = world(myEntity)
+var myWorld = world(entity(4, 20, 69, "little timmy"))
 myWorld.myass.printInfo()
