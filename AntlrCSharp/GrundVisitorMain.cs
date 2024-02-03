@@ -80,9 +80,17 @@ public class GrundStruk : IGrundStruklike
         GrundStrukInstance instance = new GrundStrukInstance();
         instance.typeStruk = this;
         GrundDynamicTypeWrapper instanceWrapped = new GrundDynamicTypeWrapper(instance);
-        GrundParser.FunctionDefinitionExpressionContext constructor = (GrundParser.FunctionDefinitionExpressionContext)(strukMembers["init"].value);
-        gvm.ExecuteUserDefinedFunction(context, constructor, instanceWrapped, true);
+        invokeConstructors(gvm, context, instanceWrapped, this);
         return instanceWrapped;
+    }
+
+    public void invokeConstructors(GrundVisitorMain gvm, GrundParser.FunctionCallExpressionContext context, GrundDynamicTypeWrapper instanceWrapped, GrundStruk struk) {
+        if(struk.parent is GrundStruk parentStruk)
+        {
+            invokeConstructors(gvm, context, instanceWrapped, parentStruk);
+        }
+        GrundParser.FunctionDefinitionExpressionContext constructor = (GrundParser.FunctionDefinitionExpressionContext)(struk.strukMembers["init"].value);
+        gvm.ExecuteUserDefinedFunction(context, constructor, instanceWrapped, true);
     }
 
     public GrundDynamicTypeWrapper? getMember(GrundVisitorMain context, string name)
@@ -349,7 +357,19 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         
         var structName = context.strucDefinition().Parent.Parent.GetChild(0).GetChild(0).GetChild(1).GetText();
         var struk = new GrundStruk(null, structName);
-
+        string parent = null;
+         if(context.strucDefinition().IDENTIFIER()?.GetText() != null)
+         {
+            parent = context.strucDefinition().IDENTIFIER().GetText();
+            if(FindVariableInCurrentState(parent).value is GrundStruk parentStruk)
+            {
+                struk.parent = parentStruk;
+            }
+            else
+            {
+                throw new Exception("GRUND: SCREAMS YOU FAT BALD BASTARD " + parent + " IS NOT A STRUK OR DOES NOT EXIST! LINE: " + context.Start.Line.ToString());
+            }
+         }
         foreach (var line in lines)
         {
             if (line.expression() is GrundParser.FunctionDefinitionExpressionContext functionDefinition)
@@ -601,6 +621,12 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
         throw new NotImplementedException();
     }
+
+    public override object VisitParenthesizedExpression([NotNull] GrundParser.ParenthesizedExpressionContext context)
+    {
+       return Visit(context.expression());
+    }
+
     public override object? VisitComparisonExpression([NotNull] GrundParser.ComparisonExpressionContext context)
     {
         GrundDynamicTypeWrapper left = (GrundDynamicTypeWrapper)new GrundDynamicTypeWrapper(Visit(context.expression(0))).value;

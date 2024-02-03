@@ -1,8 +1,158 @@
-var world  => 
+//Technically should be a generic object, but Inheritance is fucked so oh well
+var playerStruct => :
+    METH init(self,x,y,char):
+        self.x = x
+        self.y = y
+        self.char = char
+    END
+END
+var _player = playerStruct(2,2,"p")
+
+// All render Code is Bad Code
+var _updateRenderBool = false
+FUNK initMap(_mapLength,_mapWidth,map)
 {
-    FUNK init(self)
-    {
-        self.x = 1
+   var  i = 0
+    WHILE i < _mapLength:
+        var j=0
+        GL_ADD(map,".")
+        WHILE j < _mapWidth:
+            IF i == 0
+            {
+                map[i] = map[i] + "©"
+            }
+            ELSE
+            {
+               var  randomChar = GF_INDEX_CHAR("_.", GF_RANDOM(0, GF_LENGTH("_+-") - 1))
+                map[i] = map[i] + randomChar
+            }
+            j++
+        END
+        i++
+    END
+    _updateRenderBool = true
+   var _return = map
+}
+
+FUNK drawMap()
+{
+    var i = 0
+    WHILE i < _mapLength:
+        GF_WRITE_LN(_map[i])
+        i++
+    END
+}
+
+FUNK renderObject() {
+    var tempMap = ["", "", "", "", "", "", "", "", "", ""]
+    
+    // Initialize tempMap with '.' characters
+    tempMap = initMap(_mapLength, _mapWidth, tempMap)
+    
+    var o = 0
+    WHILE o < GF_LENGTH(_objectsToRender) {
+        var object = _objectsToRender[o]
+        var newY = object.y
+        var newX = object.x
+        var tempRow = ""
+        var k = 0
+        WHILE k < _mapWidth {
+            IF k == newX {
+                tempRow = tempRow + object.char
+            } ELSE {
+                tempRow = tempRow + GF_INDEX_CHAR(tempMap[newY], k)
+            }
+            k++
+        }
+        tempMap[newY] = tempRow
+        o++
+    }
+    
+    // Now that you've updated tempMap, you can assign it back to _map.
+    _map = tempMap 
+}
+
+    
+FUNK drawText(x, y, text) {
+    // Create a string with spaces based on the x value
+    var spaces = ""
+    var i = 0
+    WHILE i < x {
+        spaces = spaces + " "
+        i++
+    }
+    i = 0
+    WHILE i < GF_LENGTH(text) {
+        _map[y] = _map[y] + spaces + GF_INDEX_CHAR(text, i)
+        i++
     }
 }
-var jim =  world()
+var _map = []
+var _mapLength = 10
+var _mapWidth = 20
+var _objectsToRender = [_player]
+var _updateRenderBool = true  // Initialize to true to render the initial map
+
+FUNK renderUI()
+{
+    // Draw the UI
+    drawText(3, 0, "WASD to move")
+}
+
+
+FUNK input()
+{
+   var playerInput = GF_KEY()
+    // Error within the grund interp cant compaire with nulls or != needs to be fixed
+    IF playerInput != NULL:
+        var actionBool = true
+       // GF_WRITE_LN(playerInput)
+        IF playerInput == "w" AND _player.y > 0
+        {
+            _player.y = _player.y - 1
+        }
+        ELSE IF playerInput == "s" AND _player.y < 9
+        {
+            _player.y = _player.y + 1
+        }
+        ELSE IF playerInput == "d" AND _player.x < 19
+        {
+            _player.x = _player.x + 1
+        }
+        ELSE IF playerInput == "a" AND _player.x > 0
+        {
+            _player.x = _player.x - 1
+        }
+        ELSE
+        {
+            actionBool = false
+        }
+        IF actionBool == true
+        {
+            _updateRenderBool = true  // Set to true to trigger rendering
+        }
+    END
+}
+
+FUNK update()
+{
+    WHILE true:  // Use a controlled game loop
+        IF _updateRenderBool == true:
+            GF_CLS()
+            renderObject()
+            renderUI()
+            drawMap()
+            _updateRenderBool = false
+        END
+        input()
+    END
+}
+
+FUNK gameInit()
+{
+    _map = initMap(_mapLength, _mapWidth, _map)
+    renderObject()  // Add player to the initial rendering
+    update()
+}
+
+gameInit()

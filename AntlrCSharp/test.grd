@@ -1,25 +1,17 @@
-var world  => 
+var Object =>
 {
-    FUNK init(self, entity)
+    METH init(self)
     {
-       self.entity = entity
+        self.asd = 2;
     }
 }
 
-var entity =>
+var foo => Object
 {
-    FUNK init(self, x, y, z, name)
+    METH init(self)
     {
-        self.x = x;
-        self.y = y;
-        self.z = z;
-        self.name = name;
-    }
-    FUNK printInfo(self)
-    {
-        GF_WRITE_LN("Entity '", name, "' is at (", x, ", ", y, ", ", z, ")")
+        GF_WRITE_LN("SUS:", self.asd)
     }
 }
 
-var myWorld = world(entity(4, 20, 69, "little timmy"))
-myWorld.entity.printInfo()
+foo()

@@ -24,7 +24,7 @@ declaration: ('VAR' | 'var') IDENTIFIER (';')?;
 FUNC: 'FUNK' | 'METH';
 parameter: IDENTIFIER;
 STRUCT:  '>';
-strucDefinition: STRUCT block;
+strucDefinition: STRUCT (IDENTIFIER)?  block;
 
 expression
     : constant              #constantExpression

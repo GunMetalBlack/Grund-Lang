@@ -221,13 +221,9 @@ namespace Grund
         }
         public static GrundDynamicTypeWrapper GF_LENGTH(GrundDynamicTypeWrapper[] args)
         {
-            if (args.Length == 1 && !(args[0].value is List<GrundDynamicTypeWrapper>))
+            if (args.Length == 1 && (args[0].value is string str))
             {
-                var lengthProp = args[0].value.GetType().GetProperty("Length");
-                if (lengthProp != null)
-                {
-                    return new GrundDynamicTypeWrapper(lengthProp.GetValue(args[0].value, null));
-                }
+                return new GrundDynamicTypeWrapper(str.Length);
             }
             else if (args.Length == 1 && args[0].value is List<GrundDynamicTypeWrapper> list)
             {
