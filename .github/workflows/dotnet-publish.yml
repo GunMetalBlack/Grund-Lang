@@ -1,0 +1,25 @@
+name: Dotnet Publish for Linux-x64
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8 # Change this to the desired .NET version
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Publish for Linux-x64
+      run: dotnet publish -r linux-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
