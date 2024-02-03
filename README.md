@@ -17,6 +17,12 @@ You can chain files together to combine mutiple scripts by enter the following c
 You can add the Grund.exe to your system path so you can acess it anywhere. The command would look like -
 ``` grund file.grd ```
 
+## Using the Source code:
+- You're going to need .net8
+- Also the antlr runtime and Extension in vscode!
+- The download command for the runtime is (dotnet add package Antlr4.Runtime.Standard --version 4.13.1)!
+- Your'e going to need to configure antlr settings for the project https://www.youtube.com/watch?v=RcAWYOW7T-Q
+- Finally cd in to the source of the project by (cd AntlrCSharp) as thats the root of the project!
 
 
   
