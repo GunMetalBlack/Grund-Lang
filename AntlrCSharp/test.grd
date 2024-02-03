@@ -1,6 +1,6 @@
 var Object =>
 {
-    FUNK init(self)
+    METH init(self)
     {
         self.asd = 2;
     }
@@ -8,7 +8,7 @@ var Object =>
 
 var foo => Object
 {
-    FUNK init(self)
+    METH init(self)
     {
         GF_WRITE_LN("SUS:", self.asd)
     }

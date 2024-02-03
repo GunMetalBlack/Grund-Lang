@@ -2,63 +2,53 @@ grammar Grund;
 
 program: line* EOF;
 
-line: statement | ifBlock | whileBlock | functionDefinition | functionCall | assignment | listAccession | inLineIncrement | strucDefinition | memberAccession ;  
-
-statement: (assignment | functionCall | blockScopeAssignment)(';')?;
+line: ifBlock | whileBlock | assignment | blockScopeAssignment | expression (';')?;  
 
 ifBlock: IFBLOCK ('(')? expression (')')? block | IFBLOCK ('(')? expression (')')? block ('ELSE' elseIfBlock);
 
 elseIfBlock: block | ifBlock;
 
 IFBLOCK: 'IF';
- 
+
 whileBlock: WHILE expression block | WHILE expression block ('ELSE' elseIfBlock);
 
 WHILE: 'WHILE' | 'UNLESS';
 THIS: 'THIS:';
 STATIC: 'STATIC';
-CLASSPOINTER: '=>';
-EXTENDS: 'EXTENDS';
 
 blockScopeAssignment: STATIC  ':' assignment* 'END' | STATIC  '{' assignment* '}';
 
-assignment: IDENTIFIER '='  expression (';')? | listAccession '=' expression (';')? | THIS IDENTIFIER '='  expression (';')? | IDENTIFIER CLASSPOINTER  expression'<>'(';')? | memberAssignment(';')?;
-
-memberAssignment: memberAccession '=' expression;
-
-memberAccession: IDENTIFIER '.' IDENTIFIER (';')? | IDENTIFIER '.' functionCall(';')?;
-
-functionCall: IDENTIFIER '(' (expression (',' expression)*)? ')';
-
-inLineIncrement: IDENTIFIER inLineOP (';')? | IDENTIFIER inLineOP (';')?;
+assignment: expression '='  expression (';')? ;
+declaration: ('VAR' | 'var') IDENTIFIER (';')?; 
 
 FUNC: 'FUNK' | 'METH';
 parameter: IDENTIFIER;
-STRUCT:  'STRUK';
-strucDefinition: STRUCT IDENTIFIER block | STRUCT IDENTIFIER EXTENDS IDENTIFIER block;
-functionDefinition: FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block;
-
-listAccession: IDENTIFIER '[' expression ']';
+STRUCT:  '>';
+strucDefinition: STRUCT (IDENTIFIER)?  block;
 
 expression
     : constant              #constantExpression
     | collections           #collectionsExpression
-    | listAccession         #listAccessionExpression
-    | IDENTIFIER            #identifierExpression
-    | functionDefinition    #functionDefinitionExpression
-    | functionCall          #functionCallExpression
-    | memberAccession       #memberAccessionExpression
+    | expression '[' expression ']' #listAccessionExpression
+    | declaration           #declarationsExpression
+    | FUNC IDENTIFIER '(' (parameter (',' parameter)*)? ')' block #functionDefinitionExpression
+    | IDENTIFIER '(' (expression (',' expression)*)? ')' #functionCallExpression
+    | strucDefinition       #strucDefinitionExpression
+    | expression '.' expression #dotExpression
     | '(' expression ')'    #parenthesizedExpression
     | '!' expression        #notExpression
     | expression multOP expression #multiplicativeExpression
     | expression addOP expression  #additiveExpression
     | expression compareOP expression #comparisonExpression
     | expression boolOP expression #booleanExpression
+    | expression inlineOP #inlineIncrementExpression
+    | THROW #throwExpression
+    | IDENTIFIER            #identifierExpression
     ;
 multOP: '*'|'/'|'%';
-addOP:'+'|'-' |'++'|'--';
+addOP:'+'|'-';
 compareOP:'=='|'!='|'>'|'<'|'>='|'<=';
-inLineOP: '++'| '--';
+inlineOP: '++'| '--';
 boolOP: BOOL_OPERATOR;
 
 BOOL_OPERATOR:'AND'|'OR';
@@ -72,7 +62,7 @@ FLOAT:'-'?[0-9]+ '.' [0-9]+;
 STRING: ('"' ~'"'* '"')|('\'' ~'\''* '\'');
 BOOL: 'true' | 'false';
 NULL: 'NULL';
-
+THROW: 'THROW';
 
 block: ':' line* 'END' |'{' line* '}';
 
