@@ -25,11 +25,11 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
-            release_suffix: ubuntu
+            release_suffix: linux-x64
           - os: macos-latest
             release_suffix: mac
           - os: windows-latest
-            release_suffix: windows
+            release_suffix: win-x64
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
@@ -55,11 +55,10 @@ jobs:
       - name: Run Windows Build
         if: matrix.os == 'windows-latest'
         run: |
-          echo "Windows Latest" > release_windows
           dotnet publish -r win-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release 
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
-          files: release_${{ matrix.release_suffix }}
+          files: ./AntlrCSharp/bin/Release/net8.0/${{ needs.build_release.outputs.release_suffix }}/publish/grund
