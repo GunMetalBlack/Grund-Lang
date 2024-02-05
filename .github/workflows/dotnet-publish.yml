@@ -12,7 +12,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ github.ref_name }}
+          name: Grund ${{ github.ref_name }}
           draft: false
           prerelease: false
           generate_release_notes: false
