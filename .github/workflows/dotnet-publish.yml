@@ -1,4 +1,5 @@
-name: Dotnet Publish for Linux-x64
+
+name: Publish Release
 
 on:
   push:
@@ -6,8 +7,12 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build-linux:
+  build-and-publish:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: ['linux-x64', 'win-x64']
 
     steps:
     - name: Checkout code
@@ -21,8 +26,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Publish for Linux-x64
-      run: dotnet publish -r linux-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
+    - name: Publish for ${{ matrix.os }}
+      run: dotnet publish -r ${{ matrix.os }} -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
 
     - name: Set up Git
       run: git config --global user.email "actions@github.com" && git config --global user.name "GitHub Actions"
@@ -30,43 +35,9 @@ jobs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        files: ./AntlrCSharp/bin/Release/net8.0/linux-x64/publish/grund
+        files: ./AntlrCSharp/bin/Release/net8.0/${{ matrix.os }}/publish/grund
         token: ${{ secrets.GITHUB_TOKEN }}
-        name: Release ${{ github.sha }}
+        name: Grund Release ${{ github.sha }} - $GITHUB_REF_NAME
         body: |
-          Release notes for version ${{ github.sha }}.
+          Release notes for version ${{ github.sha }} - ${{ matrix.os }}.
           Auto Generated Stuff for Git Actions!
-  build-windows:
-    runs-on: windows-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 8.0.101  # Change this to the desired .NET version
-
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Publish for Windows-x64
-      run: dotnet publish -r win-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
-
-    - name: Set up Git
-      run: git config --global user.email "actions@github.com" && git config --global user.name "GitHub Actions"
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: ./AntlrCSharp/bin/Release/net8.0/win-x64/publish/grund
-        token: ${{ secrets.GITHUB_TOKEN }}
-        name: Release ${{ github.sha }}
-        body: |
-          Release notes for version ${{ github.sha }}.
-          Auto Generated Stuff for Git Actions!
-
-
-
-
