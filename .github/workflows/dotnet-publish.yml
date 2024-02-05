@@ -25,11 +25,14 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
-            release_suffix:  linux-x64 
+            release_suffix: linux-x64
+            output_file_name: grund
           - os: macos-latest
             release_suffix: osx-x64
+            output_file_name: grund-osx
           - os: windows-latest
             release_suffix: win-x64
+            output_file_name: grund.exe
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
@@ -62,5 +65,5 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: Grund ${{ needs.create_release.outputs.tag-name }}
-          files: ./AntlrCSharp/bin/Release/net8.0/${{ matrix.release_suffix }}/publish/grund
+          tag_name: ${{ needs.create_release.outputs.tag-name }}
+          files: ./AntlrCSharp/bin/Release/net8.0/${{ matrix.release_suffix }}/publish/${{ matrix.output_file_name }}
