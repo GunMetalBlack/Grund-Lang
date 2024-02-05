@@ -44,21 +44,17 @@ jobs:
       
       - name: Restore dependencies
         run: dotnet restore
-      
-      - name: Run Linux Build
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          dotnet publish -r ubuntu -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
 
-      - name: Run Mac Build
-        if: matrix.os == 'macos-latest'
-        run: echo "Mac Latest" > release_mac
-
-      - name: Run Windows Build
-        if: matrix.os == 'windows-latest'
+      - name: Run Build
         run: |
-          echo "Windows Latest" > release_windows
-          dotnet publish -r win -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
+          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            dotnet publish -r ubuntu -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
+          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+            echo "Mac Latest" > release_mac
+          elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+            echo "Windows Latest" > release_windows
+            dotnet publish -r win -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
+          fi
 
   release:
     needs: build_release
