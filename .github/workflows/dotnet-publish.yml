@@ -1,5 +1,3 @@
-name: Your Workflow Name
-
 on:
   push:
     tags:
@@ -44,24 +42,24 @@ jobs:
       
       - name: Restore dependencies
         run: dotnet restore
-
-      - name: Run Build
+      
+      - name: Run Linux Build
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            dotnet publish -r ubuntu -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
-          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-            echo "Mac Latest" > release_mac
-          elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-            echo "Windows Latest" > release_windows
-            dotnet publish -r win -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
-          fi
+          dotnet publish -r linux-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release 
 
-  release:
-    needs: build_release
-    runs-on: ubuntu-latest
-    steps:
+      - name: Run Mac Build
+        if: matrix.os == 'macos-latest'
+        run: echo "MacOS Latest"
+
+      - name: Run Windows Build
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "Windows Latest" > release_windows
+          dotnet publish -r win-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release 
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.create_release.outputs.tag-name }}
-          files: release_${{ needs.build_release.outputs.release_suffix }}
+          files: release_${{ matrix.release_suffix }}
