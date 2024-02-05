@@ -27,7 +27,7 @@ jobs:
           - os: ubuntu-latest
             release_suffix:  linux-x64 
           - os: macos-latest
-            release_suffix: mac
+            release_suffix: osx-x64
           - os: windows-latest
             release_suffix: win-x64
     runs-on: ${{ matrix.os }}
@@ -50,15 +50,17 @@ jobs:
 
       - name: Run Mac Build
         if: matrix.os == 'macos-latest'
-        run: echo "MacOS Latest"
+        run: |
+          dotnet publish -r osx-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release
+          mv ./AntlrCSharp/bin/Release/net8.0/osx-x64/publish/grund ./AntlrCSharp/bin/Release/net8.0/osx-x64/publish/grund-osx
 
       - name: Run Windows Build
         if: matrix.os == 'windows-latest'
         run: |
-         echo "MacOS Latest"
+          dotnet publish -r win-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release 
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ needs.create_release.outputs.tag-name }}
+          tag_name: Grund ${{ needs.create_release.outputs.tag-name }}
           files: ./AntlrCSharp/bin/Release/net8.0/${{ matrix.release_suffix }}/publish/grund
