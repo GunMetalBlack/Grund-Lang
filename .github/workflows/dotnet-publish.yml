@@ -6,7 +6,7 @@ on:
       - main  # Change this to your main branch name
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,3 +23,50 @@ jobs:
 
     - name: Publish for Linux-x64
       run: dotnet publish -r linux-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
+
+    - name: Set up Git
+      run: git config --global user.email "actions@github.com" && git config --global user.name "GitHub Actions"
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./AntlrCSharp/bin/Release/net8.0/linux-x64/publish/grund
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Release ${{ github.sha }}
+        body: |
+          Release notes for version ${{ github.sha }}.
+          Auto Generated Stuff for Git Actions!
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.101  # Change this to the desired .NET version
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Publish for Windows-x64
+      run: dotnet publish -r win-x64 -p:IncludeNativeLibrariesForSelfExtract=true -c Release AntlrCSharp/
+
+    - name: Set up Git
+      run: git config --global user.email "actions@github.com" && git config --global user.name "GitHub Actions"
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./AntlrCSharp/bin/Release/net8.0/win-x64/publish/grund
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Release ${{ github.sha }}
+        body: |
+          Release notes for version ${{ github.sha }}.
+          Auto Generated Stuff for Git Actions!
+
+
+
+
