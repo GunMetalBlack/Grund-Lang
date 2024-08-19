@@ -2,8 +2,10 @@ using Grund;
 using static Grund.GrundTypeWrapper;
 namespace Grund
 {
-    public class SlanderLibrary
+    public class SlanderLibrary 
     {
+
+        //TODO: At some point the error stack needs to be sent here because these error messages are ass!
 
         //* The SlanderLibrary class contains a collection of static methods that can be called from Grund code.
 
@@ -32,6 +34,7 @@ namespace Grund
             Console.WriteLine();
             return new GrundDynamicTypeWrapper(null);
         }
+
         // The GF_WRITE function is similar to GF_WRITE_INLINE, but it does not print a newline character at the end.
         public static GrundDynamicTypeWrapper GF_WRITE(GrundDynamicTypeWrapper[] args)
         {
@@ -108,7 +111,9 @@ namespace Grund
         //Get key without stopping execution
         public static GrundDynamicTypeWrapper GF_GET_KEY(GrundDynamicTypeWrapper[] args)
         {
-            if (Console.KeyAvailable) // Non-blocking peek
+            //! As of native grund this peak no longer opperates as intended 
+            //TODO: Find a solution to fix this no longer working
+            if (Console.KeyAvailable) // Non-blocking peek 
             {
                 object toReturn = Console.ReadKey(true).KeyChar;
                 return new GrundDynamicTypeWrapper(toReturn.ToString());
@@ -139,6 +144,29 @@ namespace Grund
             else
             {
                 throw new Exception("GRUND PUNCHES YOU IN THE FACE YOU'RE MISSING ARGUMENTS SIR");
+            }
+        }
+        public static GrundDynamicTypeWrapper GF_REPLACE_CHAR(GrundDynamicTypeWrapper[] args)
+        {
+            if (args[0].value != null && args[1].value != null && args[2].value != null)
+            {
+                string stringToSearch = args[0].value.ToString();
+                int indexToReturn = int.Parse(args[2].value.ToString());
+                char newChar = args[1].value.ToString()[0];
+                if (indexToReturn >= 0 && indexToReturn < stringToSearch.Length)
+                {
+                    char[] chars = stringToSearch.ToCharArray();
+                    chars[indexToReturn] = newChar;
+                    return  new GrundDynamicTypeWrapper(new string(chars));
+                }
+                else
+                {
+                    throw new Exception("GRUND CRIES LEARN TO COUNT HIPPY OUT OF RANGE STRING INDEX " + indexToReturn);
+                }
+            }
+            else
+            {
+                throw new Exception("GRUND SAYS ERROR IN ARGUMENTS NULL REFERENCE *SPITS IN FACE*");
             }
         }
         public static GrundDynamicTypeWrapper GF_INDEX_CHAR(GrundDynamicTypeWrapper[] args)

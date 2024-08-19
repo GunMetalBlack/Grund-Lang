@@ -1,17 +1,14 @@
-var Object =>
-{
-    FUNK init(self)
-    {
-        self.asd = 2;
+var myclass => {
+    FUNK init(self, x) {
+        self.x = x
+        GF_WRITE_LN("test")
+    }
+    FUNK method(self) {
+        var _return = self.x
     }
 }
 
-var foo => Object
-{
-    FUNK init(self)
-    {
-        GF_WRITE_LN("SUS:", self.asd)
-    }
-}
-
-foo()
+var a = myclass(7)
+var b = myclass(8)
+// GF_WRITE_LN("test")
+GF_WRITE_LN(a.method())

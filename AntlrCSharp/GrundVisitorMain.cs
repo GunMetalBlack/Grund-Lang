@@ -63,19 +63,40 @@ public class GrundStrukInstance : IGrundStruklike
 
 }
 
+
+public class GrundStrukSL : GrundStruk
+{
+    public Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper> init;
+    //? I think this constructor assings the grundStruct Constructor to the internal c# type???
+    public GrundStrukSL(GrundStruk? parent, string name, Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper> init) : base(parent, name)
+    {
+        this.init = init;
+    }
+    // public override GrundDynamicTypeWrapper instantiate(GrundVisitorMain gvm, GrundParser.FunctionCallExpressionContext context)
+    // {
+    //     GrundStrukInstance instance = new GrundStrukInstance();
+    //     instance.typeStruk = this;
+    //     GrundDynamicTypeWrapper instanceWrapped = new GrundDynamicTypeWrapper(instance);
+    //     (gvm, context, instanceWrapped, this);
+    //     return instanceWrapped;
+    // }
+}
+
 public class GrundStruk : IGrundStruklike
 {
+    //? Nullable Grund Struct?
     public GrundStruk? parent;
+    //The structs internal struct
     public Dictionary<string, GrundDynamicTypeWrapper> strukMembers = new Dictionary<string, GrundDynamicTypeWrapper>();
     public string name;
-
+    // When creating a new grund struct it
     public GrundStruk(GrundStruk? parent, string name)
     {
         this.parent = parent;
         this.name = name;
     }
-
-    public GrundDynamicTypeWrapper instantiate(GrundVisitorMain gvm, GrundParser.FunctionCallExpressionContext context)
+    
+    public virtual GrundDynamicTypeWrapper instantiate(GrundVisitorMain gvm, GrundParser.FunctionCallExpressionContext context)
     {
         GrundStrukInstance instance = new GrundStrukInstance();
         instance.typeStruk = this;
@@ -83,7 +104,7 @@ public class GrundStruk : IGrundStruklike
         invokeConstructors(gvm, context, instanceWrapped, this);
         return instanceWrapped;
     }
-
+    
     public void invokeConstructors(GrundVisitorMain gvm, GrundParser.FunctionCallExpressionContext context, GrundDynamicTypeWrapper instanceWrapped, GrundStruk struk) {
         if(struk.parent is GrundStruk parentStruk)
         {
@@ -131,6 +152,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         var FUNC_ID_GF_GET_KEY = "GF_KEY";
         var FUNC_ID_GF_PARSER = "GF_PARSER";
         var FUNC_ID_GF_INDEX_CHAR = "GF_INDEX_CHAR";
+        var FUNC_ID_GF_REPLACE_CHAR = "GF_REPLACE_CHAR";
         var FUNC_ID_GF_CLS = "GF_CLS";
         var FUNC_ID_GF_CURSOR_MOVE = "GF_CURSOR_MOVE";
         var FUNC_ID_GF_RAND = "GF_RANDOM";
@@ -139,7 +161,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         //* List Functions
         var FUNC_ID_GL_REMOVE = "GL_REMOVE";
         var FUNC_ID_GL_LIST_ADD = "GL_ADD";
-
+        
         //** Important Create Variables for FunctionCallExpressionContext and Built in Math Standards
         StackFrames.Push(new GrundStackFrame("base"));
         Variables[ID_PI] = new GrundDynamicTypeWrapper(Math.PI);
@@ -157,6 +179,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         Variables[FUNC_ID_GF_GET_KEY] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_GET_KEY));
         Variables[FUNC_ID_GF_PARSER] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_PARSER));
         Variables[FUNC_ID_GF_INDEX_CHAR] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_INDEX_CHAR));
+        Variables[FUNC_ID_GF_REPLACE_CHAR] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_REPLACE_CHAR));
         Variables[FUNC_ID_GF_CLS] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_CLS));
         Variables[FUNC_ID_GF_CURSOR_MOVE] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_CURSOR_MOVE));
         Variables[FUNC_ID_GF_RAND] = new GrundDynamicTypeWrapper(new Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>(SlanderLibrary.GF_RAND));
@@ -175,7 +198,26 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         return false;
     }
+    //*Create a new struct for standard library methods and members
+    public GrundStruk SL_CREATE_STRUK(string gStructName, List<Func<GrundDynamicTypeWrapper[], GrundDynamicTypeWrapper>> gFuncs, List<string> funcIds, GrundStruk? parent = null)
+    {
+        GrundStruk struk = new GrundStruk(parent, gStructName);
+        struk.parent = parent;
+        for (int i = 0; i < gFuncs.Count; i++)
+        {
+            //! What the actual fuck is this
+            struk.strukMembers.Add(funcIds[i], new GrundDynamicTypeWrapper(gFuncs[i]));
+        }
 
+        // Check if the struct contains a constructor
+        if (struk.getMember(this, "init") == null)
+        {
+            // Log a warning message if the struct does not contain a constructor
+            throw new Exception("Grund sighs: STRUK " + " is missing constructor definition " + "Make sure the constructor has the same name as the INIT");
+        }
+        Variables[gStructName] = new GrundDynamicTypeWrapper(struk);
+        return struk;
+    }
     public object? ExecuteUserDefinedFunction(GrundParser.FunctionCallExpressionContext context, GrundParser.FunctionDefinitionExpressionContext functionLookup, GrundDynamicTypeWrapper? struklike = null, bool allowImplicitDefintionOfStrukFields = false)
     {
 
@@ -210,10 +252,11 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         }
         else
         {
-            return null;
+            return new GrundDynamicTypeWrapper(null);
         }
     }
 
+    
     public override object VisitFunctionCallExpression([NotNull] GrundParser.FunctionCallExpressionContext context)
     {
         // Grab the function name and any expressions it has and turns into an array 
@@ -267,14 +310,13 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
         throw new Exception("GRUND SAYS COMMON USE A REAL FUNCTION THIS IS NOT A FUNCTION " + name + " LINE: " + context.Start.Line.ToString());
 
     }
-
     public override object VisitAssignment([NotNull] GrundParser.AssignmentContext context)
     {   
         GrundDynamicTypeWrapper gLeft = null;
         GrundDynamicTypeWrapper gRight = null;
         try {
-            gLeft = (GrundDynamicTypeWrapper)Visit(context.expression(0));
             gRight = (GrundDynamicTypeWrapper)Visit(context.expression(1));
+            gLeft = (GrundDynamicTypeWrapper)Visit(context.expression(0));
         }
         catch(InvalidCastException exception) {
             throw new Exception("GRUND: ONE OF THE VARIABLES WASN'T WRAPPED IN A GRUND TYPE THIS IS NOT YOUR FAULT IT'S CALLED SLANDER LIBRARY FOR A REASON REEEEEEEEEEEE LINE: " + context.Start.Line.ToString());
@@ -347,7 +389,6 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
 
     public override object VisitStrucDefinitionExpression([NotNull] GrundParser.StrucDefinitionExpressionContext context)
     {
-        //FIXME: Fix Structs for future versions
         // Return early if there are no lines in the struct definition
         var lines = context.strucDefinition().block().line();
         if (lines == null || !lines.Any())
@@ -362,7 +403,7 @@ public class GrundVisitorMain : GrundBaseVisitor<object?>
          {
             parent = context.strucDefinition().IDENTIFIER().GetText();
             if(FindVariableInCurrentState(parent).value is GrundStruk parentStruk)
-            {
+            {               
                 struk.parent = parentStruk;
             }
             else
